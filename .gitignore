@@ -1,0 +1,6 @@
+# Dependencies files
+node_modules
+# Environment variables
+.env
+.env.development
+.env.production
