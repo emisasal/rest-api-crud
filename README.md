@@ -35,14 +35,20 @@
 
 ## Enviroment Variables
 
-I'm using `dotenvx` dependecy to handle the enviroment variables in two env files `.env.development` and `.env.production`.
-In order to combine de variables I changed the dev script to: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
+I'm using `dotenvx` dependecy to handle the enviroment variables for development `.env.development` and production `.env.production`.
+In order to combine variables using dotenvx I changed the dev script to: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
 And the production script to: `dotenvx run --env-file=.env.development --env-file=.env -- npx tsc`.
+
+## Database Schema
+
+The schema for the database is for an online bookstore.
+![databaseSchema](images/bookStore_schema.png)
+The models for the tables and their relations were made with Prisma.
 
 ## ToDo
 
-- database schema draw with relations
 - Prisma models
+- json files fake data and seeds
 - Routes
 - Controllers
 - Services
