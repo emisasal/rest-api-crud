@@ -47,7 +47,7 @@ The models for the tables and their relations were made with Prisma.
 
 ## ToDo
 
-- Prisma models
+- Prisma models relations
 - json files fake data and seeds
 - Routes
 - Controllers
