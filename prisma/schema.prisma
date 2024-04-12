@@ -12,3 +12,73 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Books //
+
+model Books {
+  book_id      Int      @id @default(autoincrement())
+  title        String   @db.VarChar(255)
+  description  String   @db.Text
+  author_id    Int
+  genre_id     Int
+  publisher_id Int
+  price        Decimal  @db.Decimal(8, 2)
+  publish_date DateTime
+  isbn         String   @db.Char(14)
+}
+
+model Authors {
+  author_id  Int    @id @default(autoincrement())
+  first_name String @db.VarChar(255)
+  last_name  String @db.VarChar(255)
+  bio        String @db.Text
+}
+
+model Genres {
+  genre_id    Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  description String @db.Text
+}
+
+model Publishers {
+  publisher_id   Int    @id @default(autoincrement())
+  publisher_name String @db.VarChar(255)
+  contact_name   String @db.VarChar(255)
+  phone_number   String @db.VarChar(255)
+}
+
+// Orders
+
+model OrderDetails {
+  order_detail_id Int     @id @default(autoincrement())
+  order_id        Int
+  book_id         Int
+  quantity        Int
+  price_per_item  Decimal @db.Decimal(8, 2)
+}
+
+model Orders {
+  order_id     Int
+  customer_id  Int
+  order_date   DateTime @default(now())
+  total_amount Decimal  @db.Decimal(8, 2)
+}
+
+// Customers
+
+model Customers {
+  customer_id       Int      @id @default(autoincrement())
+  first_name        String   @db.VarChar(255)
+  last_name         String   @db.VarChar(255)
+  email             String   @unique @db.VarChar(255)
+  registration_date DateTime @default(now())
+}
+
+model Reviews {
+  review_id   Int      @id @default(autoincrement())
+  book_id     Int
+  customer_id Int
+  rating      Int
+  comment     String   @db.Text
+  review_date DateTime @default(now())
+}
