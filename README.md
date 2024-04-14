@@ -41,9 +41,11 @@ And the production script to: `dotenvx run --env-file=.env.development --env-fil
 
 ## Database Schema
 
-The schema for the database is for an online bookstore.
+This is the original schema for an online bookstore database.
 ![databaseSchema](images/bookStore_schema.png)
-The models for the tables and their relations were made with Prisma.
+I created a new ERM using `draw.io` with some changes in relations and data types taking advantage of some unique postgres features.
+The models and relations for the db were made using Prisma migrations.
+
 
 ## ToDo
 
@@ -53,3 +55,5 @@ The models for the tables and their relations were made with Prisma.
 - Controllers
 - Services
 - Testing
+- Swagger
+- Export db to `.CSV`
