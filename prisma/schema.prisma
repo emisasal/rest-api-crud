@@ -15,68 +15,84 @@ datasource db {
 
 // Books //
 
-model Books {
-  book_id      Int      @id @default(autoincrement())
-  title        String   @db.VarChar(255)
-  description  String   @db.Text
+model Book {
+  id           Int           @id @default(autoincrement())
+  title        String        @db.VarChar(255)
+  description  String        @db.Text
+  author       Author        @relation(fields: [author_id], references: [id])
   author_id    Int
+  genre        Genre         @relation(fields: [genre_id], references: [id])
   genre_id     Int
+  publisher    Publisher     @relation(fields: [publisher_id], references: [id])
   publisher_id Int
-  price        Decimal  @db.Decimal(8, 2)
+  price        Decimal       @db.Decimal(8, 2)
   publish_date DateTime
-  isbn         String   @db.Char(14)
+  isbn         String        @unique @db.Char(14)
+  OrderDetail  OrderDetail[]
+  Review       Review[]
 }
 
-model Authors {
-  author_id  Int    @id @default(autoincrement())
+model Author {
+  id         Int    @id @default(autoincrement())
   first_name String @db.VarChar(255)
   last_name  String @db.VarChar(255)
   bio        String @db.Text
+  Book       Book[]
 }
 
-model Genres {
-  genre_id    Int    @id @default(autoincrement())
+model Genre {
+  id          Int    @id @default(autoincrement())
   name        String @db.VarChar(255)
   description String @db.Text
+  Book        Book[]
 }
 
-model Publishers {
-  publisher_id   Int    @id @default(autoincrement())
+model Publisher {
+  id             Int    @id @default(autoincrement())
   publisher_name String @db.VarChar(255)
   contact_name   String @db.VarChar(255)
   phone_number   String @db.VarChar(255)
+  Book           Book[]
 }
 
 // Orders
 
-model OrderDetails {
-  order_detail_id Int     @id @default(autoincrement())
-  order_id        Int
-  book_id         Int
-  quantity        Int
-  price_per_item  Decimal @db.Decimal(8, 2)
+model OrderDetail {
+  id             Int     @id @default(autoincrement())
+  order          Order   @relation(fields: [order_id], references: [id])
+  order_id       Int
+  book           Book    @relation(fields: [book_id], references: [id])
+  book_id        Int
+  quantity       Int
+  price_per_item Decimal @db.Decimal(8, 2)
 }
 
-model Orders {
-  order_id     Int
+model Order {
+  id           Int           @id @default(autoincrement())
+  customer     Customer      @relation(fields: [customer_id], references: [id])
   customer_id  Int
-  order_date   DateTime @default(now())
-  total_amount Decimal  @db.Decimal(8, 2)
+  order_date   DateTime      @default(now())
+  total_amount Decimal       @db.Decimal(8, 2)
+  OrderDetail  OrderDetail[]
 }
 
 // Customers
 
-model Customers {
-  customer_id       Int      @id @default(autoincrement())
+model Customer {
+  id                Int      @id @default(autoincrement())
   first_name        String   @db.VarChar(255)
   last_name         String   @db.VarChar(255)
   email             String   @unique @db.VarChar(255)
   registration_date DateTime @default(now())
+  Order             Order[]
+  Review            Review[]
 }
 
-model Reviews {
-  review_id   Int      @id @default(autoincrement())
+model Review {
+  id          Int      @id @default(autoincrement())
+  book        Book     @relation(fields: [book_id], references: [id])
   book_id     Int
+  customer    Customer @relation(fields: [customer_id], references: [id])
   customer_id Int
   rating      Int
   comment     String   @db.Text

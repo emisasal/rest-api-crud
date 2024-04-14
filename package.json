@@ -18,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@dotenvx/dotenvx": "^0.30.0",
+    "@prisma/client": "^5.12.1",
     "express": "^4.19.2"
   },
   "devDependencies": {
