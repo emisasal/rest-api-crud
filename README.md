@@ -63,9 +63,11 @@ If not previously installed, the script will install `prisma-client-js` generato
 
 ## Seeds
 
+To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
+
 ## ToDo
 
-- json files fake data (mockaroo) / finish seed files
+- add express server
 - Seed
 - Routes
 - Controllers
