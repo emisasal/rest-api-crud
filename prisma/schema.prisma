@@ -51,11 +51,20 @@ model Publisher {
   publisher_id   Int     @id @default(autoincrement())
   publisher_name String
   contact_name   String?
-  phone_number   String?
+  phone_number   String
   Book           Book[]
 }
 
 // Orders
+
+model Order {
+  order_id     Int           @id @default(autoincrement())
+  customer     Customer      @relation(fields: [customer_id], references: [customer_id])
+  customer_id  Int
+  order_date   DateTime      @default(now()) @db.Timestamptz(3)
+  total_amount Decimal       @db.Money
+  OrderDetail  OrderDetail[]
+}
 
 model OrderDetail {
   order_detail_id Int     @id @default(autoincrement())
@@ -65,15 +74,6 @@ model OrderDetail {
   book_id         Int
   quantity        Int
   price_per_item  Decimal @db.Money
-}
-
-model Order {
-  order_id     Int           @id @default(autoincrement())
-  customer     Customer      @relation(fields: [customer_id], references: [customer_id])
-  customer_id  Int
-  order_date   DateTime      @default(now()) @db.Timestamptz(3)
-  total_amount Decimal       @db.Money
-  OrderDetail  OrderDetail[]
 }
 
 // Customers
@@ -89,7 +89,7 @@ model Customer {
 }
 
 model Review {
-  id          Int      @id @default(autoincrement())
+  review_id   Int      @id @default(autoincrement())
   book        Book     @relation(fields: [book_id], references: [book_id])
   book_id     Int
   customer    Customer @relation(fields: [customer_id], references: [customer_id])
