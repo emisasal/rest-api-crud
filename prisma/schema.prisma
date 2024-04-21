@@ -42,7 +42,7 @@ model Author {
 
 model Genre {
   genre_id    Int     @id @default(autoincrement())
-  name        String
+  name        String  @unique
   description String?
   Book        Book[]
 }
