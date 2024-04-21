@@ -16,85 +16,85 @@ datasource db {
 // Books //
 
 model Book {
-  id           Int           @id @default(autoincrement())
-  title        String        @db.VarChar(255)
-  description  String        @db.Text
-  author       Author        @relation(fields: [author_id], references: [id])
+  book_id      Int           @id @default(autoincrement())
+  title        String
+  description  String
+  author       Author        @relation(fields: [author_id], references: [author_id])
   author_id    Int
-  genre        Genre         @relation(fields: [genre_id], references: [id])
+  genre        Genre         @relation(fields: [genre_id], references: [genre_id])
   genre_id     Int
-  publisher    Publisher     @relation(fields: [publisher_id], references: [id])
+  publisher    Publisher     @relation(fields: [publisher_id], references: [publisher_id])
   publisher_id Int
-  price        Decimal       @db.Decimal(8, 2)
-  publish_date DateTime
-  isbn         String        @unique @db.Char(14)
+  price        Decimal       @db.Money
+  publish_date DateTime      @db.Timestamptz(3)
+  isbn         String
   OrderDetail  OrderDetail[]
   Review       Review[]
 }
 
 model Author {
-  id         Int    @id @default(autoincrement())
-  first_name String @db.VarChar(255)
-  last_name  String @db.VarChar(255)
-  bio        String @db.Text
+  author_id  Int     @id @default(autoincrement())
+  first_name String
+  last_name  String
+  bio        String?
   Book       Book[]
 }
 
 model Genre {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  description String @db.Text
+  genre_id    Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
   Book        Book[]
 }
 
 model Publisher {
-  id             Int    @id @default(autoincrement())
-  publisher_name String @db.VarChar(255)
-  contact_name   String @db.VarChar(255)
-  phone_number   String @db.VarChar(255)
+  publisher_id   Int     @id @default(autoincrement())
+  publisher_name String
+  contact_name   String?
+  phone_number   String?
   Book           Book[]
 }
 
 // Orders
 
 model OrderDetail {
-  id             Int     @id @default(autoincrement())
-  order          Order   @relation(fields: [order_id], references: [id])
-  order_id       Int
-  book           Book    @relation(fields: [book_id], references: [id])
-  book_id        Int
-  quantity       Int
-  price_per_item Decimal @db.Decimal(8, 2)
+  order_detail_id Int     @id @default(autoincrement())
+  order           Order   @relation(fields: [order_id], references: [order_id])
+  order_id        Int
+  book            Book    @relation(fields: [book_id], references: [book_id])
+  book_id         Int
+  quantity        Int
+  price_per_item  Decimal @db.Money
 }
 
 model Order {
-  id           Int           @id @default(autoincrement())
-  customer     Customer      @relation(fields: [customer_id], references: [id])
+  order_id     Int           @id @default(autoincrement())
+  customer     Customer      @relation(fields: [customer_id], references: [customer_id])
   customer_id  Int
-  order_date   DateTime      @default(now())
-  total_amount Decimal       @db.Decimal(8, 2)
+  order_date   DateTime      @default(now()) @db.Timestamptz(3)
+  total_amount Decimal       @db.Money
   OrderDetail  OrderDetail[]
 }
 
 // Customers
 
 model Customer {
-  id                Int      @id @default(autoincrement())
-  first_name        String   @db.VarChar(255)
-  last_name         String   @db.VarChar(255)
-  email             String   @unique @db.VarChar(255)
-  registration_date DateTime @default(now())
+  customer_id       Int      @id @default(autoincrement())
+  first_name        String
+  last_name         String
+  email             String
+  registration_date DateTime @default(now()) @db.Timestamptz(3)
   Order             Order[]
   Review            Review[]
 }
 
 model Review {
   id          Int      @id @default(autoincrement())
-  book        Book     @relation(fields: [book_id], references: [id])
+  book        Book     @relation(fields: [book_id], references: [book_id])
   book_id     Int
-  customer    Customer @relation(fields: [customer_id], references: [id])
+  customer    Customer @relation(fields: [customer_id], references: [customer_id])
   customer_id Int
   rating      Int
-  comment     String   @db.Text
-  review_date DateTime @default(now())
+  comment     String?
+  review_date DateTime @default(now()) @db.Timestamptz(3)
 }

@@ -41,16 +41,32 @@ And the production script to: `dotenvx run --env-file=.env.development --env-fil
 
 ## Database Schema
 
-This is the original schema for an online bookstore database.
-![databaseSchema](images/bookStore_schema.png)
-I created a new ERM using `draw.io` with some changes in relations and data types taking advantage of some unique postgres features.
-The models and relations for the db were made using Prisma migrations.
+This is the original ERD schema for an online bookstore database.
 
+![databaseSchema](images/bookStore_schema.png)
+
+I created a new ERD using `draw.io` with some changes in relations and data types taking advantage of some unique postgres features and good practices.
+
+![newDatabaseSchema](images/rest-api-crud.drawio.png)
+
+For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
+
+## Database creation
+
+Following prisma's documentation I created an empty postgres db with the name `rest_api_crud`. I'm using **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing.
+
+For migration I used `npx prisma migrate dev --name init`.
+This migrates the models to the db and creates a folder in `/prisma/migrations` with a migration file with the given name (in this case "init").
+If not previously installed, the script will install `prisma-client-js` generator to connect to the db.
+
+> The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
+
+## Seeds
 
 ## ToDo
 
-- Prisma models relations
-- json files fake data and seeds
+- json files fake data (mockaroo) / finish seed files
+- Seed
 - Routes
 - Controllers
 - Services
