@@ -67,11 +67,10 @@ To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
 
 ## ToDo
 
-- add express server
-- Seed
 - Routes
 - Controllers
 - Services
+- Seed
 - Testing
 - Swagger
 - Export db to `.CSV`
