@@ -70,6 +70,8 @@ To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
 - Routes
 - Controllers
 - Services
+- cors
+- morgan
 - Seed
 - Testing
 - Swagger
