@@ -2,6 +2,8 @@
 
 #### Basic Backend using Express, Prisma ORM, TpeScript and Postgres database
 
+---
+
 ## Create the project
 
 - Install Node (if you have't already). For this project I'm currently using v20.12.1 LST.
@@ -61,23 +63,38 @@ If not previously installed, the script will install `prisma-client-js` generato
 
 > The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
 
+## Seeds
+
+I used Mockaroo (https://www.mockaroo.com/) to create fake data .
+The files are located in `/prisma/seedData` named `.seed.ts`.
+I'm using objects (not `json`) to avoid the conversion process.
+Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
+
+To aviod conflicts with the relations between models I created a function that execute `Promise.all` applying "upsert" for every object.
+This solves the issue of duplicate data and allows the seeds to be applied multiple times.
+
+> The `Promise.all` for seeding the models in the `runSeeders()` function must respect this order:
+>
+> 1. Models without relations declaration.
+> 2. Models with relations to previous models.
+>
+> This happens because the seeds store false ids. If the second model tries to make a relation to a non-existent id it will return an error.
+
+To run the seeds in the db use the script `npm run seed`.
+
 ## Routes
 
 The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the import of the routes in the server.
 
 ## Cors
 
-The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running in a different port.
-
-## Seeds
-
-To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
+The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
 
 ## ToDo
 
 - Routes
 - Controllers
-- Services
+- config cors
 - morgan
 - Seed from json and cvs
 - Testing

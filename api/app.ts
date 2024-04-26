@@ -3,8 +3,6 @@ import cors from "cors"
 
 import routes from "./routes"
 
-const port = process.env.PORT ?? 8080
-
 const app = express()
 
 app.use(cors()) // Enable cors
@@ -18,6 +16,6 @@ app.all("*", (req, res) => {
   res.status(404).json({ error: `Route ${req.originalUrl} not found` })
 })
 
-app.listen(port, () => {
-  console.log(`Server running on port: ${port}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port: ${process.env.PORT}`)
 })
