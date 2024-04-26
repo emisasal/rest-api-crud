@@ -7,7 +7,8 @@
     "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts",
     "build": "dotenvx run --env-file=.env.production --env-file=.env -- npx tsc",
     "start": "node dist/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "prisma db push && ts-node prisma/seed.ts"
   },
   "keywords": [
     "rest",
