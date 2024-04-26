@@ -2,6 +2,7 @@ import { Router } from "express"
 
 const router = Router()
 
+// '/review' //
 router.get("/") // List all reviews
 router.get("/:id") // Get review by id
 router.post("/") // Create review

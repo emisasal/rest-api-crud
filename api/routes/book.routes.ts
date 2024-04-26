@@ -2,6 +2,7 @@ import { Router } from "express"
 
 const router = Router()
 
+// '/book' //
 router.get("/") // List all books
 router.get("/:id") // Get book by id
 router.post("/") // Create book
