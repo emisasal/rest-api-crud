@@ -61,6 +61,14 @@ If not previously installed, the script will install `prisma-client-js` generato
 
 > The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
 
+## Routes
+
+The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the import of the routes in the server.
+
+## Cors
+
+The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running in a different port.
+
 ## Seeds
 
 To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
@@ -70,9 +78,9 @@ To seed the db with fake data I used Mockaroo (https://www.mockaroo.com/).
 - Routes
 - Controllers
 - Services
-- cors
 - morgan
-- Seed
+- Seed from json and cvs
 - Testing
 - Swagger
 - Export db to `.CSV`
+- docker
