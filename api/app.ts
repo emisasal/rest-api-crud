@@ -1,10 +1,13 @@
 import express from "express"
+import cors from "cors"
+
 import routes from "./routes"
 
 const port = process.env.PORT ?? 8080
 
 const app = express()
 
+app.use(cors()) // Enable cors
 app.use(express.json())
 
 // Registered routes

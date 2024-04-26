@@ -6,7 +6,7 @@ const router = Router()
 router.get("/") // List all publishers
 router.get("/:id") // Get publisher by id
 router.post("/") // Create publisher
-router.put("/:id") // Modify publisher
+router.patch("/:id") // Modify publisher
 router.delete("/:id") // Delete publisher
 
 export default router
