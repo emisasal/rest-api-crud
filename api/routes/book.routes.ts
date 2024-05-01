@@ -6,8 +6,7 @@ const router = Router()
 
 // '/book'
 router.get("/", bookController.getAllBooks)
-router.get("/:id") // Get book by id
-router.post("/") // Create book
+router.get("/:id", bookController.getBookById)
 router.patch("/:id") // Modify book
 router.delete("/:id") // Delete book
 
