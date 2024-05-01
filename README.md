@@ -99,14 +99,13 @@ The dependency `cors` (along with `@types/cors` as devDependency) enables cors t
 
 ## Logger
 
-The projet uses `morgan` http logger in "dev" (reduced details) mode for development and "common" for production (shows mor details).
+The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows mor details).
 
 ## ToDo
 
 - Routes
 - Controllers
 - config cors
-- morgan
 - Seed from json and cvs
 - Testing
 - Swagger

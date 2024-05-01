@@ -1,11 +1,12 @@
 import { Request, Response } from "express"
+import { prisma } from "../client"
 
-export const getAllBooks = (req: Request, res: Response) => {
+export const getAllBooks = async (req: Request, res: Response) => {
   try {
-    throw "Error getting book list"
-    // return res.status(200).send("All the books")
+    const bookList = await prisma.book.findMany()
+    console.log("BL", bookList)
+    return res.status(200).send(bookList)
   } catch (error) {
-    console.log("error", error)
     return res.status(401).send({ error })
   }
 }
