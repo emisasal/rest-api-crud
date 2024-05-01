@@ -4,4 +4,5 @@ DATABASE_URL=
 
 # .env.development and .env.production
 
+NODE_ENV=
 PORT=

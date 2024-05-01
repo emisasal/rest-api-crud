@@ -4,7 +4,14 @@
 
 ---
 
-## Create the project
+## Start the project
+
+- After clonning this repository run from root `npm i`.
+- Create a postgres db named `rest-api-crud`.
+- Push the schema and seeds with `npm run seed`.
+- Start the local server with `npm run dev`.
+
+## Project creation
 
 - Install Node (if you have't already). For this project I'm currently using v20.12.1 LST.
 - Create an empty postgres database. The db I'm using is called `rest-api-crud`.
@@ -80,7 +87,7 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seeds store false ids. If the second model tries to make a relation to a non-existent id it will return an error.
 
-To run the seeds in the db use the script `npm run seed`.
+To run the seeds in the db use the script `npm run seed`. It executes "prima db push" (forces db schema) combined with `prisma/seed.ts`.
 
 ## Routes
 
@@ -89,6 +96,10 @@ The routes for the models are located in `/api/routes`. I used an `index.ts` fil
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
+
+## Logger
+
+The projet uses `morgan` http logger in "dev" (reduced details) mode for development and "common" for production (shows mor details).
 
 ## ToDo
 
