@@ -60,6 +60,8 @@ I created a new ERD using `draw.io` with some changes in relations and data type
 
 For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
 
+To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`. Following the Books example, if a book is deleted all the related reviews will also be deleted.
+
 ## Database creation
 
 Following prisma's documentation I created an empty postgres db with the name `rest_api_crud`. I'm using **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing.
@@ -104,6 +106,9 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 ## ToDo
 
 - Routes
+  - Book:
+    - Create book
+    - getAllBooks: pagination and filter
 - Controllers
 - config cors
 - Seed from json and cvs

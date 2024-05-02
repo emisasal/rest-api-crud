@@ -90,7 +90,7 @@ model Customer {
 
 model Review {
   review_id   Int      @id @default(autoincrement())
-  book        Book     @relation(fields: [book_id], references: [book_id])
+  book        Book     @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
   book_id     Int
   customer    Customer @relation(fields: [customer_id], references: [customer_id])
   customer_id Int
