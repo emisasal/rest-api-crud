@@ -1,12 +1,14 @@
 import { Router } from "express"
 
+import * as bookController from "../controllers/book.controller"
+
 const router = Router()
 
-// '/book' //
-router.get("/") // List all books
-router.get("/:id") // Get book by id
-router.post("/") // Create book
-router.patch("/:id") // Modify book
-router.delete("/:id") // Delete book
+// '/book'
+router.get("/", bookController.getAllBooks)
+router.get("/:id", bookController.getBookById)
+router.post("/:id")
+router.patch("/:id", bookController.patchBookById)
+router.delete("/:id", bookController.deleteBook)
 
 export default router

@@ -4,7 +4,14 @@
 
 ---
 
-## Create the project
+## Start the project
+
+- After clonning this repository run from root `npm i`.
+- Create a postgres db named `rest-api-crud`.
+- Push the schema and seeds with `npm run seed`.
+- Start the local server with `npm run dev`.
+
+## Project creation
 
 - Install Node (if you have't already). For this project I'm currently using v20.12.1 LST.
 - Create an empty postgres database. The db I'm using is called `rest-api-crud`.
@@ -53,6 +60,8 @@ I created a new ERD using `draw.io` with some changes in relations and data type
 
 For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
 
+To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`. Following the Books example, if a book is deleted all the related reviews will also be deleted.
+
 ## Database creation
 
 Following prisma's documentation I created an empty postgres db with the name `rest_api_crud`. I'm using **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing.
@@ -80,7 +89,7 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seeds store false ids. If the second model tries to make a relation to a non-existent id it will return an error.
 
-To run the seeds in the db use the script `npm run seed`.
+To run the seeds in the db use the script `npm run seed`. It executes "prima db push" (forces db schema) combined with `prisma/seed.ts`.
 
 ## Routes
 
@@ -90,12 +99,18 @@ The routes for the models are located in `/api/routes`. I used an `index.ts` fil
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
 
+## Logger
+
+The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows mor details).
+
 ## ToDo
 
 - Routes
+  - Book:
+    - Create book
+    - getAllBooks: pagination and filter
 - Controllers
 - config cors
-- morgan
 - Seed from json and cvs
 - Testing
 - Swagger
