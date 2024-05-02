@@ -111,7 +111,10 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
     - getAllBooks: pagination and filter
 - Controllers
 - config cors
-- Seed from json and cvs
+- Investigate:
+  - npm express-validator (http data validation) ADD TO PROJECT!
+  - npm express-session (stores session server side instead o cookies)
+- Client (and admin?) session with JWT
 - Testing
 - Swagger
 - Export db to `.CSV`
