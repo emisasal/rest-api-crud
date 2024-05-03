@@ -108,7 +108,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 - Routes
   - Book:
     - Create book
-    - getAllBooks: pagination and filter
+    - getAllBooks: pagination and filter (with req.query)
 - Controllers
 - config cors
 - Investigate:

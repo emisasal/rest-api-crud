@@ -1,10 +1,11 @@
 import { Request, Response } from "express"
 import { prisma } from "../client"
+import { validationResult } from "express-validator"
 
 const pageSize = 20
 
 // Pagination
-// Filter
+// Filter (with req.query)
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
     const bookList = await prisma.book.findMany()
@@ -16,8 +17,8 @@ export const getAllBooks = async (req: Request, res: Response) => {
 }
 
 export const getBookById = async (req: Request, res: Response) => {
-  const { id } = req.params
   try {
+    const { id } = req.params
     const bookById = await prisma.book.findUnique({
       where: {
         book_id: Number(id),
@@ -33,9 +34,7 @@ export const getBookById = async (req: Request, res: Response) => {
     }
     return res.status(200).send(bookById)
   } catch (error) {
-    return res
-      .status(400)
-      .send({ error: `Error getting book_id ${id}: ${error}` })
+    return res.status(400).send({ error: `Error getting book: ${error}` })
   }
 }
 
@@ -43,6 +42,11 @@ export const patchBookById = async (req: Request, res: Response) => {
   const { id } = req.params
   const data = req.body
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() })
+    }
+
     const patchedBook = await prisma.book.update({
       where: {
         book_id: Number(id),
@@ -65,7 +69,7 @@ export const deleteBook = async (req: Request, res: Response) => {
         book_id: Number(id),
       },
     })
-    return res.status(204)
+    return res.sendStatus(204)
   } catch (error) {
     return res
       .status(400)
