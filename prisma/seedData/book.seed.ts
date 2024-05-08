@@ -3,7 +3,7 @@
 export const bookSeed = [
   {
     book_id: 1,
-    title: "Gone with the Wind",
+    title: "My Book Cover",
     description: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
     author_id: 168,
     genre_id: 9,
