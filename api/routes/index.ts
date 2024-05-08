@@ -8,6 +8,7 @@ import order from "./order.routes"
 import orderDetail from "./orderDetail.routes"
 import customer from "./customer.routes"
 import review from "./review.routes"
+import image from "./image.routes"
 
 const router = Router()
 
@@ -19,5 +20,6 @@ router.use("/order", order)
 router.use("/orderDetail", orderDetail)
 router.use("/customer", customer)
 router.use("/review", review)
+router.use("/image", image)
 
 export default router

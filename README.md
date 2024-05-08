@@ -95,6 +95,11 @@ To run the seeds in the db use the script `npm run seed`. It executes "prima db 
 
 The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the import of the routes in the server.
 
+## Send Files for book covers
+
+The endpoint `/api/image/:id` returns book cover images in jpg format using the id for the book.
+It aslo includes error handling for the `res.sendFile` method when the Id is incorrect or the book cover does't exist.
+
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
