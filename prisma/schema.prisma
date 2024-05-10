@@ -59,7 +59,7 @@ model Publisher {
 
 model Order {
   order_id     Int           @id @default(autoincrement())
-  customer     Customer      @relation(fields: [customer_id], references: [customer_id])
+  customer     Customer      @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
   customer_id  Int
   order_date   DateTime      @default(now()) @db.Timestamptz(3)
   total_amount Decimal       @db.Money
@@ -70,7 +70,7 @@ model OrderDetail {
   order_detail_id Int     @id @default(autoincrement())
   order           Order   @relation(fields: [order_id], references: [order_id])
   order_id        Int
-  book            Book    @relation(fields: [book_id], references: [book_id])
+  book            Book    @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
   book_id         Int
   quantity        Int
   price_per_item  Decimal @db.Money

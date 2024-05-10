@@ -4,13 +4,54 @@ import { validationResult } from "express-validator"
 
 const pageSize = 20
 
-// Pagination
 // Filter (with req.query)
+// FullTextSearch postgres
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
-    const bookList = await prisma.book.findMany()
+    const count = await prisma.book.count()
+    const limit = Math.floor(count / pageSize)
+    let page = Number(req.query.page) || 0
+    const sort = req.query.sort || "title"
+    const order = req.query.order || "asc"
 
-    return res.status(200).send(bookList)
+    if (page > limit) {
+      page = limit
+    }
+
+    let orderBy = { [String(sort)]: order }
+    if (sort === "author") {
+      orderBy = {
+        author: {
+          last_name: order,
+        },
+      }
+    }
+    if (sort === "genre") {
+      orderBy = {
+        genre: {
+          name: order,
+        },
+      }
+    }
+    if (sort === "publisher") {
+      orderBy = {
+        publisher: {
+          publisher_name: order,
+        },
+      }
+    }
+
+    const bookList = await prisma.book.findMany({
+      take: pageSize,
+      skip: page * pageSize,
+      orderBy,
+      include: {
+        author: true,
+        genre: true,
+        publisher: true,
+      },
+    })
+    return res.status(200).send({ books: bookList, page: page, limit: limit })
   } catch (error) {
     return res.status(400).send({ error })
   }
