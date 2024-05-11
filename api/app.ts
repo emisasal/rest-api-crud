@@ -3,15 +3,18 @@ import cors from "cors"
 import morgan from "morgan"
 
 import routes from "./routes"
+import globalErrorHandler from "./middleware/errorHandler.middleware"
 
 const app = express()
 
+app.use(express.json())
 app.use(cors()) // Enable cors
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "common")) // http logger
-app.use(express.json())
 
 // Registered routes
 app.use("/api", routes)
+
+app.use(globalErrorHandler)
 
 // Catch unregistered routes
 app.all("*", (req, res) => {

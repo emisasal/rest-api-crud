@@ -1,6 +1,7 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { prisma } from "../client"
 import { validationResult } from "express-validator"
+import errorHandler from "../utils/errorHandler"
 
 const pageSize = 20
 
@@ -57,7 +58,11 @@ export const getAllBooks = async (req: Request, res: Response) => {
   }
 }
 
-export const getBookById = async (req: Request, res: Response) => {
+export const getBookById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params
     const bookById = await prisma.book.findUnique({
@@ -71,11 +76,11 @@ export const getBookById = async (req: Request, res: Response) => {
       },
     })
     if (!bookById) {
-      return res.status(200).send("Book not found")
+      return next(errorHandler(400, "Book not found"))
     }
     return res.status(200).send(bookById)
   } catch (error) {
-    return res.status(400).send({ error: `Error getting book: ${error}` })
+    return next(errorHandler(400, `Error getting book: ${error}`))
   }
 }
 
