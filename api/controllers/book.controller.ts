@@ -91,6 +91,28 @@ export const getBookById = async (
   }
 }
 
+export const postBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = req.body
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+    const newBook = await prisma.book.create({
+      data: data,
+    })
+    console.log("newBook", newBook)
+    return res.status(201).send(newBook)
+  } catch (error) {
+    return next(error)
+  }
+}
+
 export const patchBookById = async (
   req: Request,
   res: Response,
@@ -99,12 +121,10 @@ export const patchBookById = async (
   try {
     const { id } = req.params
     const data = req.body
+
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      const validationError = errors.array()
       const errorMessages = errors.array().map((err) => err.msg)
-      console.log("validationError", validationError)
-      console.log("errorMessages", errorMessages.toString())
       return next(errorHandler(422, errorMessages.toString()))
     }
 

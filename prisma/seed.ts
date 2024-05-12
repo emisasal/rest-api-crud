@@ -50,6 +50,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Author"', 'author_id'), coalesce(max(author_id)+1, 1), false) FROM "Author";`
   // Genre
   await Promise.all(
     genreSeed.map(async (genre) =>
@@ -60,6 +61,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Genre"', 'genre_id'), coalesce(max(genre_id)+1, 1), false) FROM "Genre";`
   // Publisher
   await Promise.all(
     publisherSeed.map(async (publisher) =>
@@ -70,6 +72,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Publisher"', 'publisher_id'), coalesce(max(publisher_id)+1, 1), false) FROM "Publisher";`
   // Books
   await Promise.all(
     booksIsoDate.map(async (book) =>
@@ -80,6 +83,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Book"', 'book_id'), coalesce(max(book_id)+1, 1), false) FROM "Book";`
   // Customer
   await Promise.all(
     customersIsoDate.map(async (customer) =>
@@ -90,6 +94,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Customer"', 'customer_id'), coalesce(max(customer_id)+1, 1), false) FROM "Customer";`
   // Order
   await Promise.all(
     ordersIsoDate.map(async (order) =>
@@ -100,6 +105,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Order"', 'order_id'), coalesce(max(order_id)+1, 1), false) FROM "Order";`
   // Order Detail
   await Promise.all(
     orderDetailSeed.map(async (orderDetail) =>
@@ -110,6 +116,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"OrderDetail"', 'order_detail_id'), coalesce(max(order_detail_id)+1, 1), false) FROM "OrderDetail";`
   // Review
   await Promise.all(
     reviewsIsoDate.map(async (review) =>
@@ -120,6 +127,7 @@ async function runSeeders() {
       })
     )
   )
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Review"', 'review_id'), coalesce(max(review_id)+1, 1), false) FROM "Review";`
 }
 
 runSeeders()

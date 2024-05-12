@@ -18,7 +18,7 @@
   "author": "Emiliano Sasal",
   "license": "ISC",
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.30.0",
+    "@dotenvx/dotenvx": "^0.38.0",
     "@prisma/client": "^5.12.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",

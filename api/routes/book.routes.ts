@@ -8,7 +8,7 @@ const router = Router()
 // '/book'
 router.get("/", bookController.getAllBooks)
 router.get("/:id", bookController.getBookById)
-router.post("/:id")
+router.post("/", bookValidator.postBookValidator, bookController.postBook)
 router.patch(
   "/:id",
   bookValidator.patchBookValidator,
