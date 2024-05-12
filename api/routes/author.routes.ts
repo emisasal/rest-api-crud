@@ -1,12 +1,22 @@
 import { Router } from "express"
+import * as authorController from "../controllers/author.controller"
+import * as authorValidator from "../validators/author.validators"
 
 const router = Router()
 
-// '/author' //
-router.get("/") // List all authors
-router.get("/:id") // Get author by id
-router.post("/") // Create author
-router.patch("/:id") // Modify author
-router.delete("/:id") // Delete author
+// '/author'
+router.get("/", authorController.getAllAuthors)
+router.get("/:id", authorController.getAuthorById)
+router.post(
+  "/",
+  authorValidator.postAuthorValidator,
+  authorController.postAuthor
+)
+router.patch(
+  "/:id",
+  authorValidator.patchAuthorValidator,
+  authorController.patchAuthor
+)
+router.delete("/:id", authorController.deleteAuthor)
 
 export default router
