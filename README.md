@@ -126,9 +126,9 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 - Routes
   - Book:
-    - Create book
     - getAllBooks: filter and fullTextSearch (with req.query)
 - Controllers
+  - Success response with error response object structure (data replacing message)
 - config cors
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
