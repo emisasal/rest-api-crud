@@ -15,6 +15,7 @@ const globalErrorHandler = (
       .status(400)
       .send({ success: false, statusCode: 400, message: prismaErrorMessage })
   }
+
   const statusCode = err.status || 500
   const message = err.message || "Internal Server Error"
   return res

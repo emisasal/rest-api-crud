@@ -113,7 +113,6 @@ export const postAuthor = async (
   }
 }
 
-// Try validation middleware and replace in controllers
 export const patchAuthor = async (
   req: Request,
   res: Response,
@@ -122,13 +121,26 @@ export const patchAuthor = async (
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .toString()
+      return next(errorHandler(422, errorMessages))
     }
 
     const { id } = req.params
     const data = req.body
-    console.log("DATA", data)
+    const patchedAuthor = await prisma.author.update({
+      where: {
+        author_id: +id,
+      },
+      data: data,
+    })
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: patchedAuthor,
+    })
   } catch (error) {
     next(error)
   }
