@@ -95,6 +95,14 @@ To run the seeds in the db use the script `npm run seed`. It executes "prima db 
 
 The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the import of the routes in the server.
 
+## Error handling
+
+The middleware `globalErrorHandler` prevents repetition and consistency in error handling.
+The class `CustomError` extends default Error adding status and mesage values.
+The middleware uses the class to recieve the errors.
+The controllers use the function `errorHandler` passing the params status and message. The function creates a new error extendend by `CustomError`.
+The wild card middleware that catches all the non existing routes pass the errors to `globalErrorHandler` with status 404s.
+
 ## Send Files for book covers
 
 The endpoint `/api/image/:id` returns book cover images in jpg format using the id for the book.
@@ -105,7 +113,6 @@ It aslo includes error handling for the `res.sendFile` method when the Id is inc
 The pagination uses Offset pagination that requires two values: `take` (number of items per page) and `skip` (the amount of items to offset on the list).
 The skip value is the page number multiplied by the page number. The result must be an integer using `Math.floor`.
 OrderBy receives the sort (column name) and type of order (`asc` or `desc`).
-
 
 ## Cors
 
