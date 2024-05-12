@@ -16,8 +16,7 @@ export const getAllBooks = async (
     const count = await prisma.book.count()
     const limit = Math.floor(count / pageSize)
     let page = Number(req.query.page) || 0
-    const sort = req.query.sort || "title"
-    const order = req.query.order || "asc"
+    const { sort = "title", order = "asc" } = req.query
 
     if (page > limit) {
       page = limit
@@ -59,7 +58,13 @@ export const getAllBooks = async (
     if (!bookList) {
       return next(errorHandler(409, "Error getting books"))
     }
-    return res.status(200).send({ books: bookList, page: page, limit: limit })
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: bookList,
+      page: page,
+      limit: limit,
+    })
   } catch (error) {
     return next(error)
   }
@@ -85,7 +90,9 @@ export const getBookById = async (
     if (!bookById) {
       return next(errorHandler(409, "Book not found"))
     }
-    return res.status(200).send(bookById)
+    return res
+      .status(200)
+      .send({ success: true, statusCode: 200, data: bookById })
   } catch (error) {
     return next(error)
   }
@@ -117,7 +124,9 @@ export const postBook = async (
     const newBook = await prisma.book.create({
       data: data,
     })
-    return res.status(201).send(newBook)
+    return res
+      .status(201)
+      .send({ success: true, statusCode: 201, data: newBook })
   } catch (error) {
     return next(error)
   }
@@ -144,7 +153,9 @@ export const patchBookById = async (
       },
       data: data,
     })
-    return res.status(200).send(patchedBook)
+    return res
+      .status(200)
+      .send({ succes: true, statsuCode: 200, data: patchedBook })
   } catch (error) {
     return next(error)
   }
@@ -162,7 +173,13 @@ export const deleteBook = async (
         book_id: +id,
       },
     })
-    return res.status(200).send(`Book Id ${id} Successfully Deleted `)
+    return res
+      .status(200)
+      .send({
+        success: true,
+        statusCode: 200,
+        message: `Book Id ${id} Successfully Deleted `,
+      })
   } catch (error) {
     return next(error)
   }
