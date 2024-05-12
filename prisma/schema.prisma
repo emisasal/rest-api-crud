@@ -24,7 +24,7 @@ model Book {
   publisher_id Int
   price        Decimal       @db.Money
   publish_date DateTime      @db.Timestamptz(3)
-  isbn         String
+  isbn         String        @unique
   OrderDetail  OrderDetail[]
   Review       Review[]
 }

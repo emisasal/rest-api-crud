@@ -98,15 +98,25 @@ export const postBook = async (
 ) => {
   try {
     const data = req.body
+
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((err) => err.msg)
       return next(errorHandler(422, errorMessages.toString()))
     }
+
+    const findBookIsbn = await prisma.book.findUnique({
+      where: {
+        isbn: data.isbn,
+      },
+    })
+    if (findBookIsbn) {
+      return next(errorHandler(409, "Book already registred"))
+    }
+
     const newBook = await prisma.book.create({
       data: data,
     })
-    console.log("newBook", newBook)
     return res.status(201).send(newBook)
   } catch (error) {
     return next(error)
@@ -152,7 +162,7 @@ export const deleteBook = async (
         book_id: +id,
       },
     })
-    return res.sendStatus(204)
+    return res.status(200).send(`Book Id ${id} Successfully Deleted `)
   } catch (error) {
     return next(error)
   }
