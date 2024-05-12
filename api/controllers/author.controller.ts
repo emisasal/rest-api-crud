@@ -94,7 +94,7 @@ export const postAuthor = async (
       },
     })
     if (findAuthor) {
-      return next(errorHandler(400, "Author already registred"))
+      return next(errorHandler(409, "Author already registred"))
     }
 
     const newAuthor = await prisma.author.create({
@@ -107,6 +107,49 @@ export const postAuthor = async (
       success: true,
       statusCode: 201,
       data: newAuthor,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// Try validation middleware and replace in controllers
+export const patchAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const { id } = req.params
+    const data = req.body
+    console.log("DATA", data)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    const deletedAuthor = await prisma.author.delete({
+      where: {
+        author_id: +id,
+      },
+    })
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Author successfully deleted",
     })
   } catch (error) {
     next(error)

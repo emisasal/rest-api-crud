@@ -98,6 +98,7 @@ export const getBookById = async (
   }
 }
 
+// Add capitalizeWords function
 export const postBook = async (
   req: Request,
   res: Response,
@@ -132,6 +133,7 @@ export const postBook = async (
   }
 }
 
+// Add capitalizeWords function
 export const patchBookById = async (
   req: Request,
   res: Response,

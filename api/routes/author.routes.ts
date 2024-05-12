@@ -12,7 +12,11 @@ router.post(
   authorValidator.postAuthorValidator,
   authorController.postAuthor
 )
-router.patch("/:id") // Modify author
-router.delete("/:id") // Delete author
+router.patch(
+  "/:id",
+  authorValidator.patchAuthorValidator,
+  authorController.patchAuthor
+)
+router.delete("/:id", authorController.deleteAuthor)
 
 export default router
