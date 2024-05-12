@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
+import capitalizeWords from "../utils/capitalizeWords"
+import { validationResult } from "express-validator"
 
 const pageSize = 20
 
@@ -58,6 +60,54 @@ export const getAuthorById = async (
     return res
       .status(200)
       .send({ success: true, statusCode: 200, data: authorById })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const postAuthor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const reqData = req.body
+    const first_name = capitalizeWords(reqData.first_name)
+    const last_name = capitalizeWords(reqData.last_name)
+    const bio = reqData.bio || null
+    const data = {
+      first_name,
+      last_name,
+      bio,
+    }
+
+    const findAuthor = await prisma.author.findFirst({
+      where: {
+        first_name,
+        last_name,
+      },
+    })
+    if (findAuthor) {
+      return next(errorHandler(400, "Author already registred"))
+    }
+
+    const newAuthor = await prisma.author.create({
+      data: data,
+    })
+    if (!newAuthor) {
+      return next(errorHandler(400, "Error Creating Author"))
+    }
+    return res.status(201).send({
+      success: true,
+      statusCode: 201,
+      data: newAuthor,
+    })
   } catch (error) {
     next(error)
   }
