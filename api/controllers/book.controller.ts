@@ -2,11 +2,15 @@ import { NextFunction, Request, Response } from "express"
 import { prisma } from "../client"
 import { validationResult } from "express-validator"
 import errorHandler from "../utils/errorHandler"
+import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
 // Filter (with req.query)
 // FullTextSearch postgres
+
+// @desc Get list of books
+// @route GET /api/book
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -70,6 +74,8 @@ export const getAllBooks = async (
   }
 }
 
+// @desc Get single book
+// @route GET /api/book/:id
 export const getBookById = async (
   req: Request,
   res: Response,
@@ -98,20 +104,23 @@ export const getBookById = async (
   }
 }
 
-// Add capitalizeWords function
+// @desc Create new book
+// @route POST /api/book
 export const postBook = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const data = req.body
-
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((err) => err.msg)
       return next(errorHandler(422, errorMessages.toString()))
     }
+
+    const reqData = req.body
+    const title = capitalizeWords(reqData.title)
+    const data = { ...reqData, title }
 
     const findBookIsbn = await prisma.book.findUnique({
       where: {
@@ -119,7 +128,12 @@ export const postBook = async (
       },
     })
     if (findBookIsbn) {
-      return next(errorHandler(409, "Book already registred"))
+      return next(
+        errorHandler(
+          409,
+          `Book already registred with id ${findBookIsbn.book_id}`
+        )
+      )
     }
 
     const newBook = await prisma.book.create({
@@ -133,21 +147,27 @@ export const postBook = async (
   }
 }
 
-// Add capitalizeWords function
+// @desc Modify book by Id
+// @route PATCH /api/book/:id
 export const patchBookById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
-    const data = req.body
-
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .toString()
+      return next(errorHandler(422, errorMessages))
     }
+
+    const { id } = req.params
+    const reqData = req.body
+    const title = capitalizeWords(reqData.title)
+    const data = { ...reqData, title }
 
     const patchedBook = await prisma.book.update({
       where: {
@@ -163,6 +183,8 @@ export const patchBookById = async (
   }
 }
 
+// @desc Delete single book by Id
+// @route DELETE /api/book/:id
 export const deleteBook = async (
   req: Request,
   res: Response,
@@ -175,13 +197,11 @@ export const deleteBook = async (
         book_id: +id,
       },
     })
-    return res
-      .status(200)
-      .send({
-        success: true,
-        statusCode: 200,
-        message: `Book Id ${id} Successfully Deleted `,
-      })
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: `Book Id ${id} Successfully Deleted `,
+    })
   } catch (error) {
     return next(error)
   }
