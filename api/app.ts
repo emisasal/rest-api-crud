@@ -4,6 +4,7 @@ import morgan from "morgan"
 import routes from "./routes"
 import errorHandler from "./utils/errorHandler"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
+import notFoundHandler from "./middleware/notFound.middleware"
 
 const app = express()
 
@@ -15,9 +16,7 @@ app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "common"))
 app.use("/api", routes)
 
 // Not Found middleware
-app.use("*", (req, res, next) => {
-  next(errorHandler(404, `Route ${req.method} ${req.originalUrl} Not Found`))
-})
+app.use(notFoundHandler)
 // Error middleware
 app.use(globalErrorHandler)
 
