@@ -7,6 +7,9 @@ import { validationResult } from "express-validator"
 const pageSize = 20
 
 // FulltextSearch filter
+
+// @desc Get list of Authors
+// @route GET /api/author
 export const getAllAuthors = async (
   req: Request,
   res: Response,
@@ -42,6 +45,8 @@ export const getAllAuthors = async (
   }
 }
 
+// @desc Get single Author by Id
+// @route GET /api/author/:id
 export const getAuthorById = async (
   req: Request,
   res: Response,
@@ -65,6 +70,8 @@ export const getAuthorById = async (
   }
 }
 
+// @desc Create new Author
+// @route POST /api/author
 export const postAuthor = async (
   req: Request,
   res: Response,
@@ -113,6 +120,8 @@ export const postAuthor = async (
   }
 }
 
+// @desc Modify Author
+// @route PATCH /api/author/:id
 export const patchAuthor = async (
   req: Request,
   res: Response,
@@ -146,6 +155,8 @@ export const patchAuthor = async (
   }
 }
 
+// @desc Remove Author
+// @route DELETE /api/author/:id
 export const deleteAuthor = async (
   req: Request,
   res: Response,
