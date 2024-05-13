@@ -102,6 +102,7 @@ The class `CustomError` extends default Error adding status and mesage values.
 The middleware uses the class to recieve the errors.
 The controllers use the function `errorHandler` passing the params status and message. The function creates a new error extendend by `CustomError`.
 The wild card middleware that catches all the non existing routes pass the errors to `globalErrorHandler` with status 404s.
+The middleware `notFoundHandler` catches all the incorrect routes and returns status `404` with the recieved route and error message. The error passes to `globalErrorHandler`.
 
 ## Send Files for book covers
 
