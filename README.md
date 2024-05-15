@@ -115,6 +115,13 @@ The pagination uses Offset pagination that requires two values: `take` (number o
 The skip value is the page number multiplied by the page number. The result must be an integer using `Math.floor`.
 OrderBy receives the sort (column name) and type of order (`asc` or `desc`).
 
+## Categories list
+
+The `category` endpoints returns lists of models and categories (models column names).
+The lists are intended to be used by the client side for dropdowns or filter's options.
+For example, to filter books by `author`, `title`, etc.
+Because the columns for the tables can change over time, the lists will always allow the frontend to use faithful and up to date data.
+
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
@@ -127,7 +134,10 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 - Routes
   - Book:
-    - getAllBooks: filter and fullTextSearch (with req.query)
+    - getAllBooks:
+      - filter (combine multiple values)
+      - Count and paginate for filtered items
+      - fullTextSearch (combine with filters)
 - Controllers
   - Books:
     - Filters getAllBooks
