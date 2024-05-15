@@ -61,18 +61,28 @@ export const getAllBooks = async (
           ],
         }
       }
-      if (filterkey === "genre") {
-        return {
-          genre: {
-            name: {
-              contains: filterval,
-            },
-          },
-        }
-      }
+      // if (filterkey === "genre") {
+      //   return {
+      //     genre: {
+      //       name: {
+      //         contains: filterval,
+      //       },
+      //     },
+      //   }
+      // }
+      // if (filterkey === "publisher") {
+      //   return {
+      //     publisher: {
+      //       publisher_name: {
+      //         contains: filterval,
+      //       },
+      //     },
+      //   }
+      // }
       return {}
     }
 
+    // Fix this function
     const where = bookFilterHandler(filterkey.toString(), filterval.toString())
 
     console.log("WWW", where)
@@ -122,9 +132,11 @@ export const getAllBooks = async (
         publisher: true,
       },
     })
+
     if (!bookList) {
       return next(errorHandler(409, "Error getting books"))
     }
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
