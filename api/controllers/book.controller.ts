@@ -40,7 +40,7 @@ export const getAllBooks = async (
     //   }
     // }
 
-    const filterHandler = (filterkey: string, filterval: string) => {
+    const bookFilterHandler = (filterkey: string, filterval: string) => {
       if (filterkey === "author") {
         return {
           OR: [
@@ -61,10 +61,19 @@ export const getAllBooks = async (
           ],
         }
       }
+      if (filterkey === "genre") {
+        return {
+          genre: {
+            name: {
+              contains: filterval,
+            },
+          },
+        }
+      }
       return {}
     }
 
-    const where = filterHandler(filterkey.toString(), filterval.toString())
+    const where = bookFilterHandler(filterkey.toString(), filterval.toString())
 
     console.log("WWW", where)
 
