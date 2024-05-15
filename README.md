@@ -136,6 +136,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
   - Book:
     - getAllBooks:
       - filter (combine multiple values)
+      - Count and paginate for filtered items
       - fullTextSearch (combine with filters)
 - Controllers
   - Books:
