@@ -6,11 +6,10 @@ import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
-// Filter (with req.query)
 // FullTextSearch postgres
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${title || price || publish_date || isbn || author || genre || publisher}&order={asc || desc}&filterkey={title || price || publish_date || isbn || author || genre || publisher}&filterval={string}
+// @route GET /api/book?page={number}&sort=${title || price || publish_date }&order={asc || desc}&filterkey={title || publish_date || isbn || author || genre || publisher}&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -34,41 +33,68 @@ export const getAllBooks = async (
 
     // const filterArray = filter.toString().split(",")
 
-    let whereObj = { where: {} }
-    if (filterkey && filterval) {
-      whereObj.where = {
-        [filterkey.toString()]: filterval.toString(),
+    // let whereObj = { where: {} }
+    // if (filterkey && filterval) {
+    //   whereObj.where = {
+    //     [filterkey.toString()]: filterval.toString(),
+    //   }
+    // }
+
+    const filterHandler = (filterkey: string, filterval: string) => {
+      if (filterkey === "author") {
+        return {
+          OR: [
+            {
+              author: {
+                last_name: {
+                  contains: filterval,
+                },
+              },
+            },
+            {
+              author: {
+                first_name: {
+                  contains: filterval,
+                },
+              },
+            },
+          ],
+        }
       }
+      return {}
     }
 
-    // const where = filterkey ? {[filterkery.toString()]: }
+    const where = filterHandler(filterkey.toString(), filterval.toString())
+
+    console.log("WWW", where)
 
     let orderBy = { [String(sort)]: order }
-    if (sort === "author") {
-      orderBy = {
-        author: {
-          last_name: order,
-        },
-      }
-    }
-    if (sort === "genre") {
-      orderBy = {
-        genre: {
-          name: order,
-        },
-      }
-    }
-    if (sort === "publisher") {
-      orderBy = {
-        publisher: {
-          publisher_name: order,
-        },
-      }
-    }
+    // if (sort === "author") {
+    //   orderBy = {
+    //     author: {
+    //       last_name: order,
+    //     },
+    //   }
+    // }
+    // if (sort === "genre") {
+    //   orderBy = {
+    //     genre: {
+    //       name: order,
+    //     },
+    //   }
+    // }
+    // if (sort === "publisher") {
+    //   orderBy = {
+    //     publisher: {
+    //       publisher_name: order,
+    //     },
+    //   }
+    // }
 
     // const value = "title"
 
     const bookList = await prisma.book.findMany({
+      where,
       // where: {
       //   ...(filterval
       //     ? {
