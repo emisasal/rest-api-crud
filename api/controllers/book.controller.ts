@@ -10,21 +10,38 @@ const pageSize = 20
 // FullTextSearch postgres
 
 // @desc Get list of books
-// @route GET /api/book
+// @route GET /api/book?page={number}&sort=${title || price || publish_date || isbn || author || genre || publisher}&order={asc || desc}&filterkey={title || price || publish_date || isbn || author || genre || publisher}&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const {
+      sort = "title",
+      order = "asc",
+      filterkey = "",
+      filterval = "",
+    } = req.query
+
     const count = await prisma.book.count()
     const limit = Math.floor(count / pageSize)
     let page = Number(req.query.page) || 0
-    const { sort = "title", order = "asc" } = req.query
 
     if (page > limit) {
       page = limit
     }
+
+    // const filterArray = filter.toString().split(",")
+
+    let whereObj = { where: {} }
+    if (filterkey && filterval) {
+      whereObj.where = {
+        [filterkey.toString()]: filterval.toString(),
+      }
+    }
+
+    // const where = filterkey ? {[filterkery.toString()]: }
 
     let orderBy = { [String(sort)]: order }
     if (sort === "author") {
@@ -49,7 +66,18 @@ export const getAllBooks = async (
       }
     }
 
+    // const value = "title"
+
     const bookList = await prisma.book.findMany({
+      where: {
+        ...(filterval
+          ? {
+              [filterkey.toString()]: {
+                search: filterval,
+              },
+            }
+          : {}),
+      },
       take: pageSize,
       skip: page * pageSize,
       orderBy,
