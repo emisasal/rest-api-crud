@@ -69,15 +69,15 @@ export const getAllBooks = async (
     // const value = "title"
 
     const bookList = await prisma.book.findMany({
-      where: {
-        ...(filterval
-          ? {
-              [filterkey.toString()]: {
-                search: filterval,
-              },
-            }
-          : {}),
-      },
+      // where: {
+      //   ...(filterval
+      //     ? {
+      //         [filterkey.toString()]: {
+      //           search: filterval,
+      //         },
+      //       }
+      //     : {}),
+      // },
       take: pageSize,
       skip: page * pageSize,
       orderBy,

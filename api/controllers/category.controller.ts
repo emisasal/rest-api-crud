@@ -3,6 +3,8 @@ import { Prisma } from "@prisma/client"
 import capitalizeWords from "../utils/capitalizeWords"
 import errorHandler from "../utils/errorHandler"
 
+// @desc Get list of Model names
+// @route GET /api/category
 export const getModels = async (
   req: Request,
   res: Response,
@@ -25,8 +27,8 @@ export const getModels = async (
   }
 }
 
-// @desc Get list of values / table's columns names
-// @route GET /api/category/:model
+// @desc Get list of Model Columns
+// @route GET /api/category/model?name={string}
 export const getCategory = async (
   req: Request,
   res: Response,
