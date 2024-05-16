@@ -9,7 +9,7 @@ const pageSize = 20
 // FullTextSearch postgres
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${title || price || publish_date }&order={asc || desc}&filterkey={title || publish_date || isbn || author || genre || publisher}&filterval={string}
+// @route GET /api/book?page={number}&sort=${title | price | publish_date }&order={asc | desc}&filterkey={title | publish_date | isbn | author | genre | publisher}&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -22,23 +22,6 @@ export const getAllBooks = async (
       filterkey = "",
       filterval = "",
     } = req.query
-
-    const count = await prisma.book.count()
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-
-    if (page > limit) {
-      page = limit
-    }
-
-    // const filterArray = filter.toString().split(",")
-
-    // let whereObj = { where: {} }
-    // if (filterkey && filterval) {
-    //   whereObj.where = {
-    //     [filterkey.toString()]: filterval.toString(),
-    //   }
-    // }
 
     const bookFilterHandler = (filterkey: string, filterval: string) => {
       if (filterkey === "author") {
@@ -61,76 +44,53 @@ export const getAllBooks = async (
           ],
         }
       }
-      // if (filterkey === "genre") {
-      //   return {
-      //     genre: {
-      //       name: {
-      //         contains: filterval,
-      //       },
-      //     },
-      //   }
-      // }
-      // if (filterkey === "publisher") {
-      //   return {
-      //     publisher: {
-      //       publisher_name: {
-      //         contains: filterval,
-      //       },
-      //     },
-      //   }
-      // }
+      if (filterkey === "genre") {
+        return {
+          genre: {
+            name: {
+              contains: filterval,
+            },
+          },
+        }
+      }
+      if (filterkey === "publisher") {
+        return {
+          publisher: {
+            publisher_name: {
+              contains: filterval,
+            },
+          },
+        }
+      }
       return {}
     }
 
-    // Fix this function
     const where = bookFilterHandler(filterkey.toString(), filterval.toString())
+    console.log("where", where)
 
-    console.log("WWW", where)
+    const count = await prisma.book.count({
+      where,
+    })
+    console.log("count", count)
+    const limit = Math.floor(count / pageSize)
+    let page = Number(req.query.page) || 0
 
-    let orderBy = { [String(sort)]: order }
-    // if (sort === "author") {
-    //   orderBy = {
-    //     author: {
-    //       last_name: order,
-    //     },
-    //   }
-    // }
-    // if (sort === "genre") {
-    //   orderBy = {
-    //     genre: {
-    //       name: order,
-    //     },
-    //   }
-    // }
-    // if (sort === "publisher") {
-    //   orderBy = {
-    //     publisher: {
-    //       publisher_name: order,
-    //     },
-    //   }
-    // }
+    if (page > limit) {
+      page = limit
+    }
 
-    // const value = "title"
+    let orderBy = { [sort.toString()]: order }
 
     const bookList = await prisma.book.findMany({
       where,
-      // where: {
-      //   ...(filterval
-      //     ? {
-      //         [filterkey.toString()]: {
-      //           search: filterval,
-      //         },
-      //       }
-      //     : {}),
-      // },
-      take: pageSize,
-      skip: page * pageSize,
       orderBy,
       include: {
         author: true,
         genre: true,
         publisher: true,
       },
+      take: pageSize,
+      skip: page * pageSize,
     })
 
     if (!bookList) {
@@ -141,6 +101,7 @@ export const getAllBooks = async (
       success: true,
       statusCode: 200,
       data: bookList,
+      count: count,
       page: page,
       limit: limit,
     })
