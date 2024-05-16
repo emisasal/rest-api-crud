@@ -62,6 +62,11 @@ export const getAllBooks = async (
           },
         }
       }
+      if (filterkey === "isbn") {
+        return {
+          isbn: { contains: filterval },
+        }
+      }
       return {}
     }
 
@@ -71,10 +76,8 @@ export const getAllBooks = async (
     const count = await prisma.book.count({
       where,
     })
-    console.log("count", count)
     const limit = Math.floor(count / pageSize)
     let page = Number(req.query.page) || 0
-
     if (page > limit) {
       page = limit
     }
