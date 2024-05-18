@@ -3,13 +3,14 @@ import { prisma } from "../client"
 import { validationResult } from "express-validator"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
+import { Prisma } from "@prisma/client"
 
 const pageSize = 20
 
 // FullTextSearch postgres
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${title | price | publish_date }&order={asc | desc}&filterkey={title | publish_date | isbn | author | genre | publisher}&filterval={string}
+// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={asc | desc}&filterkey={ title | publish_date | isbn | author | genre | publisher }&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -23,7 +24,10 @@ export const getAllBooks = async (
       filterval = "",
     } = req.query
 
-    const bookFilterHandler = (filterkey: string, filterval: string) => {
+    const bookFilterHandler: (
+      filterkey: string,
+      filterval: string
+    ) => Prisma.BookWhereInput = (filterkey, filterval) => {
       if (filterkey === "author") {
         return {
           OR: [
@@ -31,6 +35,7 @@ export const getAllBooks = async (
               author: {
                 last_name: {
                   contains: filterval,
+                  mode: "insensitive",
                 },
               },
             },
@@ -38,6 +43,7 @@ export const getAllBooks = async (
               author: {
                 first_name: {
                   contains: filterval,
+                  mode: "insensitive",
                 },
               },
             },
@@ -49,6 +55,7 @@ export const getAllBooks = async (
           genre: {
             name: {
               contains: filterval,
+              mode: "insensitive",
             },
           },
         }
@@ -58,20 +65,20 @@ export const getAllBooks = async (
           publisher: {
             publisher_name: {
               contains: filterval,
+              mode: "insensitive",
             },
           },
         }
       }
       if (filterkey === "isbn") {
         return {
-          isbn: { contains: filterval },
+          isbn: { contains: filterval, mode: "insensitive" },
         }
       }
       return {}
     }
 
     const where = bookFilterHandler(filterkey.toString(), filterval.toString())
-    console.log("where", where)
 
     const count = await prisma.book.count({
       where,

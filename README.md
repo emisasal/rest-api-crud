@@ -132,15 +132,9 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 ## ToDo
 
-- Routes
-  - Book:
-    - getAllBooks:
-      - filter (combine multiple values)
-      - Count and paginate for filtered items
-      - fullTextSearch (combine with filters)
 - Controllers
   - Books:
-    - Filters getAllBooks
+    - Filters getAllBooks - FIX
     - FullTextSearch getAllBooks
   - Authors:
     - Filters getAllAuthors
