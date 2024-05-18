@@ -109,7 +109,7 @@ The middleware `notFoundHandler` catches all the incorrect routes and returns st
 The endpoint `/api/image/:id` returns book cover images in jpg format using the id for the book.
 It aslo includes error handling for the `res.sendFile` method when the Id is incorrect or the book cover does't exist.
 
-## Pagination
+## Pagination and Sorting
 
 The pagination uses Offset pagination that requires two values: `take` (number of items per page) and `skip` (the amount of items to offset on the list).
 The skip value is the page number multiplied by the page number. The result must be an integer using `Math.floor`.
@@ -122,6 +122,15 @@ The lists are intended to be used by the client side for dropdowns or filter's o
 For example, to filter books by `author`, `title`, etc.
 Because the columns for the tables can change over time, the lists will always allow the frontend to use faithful and up to date data.
 
+## Filtering
+
+For filtering the controllers uses two query params: `filterkey` and `filterval`.
+Filterkey is the element to filter the list.
+Filterval is the string to filter based on the filterkey value.
+The filter works in conjunction with pagination and sorting (orderBy).
+Prisma uses `where` to apply the filters.
+Because the ammount of elemets using `where` are different from the unfiltered list, the controllers use a filterHandler to pass the "where" object to `count` and `findMany`.
+
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
@@ -133,9 +142,6 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 ## ToDo
 
 - Controllers
-  - Books:
-    - Filters getAllBooks - FIX
-    - FullTextSearch getAllBooks
   - Authors:
     - Filters getAllAuthors
     - FullTextSearch getAllAuthors

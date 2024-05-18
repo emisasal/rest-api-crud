@@ -7,8 +7,6 @@ import { Prisma } from "@prisma/client"
 
 const pageSize = 20
 
-// FullTextSearch postgres
-
 // @desc Get list of books
 // @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={asc | desc}&filterkey={ title | publish_date | isbn | author | genre | publisher }&filterval={string}
 export const getAllBooks = async (
@@ -17,12 +15,10 @@ export const getAllBooks = async (
   next: NextFunction
 ) => {
   try {
-    const {
-      sort = "title",
-      order = "asc",
-      filterkey = "",
-      filterval = "",
-    } = req.query
+    const sort = req.query.sort?.toString().toLowerCase() || "title"
+    const order = req.query.order?.toString().toLowerCase() || "asc"
+    const filterkey = req.query.filterkey?.toString() || ""
+    const filterval = req.query.filterval?.toString() || ""
 
     const bookFilterHandler: (
       filterkey: string,
@@ -78,7 +74,7 @@ export const getAllBooks = async (
       return {}
     }
 
-    const where = bookFilterHandler(filterkey.toString(), filterval.toString())
+    const where = bookFilterHandler(filterkey, filterval)
 
     const count = await prisma.book.count({
       where,
@@ -89,11 +85,11 @@ export const getAllBooks = async (
       page = limit
     }
 
-    let orderBy = { [sort.toString()]: order }
-
     const bookList = await prisma.book.findMany({
       where,
-      orderBy,
+      orderBy: {
+        [sort]: order,
+      },
       include: {
         author: true,
         genre: true,
@@ -173,6 +169,7 @@ export const postBook = async (
         isbn: data.isbn,
       },
     })
+
     if (findBookIsbn) {
       return next(
         errorHandler(
@@ -185,6 +182,7 @@ export const postBook = async (
     const newBook = await prisma.book.create({
       data: data,
     })
+
     return res
       .status(201)
       .send({ success: true, statusCode: 201, data: newBook })
@@ -221,6 +219,7 @@ export const patchBookById = async (
       },
       data: data,
     })
+
     return res
       .status(200)
       .send({ succes: true, statsuCode: 200, data: patchedBook })
