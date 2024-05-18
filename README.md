@@ -124,7 +124,7 @@ Because the columns for the tables can change over time, the lists will always a
 
 ## Filtering
 
-For filtering the controllers uses two query params: `filterkey` and `filterval`.
+For filtering the controllers uses two query params: `filterkey` and `filterval` (optional params).
 Filterkey is the element to filter the list.
 Filterval is the string to filter based on the filterkey value.
 The filter works in conjunction with pagination and sorting (orderBy).

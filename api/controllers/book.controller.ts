@@ -8,7 +8,7 @@ import { Prisma } from "@prisma/client"
 const pageSize = 20
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={asc | desc}&filterkey={ title | publish_date | isbn | author | genre | publisher }&filterval={string}
+// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={ asc | desc }&filterkey={ isbn | author | genre | publisher }&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
