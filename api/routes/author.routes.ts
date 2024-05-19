@@ -15,7 +15,7 @@ router.post(
 router.patch(
   "/:id",
   authorValidator.patchAuthorValidator,
-  authorController.patchAuthor
+  authorController.patchAuthorById
 )
 router.delete("/:id", authorController.deleteAuthor)
 

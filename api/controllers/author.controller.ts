@@ -8,7 +8,7 @@ import { Prisma } from "@prisma/client"
 const pageSize = 20
 
 // @desc Get list of Authors
-// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filertvalue={}
+// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filertvalue={string}
 export const getAllAuthors = async (
   req: Request,
   res: Response,
@@ -81,9 +81,11 @@ export const getAuthorById = async (
         author_id: +id,
       },
     })
+
     if (!authorById) {
       return next(errorHandler(400, "Author not found"))
     }
+
     return res
       .status(200)
       .send({ success: true, statusCode: 200, data: authorById })
@@ -122,6 +124,7 @@ export const postAuthor = async (
         last_name,
       },
     })
+
     if (findAuthor) {
       return next(errorHandler(409, "Author already registred"))
     }
@@ -129,9 +132,11 @@ export const postAuthor = async (
     const newAuthor = await prisma.author.create({
       data: data,
     })
+
     if (!newAuthor) {
       return next(errorHandler(400, "Error Creating Author"))
     }
+
     return res.status(201).send({
       success: true,
       statusCode: 201,
@@ -142,9 +147,9 @@ export const postAuthor = async (
   }
 }
 
-// @desc Modify Author
+// @desc Modify Author by Id
 // @route PATCH /api/author/:id
-export const patchAuthor = async (
+export const patchAuthorById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -161,12 +166,20 @@ export const patchAuthor = async (
 
     const { id } = req.params
     const data = req.body
+    if (data.first_name) {
+      data.first_name = capitalizeWords(data.first_name)
+    }
+    if (data.last_name) {
+      data.last_name = capitalizeWords(data.last_name)
+    }
+
     const patchedAuthor = await prisma.author.update({
       where: {
         author_id: +id,
       },
       data: data,
     })
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
