@@ -5,7 +5,7 @@ const router = Router()
 
 // '/genre'
 router.get("/", genreController.getAllGenres)
-router.get("/:id") // Get genre by id
+router.get("/:id", genreController.getGenreById)
 router.post("/") // Create genre
 router.patch("/:id") // Modify genre
 router.delete("/:id") // Delete genre

@@ -36,7 +36,7 @@ export const getAllGenres = async (
     })
 
     if (!genresList) {
-      return next(errorHandler(400, "Error getting Authors"))
+      return next(errorHandler(400, "Error getting Genres"))
     }
 
     return res.status(200).send({
@@ -51,3 +51,40 @@ export const getAllGenres = async (
     return next(error)
   }
 }
+
+// @desc Get single Genre by Id
+// @route GET /api/genre/:id
+export const getGenreById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const genreById = await prisma.genre.findUnique({
+      where: {
+        genre_id: id,
+      },
+    })
+
+    if (!genreById) {
+      return next(errorHandler(400, "Genre Not Found"))
+    }
+
+    return res
+      .status(200)
+      .send({ success: true, statusCode: 200, data: genreById })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+// @desc Create new Genre
+// @route POST /api/genre
+
+// @desc Modify Genre by Id
+// @route PATCH /api/genre/:id
+
+// @desc Remove Genre
+// @route DELETE /api/genre/:id

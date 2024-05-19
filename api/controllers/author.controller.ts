@@ -75,10 +75,10 @@ export const getAuthorById = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
+    const id = Number(req.params.id)
     const authorById = await prisma.author.findUnique({
       where: {
-        author_id: +id,
+        author_id: id,
       },
     })
 
@@ -164,7 +164,7 @@ export const patchAuthorById = async (
       return next(errorHandler(422, errorMessages))
     }
 
-    const { id } = req.params
+    const id = Number(req.params.id)
     const data = req.body
     if (data.first_name) {
       data.first_name = capitalizeWords(data.first_name)
@@ -175,7 +175,7 @@ export const patchAuthorById = async (
 
     const patchedAuthor = await prisma.author.update({
       where: {
-        author_id: +id,
+        author_id: id,
       },
       data: data,
     })
@@ -198,13 +198,13 @@ export const deleteAuthor = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
+    const id = Number(req.params.id)
     const deletedAuthor = await prisma.author.delete({
       where: {
-        author_id: +id,
+        author_id: id,
       },
     })
-    
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
