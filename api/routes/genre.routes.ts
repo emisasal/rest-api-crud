@@ -8,7 +8,11 @@ const router = Router()
 router.get("/", genreController.getAllGenres)
 router.get("/:id", genreController.getGenreById)
 router.post("/", genreValidator.postGenreValidator, genreController.postGenre)
-router.patch("/:id") // Modify genre
-router.delete("/:id") // Delete genre
+router.patch(
+  "/:id",
+  genreValidator.patchGenreValidator,
+  genreController.patchGenreById
+)
+router.delete("/:id", genreController.deleteGenre)
 
 export default router

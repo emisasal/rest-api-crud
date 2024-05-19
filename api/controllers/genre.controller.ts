@@ -116,9 +116,9 @@ export const postGenre = async (
       return next(errorHandler(400, "Error Creating Genre"))
     }
 
-    return res.status(200).send({
+    return res.status(201).send({
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: newGenre,
     })
   } catch (error) {
@@ -128,6 +128,66 @@ export const postGenre = async (
 
 // @desc Modify Genre by Id
 // @route PATCH /api/genre/:id
+export const patchGenreById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .toString()
+      return next(errorHandler(422, errorMessages))
+    }
+
+    const id = Number(req.params.id)
+    const data = req.body
+    if (data.name) {
+      data.name = data.name.toLowerCase()
+    }
+
+    const patchedGenre = await prisma.genre.update({
+      where: {
+        genre_id: id,
+      },
+      data: data,
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: patchedGenre,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 // @desc Remove Genre
 // @route DELETE /api/genre/:id
+export const deleteGenre = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const deletedGenre = await prisma.genre.delete({
+      where: {
+        genre_id: id,
+      },
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Genre successfully deleted",
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
