@@ -8,7 +8,7 @@ import { Prisma } from "@prisma/client"
 const pageSize = 20
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={asc | desc}&filterkey={ title | publish_date | isbn | author | genre | publisher }&filterval={string}
+// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={ asc | desc }&filterkey={ isbn | author | genre | publisher }&filterval={string}
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -135,9 +135,11 @@ export const getBookById = async (
         publisher: true,
       },
     })
+
     if (!bookById) {
       return next(errorHandler(409, "Book not found"))
     }
+
     return res
       .status(200)
       .send({ success: true, statusCode: 200, data: bookById })
@@ -146,7 +148,7 @@ export const getBookById = async (
   }
 }
 
-// @desc Create new book
+// @desc Create new Book
 // @route POST /api/book
 export const postBook = async (
   req: Request,
@@ -191,7 +193,7 @@ export const postBook = async (
   }
 }
 
-// @desc Modify book by Id
+// @desc Modify Book by Id
 // @route PATCH /api/book/:id
 export const patchBookById = async (
   req: Request,
@@ -209,9 +211,10 @@ export const patchBookById = async (
     }
 
     const { id } = req.params
-    const reqData = req.body
-    const title = capitalizeWords(reqData.title)
-    const data = { ...reqData, title }
+    const data = req.body
+    if (data.title) {
+      data.title = capitalizeWords(data.title)
+    }
 
     const patchedBook = await prisma.book.update({
       where: {
@@ -242,6 +245,7 @@ export const deleteBook = async (
         book_id: +id,
       },
     })
+    
     return res.status(200).send({
       success: true,
       statusCode: 200,
