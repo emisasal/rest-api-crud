@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
   // previewFeatures = ["fullTextSearch"]
 }
 
@@ -46,11 +46,11 @@ model Genre {
 }
 
 model Publisher {
-  publisher_id Int     @id @default(autoincrement())
-  publisher_name         String
-  contact_name String?
-  phone_number String
-  Book         Book[]
+  publisher_id   Int     @id @default(autoincrement())
+  publisher_name String
+  contact_name   String?
+  phone_number   String
+  Book           Book[]
 }
 
 // Orders

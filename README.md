@@ -141,10 +141,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 ## ToDo
 
-- Controllers
-
-  - Genre:
-    - getAll w/sort and name filter, getByid, post, patchByid, deleteById
+- Controllers:
   - Publisher:
     - getAll w/sort and publisher_name filter, getByid, post, patchByid, deleteById
   - Customer:
