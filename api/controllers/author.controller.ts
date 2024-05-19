@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express"
+import { Prisma } from "@prisma/client"
+import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
-import { validationResult } from "express-validator"
-import { Prisma } from "@prisma/client"
 
 const pageSize = 20
 
