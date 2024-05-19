@@ -108,23 +108,17 @@ export const postAuthor = async (
       return next(errorHandler(422, errorMessages.toString()))
     }
 
-    const reqData = req.body
-    const first_name = capitalizeWords(reqData.first_name)
-    const last_name = capitalizeWords(reqData.last_name)
-    const bio = reqData.bio || null
-    const data = {
-      first_name,
-      last_name,
-      bio,
-    }
+    const data = req.body
+    data.first_name = capitalizeWords(data.first_name)
+    data.last_name = capitalizeWords(data.last_name)
+    data.bio = data.bio || null
 
     const findAuthor = await prisma.author.findFirst({
       where: {
-        first_name,
-        last_name,
+        first_name: data.first_name,
+        last_name: data.last_name,
       },
     })
-
     if (findAuthor) {
       return next(errorHandler(409, "Author already registred"))
     }
@@ -132,7 +126,6 @@ export const postAuthor = async (
     const newAuthor = await prisma.author.create({
       data: data,
     })
-
     if (!newAuthor) {
       return next(errorHandler(400, "Error Creating Author"))
     }

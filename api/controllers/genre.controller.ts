@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express"
 import errorHandler from "../utils/errorHandler"
 import { prisma } from "../client"
 import { Prisma } from "@prisma/client"
+import { validationResult } from "express-validator"
+import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
@@ -82,6 +84,47 @@ export const getGenreById = async (
 
 // @desc Create new Genre
 // @route POST /api/genre
+export const postGenre = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const data = req.body
+    data.name = data.name.toLowerCase()
+    data.description = data.description || null
+
+    const findGenre = await prisma.genre.findFirst({
+      where: {
+        name: data.name,
+      },
+    })
+    if (findGenre) {
+      return next(errorHandler(409, "Genre already registred"))
+    }
+
+    const newGenre = await prisma.genre.create({
+      data: data,
+    })
+    if (!newGenre) {
+      return next(errorHandler(400, "Error Creating Genre"))
+    }
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: newGenre,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
 // @desc Modify Genre by Id
 // @route PATCH /api/genre/:id
