@@ -204,6 +204,7 @@ export const deleteAuthor = async (
         author_id: +id,
       },
     })
+    
     return res.status(200).send({
       success: true,
       statusCode: 200,

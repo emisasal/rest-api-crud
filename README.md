@@ -142,10 +142,24 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 ## ToDo
 
 - Controllers
-  - Authors:
-    - Filters getAllAuthors
-    - FullTextSearch getAllAuthors
-  - Success response with error response object structure (data replacing message) - investigate
+
+  - Genre:
+    - getAll w/sort and name filter, getByid, post, patchByid, deleteById
+  - Publisher:
+    - getAll w/sort and publisher_name filter, getByid, post, patchByid, deleteById
+  - Customer:
+    - getAll w/sort and first_name, last_name and email filter, getByid, post, patchByid, deleteById
+  - Review:
+    - getAll w/sort and customer, book and rating filter, getByid, post, patchByid, deleteById
+  - Define Order and OrderDetails relations
+
+    - Order total_amount = all OrderDetail (price_per_item \* quantity) sum
+
+  - Order:
+    - getAll w/sort and customer, order_date (range) filter, getByid, post, patchByid, deleteById
+  - OrderDetail:
+    - getAll w/sort and filter (book, define filters), getByid, post, patchByid, deleteById
+
 - config cors
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
