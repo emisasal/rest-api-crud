@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express"
+import { Prisma } from "@prisma/client"
+import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
-import { validationResult } from "express-validator"
-import { Prisma } from "@prisma/client"
 
 const pageSize = 20
 
-// @desc Get list of Authors
+// @desc Get list of Authors w/ pagination and filter
 // @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filertvalue={string}
 export const getAllAuthors = async (
   req: Request,
@@ -63,7 +63,7 @@ export const getAllAuthors = async (
       limit: limit,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -75,10 +75,10 @@ export const getAuthorById = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
+    const id = Number(req.params.id)
     const authorById = await prisma.author.findUnique({
       where: {
-        author_id: +id,
+        author_id: id,
       },
     })
 
@@ -90,7 +90,7 @@ export const getAuthorById = async (
       .status(200)
       .send({ success: true, statusCode: 200, data: authorById })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -108,23 +108,17 @@ export const postAuthor = async (
       return next(errorHandler(422, errorMessages.toString()))
     }
 
-    const reqData = req.body
-    const first_name = capitalizeWords(reqData.first_name)
-    const last_name = capitalizeWords(reqData.last_name)
-    const bio = reqData.bio || null
-    const data = {
-      first_name,
-      last_name,
-      bio,
-    }
+    const data = req.body
+    data.first_name = capitalizeWords(data.first_name)
+    data.last_name = capitalizeWords(data.last_name)
+    data.bio = data.bio || null
 
     const findAuthor = await prisma.author.findFirst({
       where: {
-        first_name,
-        last_name,
+        first_name: data.first_name,
+        last_name: data.last_name,
       },
     })
-
     if (findAuthor) {
       return next(errorHandler(409, "Author already registred"))
     }
@@ -132,7 +126,6 @@ export const postAuthor = async (
     const newAuthor = await prisma.author.create({
       data: data,
     })
-
     if (!newAuthor) {
       return next(errorHandler(400, "Error Creating Author"))
     }
@@ -143,7 +136,7 @@ export const postAuthor = async (
       data: newAuthor,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -164,7 +157,7 @@ export const patchAuthorById = async (
       return next(errorHandler(422, errorMessages))
     }
 
-    const { id } = req.params
+    const id = Number(req.params.id)
     const data = req.body
     if (data.first_name) {
       data.first_name = capitalizeWords(data.first_name)
@@ -175,7 +168,7 @@ export const patchAuthorById = async (
 
     const patchedAuthor = await prisma.author.update({
       where: {
-        author_id: +id,
+        author_id: id,
       },
       data: data,
     })
@@ -186,7 +179,7 @@ export const patchAuthorById = async (
       data: patchedAuthor,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -198,19 +191,19 @@ export const deleteAuthor = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
+    const id = Number(req.params.id)
     const deletedAuthor = await prisma.author.delete({
       where: {
-        author_id: +id,
+        author_id: id,
       },
     })
-    
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
       message: "Author successfully deleted",
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
