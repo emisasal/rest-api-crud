@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client"
 
 const pageSize = 20
 
-// @desc Get list of Authors
+// @desc Get list of Authors w/ pagination and filter
 // @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filertvalue={string}
 export const getAllAuthors = async (
   req: Request,
@@ -63,7 +63,7 @@ export const getAllAuthors = async (
       limit: limit,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -90,7 +90,7 @@ export const getAuthorById = async (
       .status(200)
       .send({ success: true, statusCode: 200, data: authorById })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -143,7 +143,7 @@ export const postAuthor = async (
       data: newAuthor,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -186,7 +186,7 @@ export const patchAuthorById = async (
       data: patchedAuthor,
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 
@@ -211,6 +211,6 @@ export const deleteAuthor = async (
       message: "Author successfully deleted",
     })
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
