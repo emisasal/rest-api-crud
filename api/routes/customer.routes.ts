@@ -5,7 +5,7 @@ const router = Router()
 
 // '/customer'
 router.get("/", customerController.getAllCustomers)
-router.get("/:id") // Get customer by id
+router.get("/:id", customerController.getCustomerById)
 router.post("/") // Create (or find) customer
 router.patch("/:id") // Modify customer
 router.delete("/:id") // Delete customer

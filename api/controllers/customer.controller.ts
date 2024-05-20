@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+import { Request, Response, NextFunction, response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
@@ -34,10 +34,6 @@ export const getAllCustomers = async (
       orderBy: {
         [sort]: order,
       },
-      include: {
-        Order: true,
-        Review: true,
-      },
       take: pageSize,
       skip: page * pageSize,
     })
@@ -61,6 +57,37 @@ export const getAllCustomers = async (
 
 // @desc Get Customer by Id
 // @route GET /api/customer/:id
+export const getCustomerById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const customerByid = await prisma.customer.findUnique({
+      where: {
+        customer_id: id,
+      },
+      include: {
+        Order: true,
+        Review: true,
+      },
+    })
+
+    if (!customerByid) {
+      return next(errorHandler(400, "Customer not found"))
+    }
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: customerByid,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
 // @desc Create new Customer
 // @route POST /api/customer
