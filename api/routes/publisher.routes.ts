@@ -12,7 +12,11 @@ router.post(
   publisherValidator.postPublisherValidator,
   publisherController.postPublisher
 )
-router.patch("/:id")
-router.delete("/:id") // Delete publisher
+router.patch(
+  "/:id",
+  publisherValidator.patchPublisherValidator,
+  publisherController.patchPublisherById
+)
+router.delete("/:id", publisherController.deletePublisher)
 
 export default router

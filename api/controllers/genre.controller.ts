@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express"
+import { validationResult } from "express-validator"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
-import { validationResult } from "express-validator"
 import errorHandler from "../utils/errorHandler"
 
 const pageSize = 20
 
 // @desc Get list of Genres w/ pagination and filter
-// @route GET /api/genre?page={number}&order={ asc | desc }&filterval={string}
+// @route GET /api/genre?page={number}&order={ asc | desc }&filter={string}
 export const getAllGenres = async (
   req: Request,
   res: Response,
@@ -16,11 +16,11 @@ export const getAllGenres = async (
   try {
     const sort: string = "name"
     const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filterval = req.query.filterval?.toString() || ""
+    const filter = req.query.filter?.toString() || ""
 
     const where: Prisma.GenreWhereInput =
       {
-        name: { contains: filterval, mode: "insensitive" },
+        name: { contains: filter, mode: "insensitive" },
       } || {}
 
     const count = await prisma.genre.count({ where })

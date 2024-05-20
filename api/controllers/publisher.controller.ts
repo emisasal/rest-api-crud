@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express"
+import { validationResult } from "express-validator"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
-import errorHandler from "../utils/errorHandler"
-import { validationResult } from "express-validator"
 import capitalizeWords from "../utils/capitalizeWords"
+import errorHandler from "../utils/errorHandler"
 
 const pageSize = 20
 
 // @desc Get list of Publisher w/ pagination and filter
-// @route GET /api/publisher?page={number}&order={ asc | desc}&filterval={}
+// @route GET /api/publisher?page={number}&order={ asc | desc}&filter={string}
 export const getAllPublishers = async (
   req: Request,
   res: Response,
@@ -17,10 +17,10 @@ export const getAllPublishers = async (
   try {
     const sort: string = "publisher_name"
     const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filterval = req.query.filterval?.toString() || ""
+    const filter = req.query.filter?.toString() || ""
 
     const where: Prisma.PublisherWhereInput =
-      { publisher_name: { contains: filterval, mode: "insensitive" } } || {}
+      { publisher_name: { contains: filter, mode: "insensitive" } } || {}
 
     const count = await prisma.publisher.count({ where })
     const limit = Math.floor(count / pageSize)
@@ -128,6 +128,72 @@ export const postPublisher = async (
 
 // @desc Modify Publisher by Id
 // @route PATCH /api/publisher/:id
+export const patchPublisherById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .toString()
+      return next(errorHandler(422, errorMessages))
+    }
+
+    const id = Number(req.params.id)
+    const data = req.body
+    if (data.publisher_name) {
+      data.publisher_name = capitalizeWords(data.publisher_name)
+    }
+    if (data.contact_name) {
+      data.contact_name = capitalizeWords(data.contact_name)
+    }
+    if (data.phone_number) {
+      data.phone_number = data.phone_number.toLowerCase()
+    }
+
+    const patchedPublisher = await prisma.publisher.update({
+      where: {
+        publisher_id: id,
+      },
+      data: data,
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: patchedPublisher,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
 // @desc Remove Publisher
 // @route DELETE /api/publisher/:id
+export const deletePublisher = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const deletedPublisher = await prisma.publisher.delete({
+      where: {
+        publisher_id: id,
+      },
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Publisher successfully deleted",
+    })
+  } catch (error) {
+    next(error)
+  }
+}
