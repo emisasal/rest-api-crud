@@ -80,8 +80,8 @@ model Customer {
   customer_id       Int      @id @default(autoincrement())
   first_name        String
   last_name         String
-  email             String
-  registration_date DateTime @default(now()) @db.Timestamptz(3)
+  email             String   @unique
+  registration_date DateTime @default(now()) @db.Timestamptz(2)
   Order             Order[]
   Review            Review[]
 }

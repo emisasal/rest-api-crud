@@ -2,6 +2,8 @@ import { Request, Response, NextFunction, response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
+import { validationResult } from "express-validator"
+import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
@@ -91,6 +93,46 @@ export const getCustomerById = async (
 
 // @desc Create new Customer
 // @route POST /api/customer
+export const postCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const data = req.body
+    data.first_name = capitalizeWords(data.first_name)
+    data.last_name = capitalizeWords(data.last_name)
+    data.email = data.email.toLowerCase()
+
+    const findCustomer = await prisma.customer.findFirst({
+      where: { email: data.email },
+    })
+    if (findCustomer) {
+      return next(errorHandler(409, "Customer arleady registered"))
+    }
+
+    const newCustomer = await prisma.customer.create({
+      data: data,
+    })
+    if (!newCustomer) {
+      return next(errorHandler(400, "Error creating Customer"))
+    }
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: newCustomer,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
 // @desc Modify Customer by Id
 // @route PATCH /api/customer/:id
