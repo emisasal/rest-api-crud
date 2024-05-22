@@ -152,7 +152,12 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
   - Order:
     - getAll w/sort and customer, order_date (range) filter, getByid, post, patchByid, deleteById
   - OrderDetail:
+
     - getAll w/sort and filter (book, define filters), getByid, post, patchByid, deleteById
+
+  - Refactor filters logic
+    - Add dates and other values range search
+    - change "filter" to key name for unique filter values
 
 - config cors
 - Customer login and session (bcrypt password)
