@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
+import { validationResult } from "express-validator"
 
 const pageSize = 20
 
@@ -55,17 +56,115 @@ export const getAllReviews = async (
   }
 }
 
-// @desc
-// @route
+// @desc Get Review by Id
+// @route GET /api/review/:id
+export const getReviewById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
 
-// @desc
-// @route
+    const reviewById = await prisma.review.findUnique({
+      where: {
+        review_id: id,
+      },
+      include: {
+        book: true,
+        customer: true,
+      },
+    })
 
-// @desc
-// @route
+    if (!reviewById) {
+      return next(errorHandler(400, "Review not found"))
+    }
 
-// @desc
-// @route
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: reviewById,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
-// @desc
-// @route
+// @desc Create new Review
+// @route POST /api/review
+// @body {book_id: number, customer_id: number, rating: number, comment: string}
+export const postReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const data = req.body
+    data.book_id = Number(data.book_id)
+    data.customer_id = Number(data.customer_id)
+    data.rating = Number(data.rating)
+
+    const findReview = await prisma.review.findFirst({
+      where: {
+        AND: [
+          {
+            book_id: data.book_id,
+          },
+          {
+            customer_id: data.customer_id,
+          },
+        ],
+      },
+    })
+    if (findReview) {
+      return next(errorHandler(409, "Review for book already exist"))
+    }
+
+    const createReview = await prisma.review.create({
+      data: data,
+    })
+    if (!createReview) {
+      return next(errorHandler(400, "Error posting review"))
+    }
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: createReview,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+// @desc Delete Review by Id
+// @route DELETE /api/review/:id
+export const deleteReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const deletedReview = await prisma.review.delete({
+      where: {
+        review_id: id,
+      },
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Review successfully deleted",
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
