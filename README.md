@@ -147,11 +147,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 - Controllers:
 
-  - Review:
-    - getAll w/sort and customer, book and rating filter, getByid, post, patchByid, deleteById
   - Define Order and OrderDetails relations
-
-    - Order total_amount = all OrderDetail (price_per_item \* quantity) sum
 
   - Order:
     - getAll w/sort and customer, order_date (range) filter, getByid, post, patchByid, deleteById
