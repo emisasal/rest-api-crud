@@ -136,12 +136,69 @@ export const postCustomer = async (
 
 // @desc Modify Customer by Id
 // @route PATCH /api/customer/:id
+export const patchCustomerByid = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const id = Number(req.params.id)
+    const data = req.body
+    if (data.first_name) {
+      data.first_name = capitalizeWords(data.first_name)
+    }
+    if (data.last_name) {
+      data.last_name = capitalizeWords(data.last_name)
+    }
+    if (data.email) {
+      data.email = data.email.toLowerCase()
+    }
+
+    const patchedCustomer = await prisma.customer.update({
+      where: {
+        customer_id: id,
+      },
+      data: data,
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: patchedCustomer,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
 // @desc Remove Customer by Id
 // @route DELETE /api/customer/:id
+export const deleteCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
 
-// @desc
-// @route
+    const deletedCustomer = await prisma.customer.delete({
+      where: {
+        customer_id: id,
+      },
+    })
 
-// @desc
-// @route
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Customer successfully deleted",
+    })
+  } catch (error) {
+    return next(error)
+  }
+}

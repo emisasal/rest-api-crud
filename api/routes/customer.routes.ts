@@ -12,7 +12,11 @@ router.post(
   customerValidator.postCustomerValidator,
   customerController.postCustomer
 )
-router.patch("/:id") // Modify customer
-router.delete("/:id") // Delete customer
+router.patch(
+  "/:id",
+  customerValidator.patchCustomerValidator,
+  customerController.patchCustomerByid
+)
+router.delete("/:id", customerController.deleteCustomer)
 
 export default router
