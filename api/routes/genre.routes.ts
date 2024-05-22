@@ -4,7 +4,7 @@ import * as genreController from "../controllers/genre.controller"
 
 const router = Router()
 
-// '/genre'
+// @route /genre
 router.get("/", genreController.getAllGenres)
 router.get("/:id", genreController.getGenreById)
 router.post("/", genreValidator.postGenreValidator, genreController.postGenre)

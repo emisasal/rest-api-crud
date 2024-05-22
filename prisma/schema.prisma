@@ -24,7 +24,7 @@ model Book {
   publisher    Publisher     @relation(fields: [publisher_id], references: [publisher_id])
   publisher_id Int
   price        Decimal       @db.Money
-  publish_date DateTime      @db.Timestamptz(3)
+  publish_date DateTime      @db.Timestamptz(2)
   isbn         String        @unique
   OrderDetail  OrderDetail[]
   Review       Review[]
@@ -59,7 +59,7 @@ model Order {
   order_id     Int           @id @default(autoincrement())
   customer     Customer      @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
   customer_id  Int
-  order_date   DateTime      @default(now()) @db.Timestamptz(3)
+  order_date   DateTime      @default(now()) @db.Timestamptz(2)
   total_amount Decimal       @db.Money
   OrderDetail  OrderDetail[]
 }
@@ -94,5 +94,5 @@ model Review {
   customer_id Int
   rating      Int
   comment     String?
-  review_date DateTime @default(now()) @db.Timestamptz(3)
+  review_date DateTime @default(now()) @db.Timestamptz(2)
 }

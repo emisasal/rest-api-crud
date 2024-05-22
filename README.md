@@ -122,6 +122,10 @@ The lists are intended to be used by the client side for dropdowns or filter's o
 For example, to filter books by `author`, `title`, etc.
 Because the columns for the tables can change over time, the lists will always allow the frontend to use faithful and up to date data.
 
+## Validation
+
+The data recieved in the body for `POST` and `PATCH` endpoints is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored un the route `/api/validators`.
+
 ## Filtering
 
 For filtering the controllers uses two query params: `filterkey` and `filterval` (optional params).

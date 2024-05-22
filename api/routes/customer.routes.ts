@@ -4,7 +4,7 @@ import * as customerController from "../controllers/customer.controller"
 
 const router = Router()
 
-// '/customer'
+// @route /customer
 router.get("/", customerController.getAllCustomers)
 router.get("/:id", customerController.getCustomerById)
 router.post(

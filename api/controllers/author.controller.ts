@@ -96,6 +96,7 @@ export const getAuthorById = async (
 
 // @desc Create new Author
 // @route POST /api/author
+// @body {title: string, description: string, author_id: number, genre_id: number, publisher_id: number, price: number, publish_date: date, isbn: string}
 export const postAuthor = async (
   req: Request,
   res: Response,
@@ -142,6 +143,7 @@ export const postAuthor = async (
 
 // @desc Modify Author by Id
 // @route PATCH /api/author/:id
+// @body {title: string, description: string, author_id: number, genre_id: number, publisher_id: number, price: number, publish_date: date, isbn: string}
 export const patchAuthorById = async (
   req: Request,
   res: Response,

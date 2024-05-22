@@ -2,7 +2,6 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import routes from "./routes"
-import errorHandler from "./utils/errorHandler"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 
