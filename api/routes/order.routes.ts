@@ -2,7 +2,7 @@ import { Router } from "express"
 
 const router = Router()
 
-// '/order'
+// @route /order
 router.get("/") // List all orders
 router.get("/:id") // Get order by id
 router.post("/") // Create order

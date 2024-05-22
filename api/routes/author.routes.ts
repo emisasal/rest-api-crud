@@ -4,7 +4,7 @@ import * as authorValidator from "../validators/author.validators"
 
 const router = Router()
 
-// '/author'
+// @route /author
 router.get("/", authorController.getAllAuthors)
 router.get("/:id", authorController.getAuthorById)
 router.post(

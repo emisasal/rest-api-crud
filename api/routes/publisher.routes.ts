@@ -4,7 +4,7 @@ import * as publisherController from "../controllers/publisher.controller"
 
 const router = Router()
 
-// '/publisher'
+// @route /publisher
 router.get("/", publisherController.getAllPublishers)
 router.get("/:id", publisherController.getPublisherById)
 router.post(
