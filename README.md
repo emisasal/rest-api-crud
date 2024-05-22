@@ -143,8 +143,6 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 - Controllers:
 
-  - Customer:
-    - getAll w/sort and first_name, last_name and email filter, getByid, post, patchByid, deleteById
   - Review:
     - getAll w/sort and customer, book and rating filter, getByid, post, patchByid, deleteById
   - Define Order and OrderDetails relations
