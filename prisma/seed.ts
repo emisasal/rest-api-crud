@@ -128,6 +128,33 @@ async function runSeeders() {
     )
   )
   await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Review"', 'review_id'), coalesce(max(review_id)+1, 1), false) FROM "Review";`
+
+  // Sum Order total_amount
+  await Promise.all(
+    ordersIsoDate.map(async (order) => {
+      const orderData = await prisma.order.findUnique({
+        where: {
+          order_id: order.order_id,
+        },
+        include: {
+          OrderDetail: true,
+        },
+      })
+
+      const ordersTotal = orderData?.OrderDetail.reduce((acc, obj) => {
+        return (acc = acc + Number(obj.price_per_item) * obj.quantity)
+      }, 0)
+
+      return prisma.order.update({
+        where: {
+          order_id: order.order_id,
+        },
+        data: {
+          total_amount: ordersTotal,
+        },
+      })
+    })
+  )
 }
 
 runSeeders()
