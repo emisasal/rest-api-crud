@@ -25,3 +25,6 @@ router.use("/image", image)
 router.use("/category", category)
 
 export default router
+
+// Test routes from terminal
+// curl -H "Origin: http://localhost:3000" --head http://localhost:8080/api/book/134
