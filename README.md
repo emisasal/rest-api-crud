@@ -138,6 +138,8 @@ Because the ammount of elemets using `where` are different from the unfiltered l
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
+The file `api/config/corsOptions.ts` specify the allowed origins to interact with the api.
+Without an options file as parameter, cors will be enabled for all origins.
 
 ## Logger
 
@@ -159,7 +161,6 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
     - Add dates and other values range search
     - change "filter" to key name for unique filter values
 
-- config cors
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
 - Testing
