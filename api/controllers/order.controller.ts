@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express"
-import { Prisma } from "@prisma/client"
 import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
-import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
@@ -77,8 +75,8 @@ export const getAllOrders = async (
   }
 }
 
-// @desc
-// @route
+// @desc Get Order by Id
+// @route /api/order/:id
 export const getOrderById = async (
   req: Request,
   res: Response,
@@ -150,7 +148,7 @@ export const postOrder = async (
       )
       booksPrice.push({ ...books[i], price_per_item: priceBook[0].price })
     }
-    
+
     const total_amount = booksPrice.reduce(
       (acc: number, val: { price_per_item: number; quantity: number }) => {
         return acc + val.price_per_item * val.quantity
@@ -180,15 +178,3 @@ export const postOrder = async (
     return next(error)
   }
 }
-
-// @desc
-// @route
-// @body
-
-// @desc
-// @route
-// @body
-
-// @desc
-// @route
-// @body
