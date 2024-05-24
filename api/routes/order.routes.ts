@@ -8,7 +8,7 @@ const router = Router()
 router.get("/", orderController.getAllOrders)
 router.get("/:id", orderController.getOrderById)
 router.post("/", orderValidator.postOrderValidator, orderController.postOrder)
-router.patch("/:id") // Modify order
-router.delete("/:id") // Delete order
+// router.patch("/:id") // Modify order
+router.delete("/:id", orderController.deleteOrderById)
 
 export default router
