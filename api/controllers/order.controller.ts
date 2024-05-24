@@ -178,3 +178,29 @@ export const postOrder = async (
     return next(error)
   }
 }
+
+// @desc Remove Order by Id
+// @route DELETE /api/order/:id
+export const deleteOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
+
+    const deletedOrder = await prisma.order.delete({
+      where: {
+        order_id: id,
+      },
+    })
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      message: "Order successfully deleted",
+    })
+  } catch (error) {
+    next(error)
+  }
+}

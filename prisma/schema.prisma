@@ -66,7 +66,7 @@ model Order {
 
 model OrderDetail {
   order_detail_id Int     @id @default(autoincrement())
-  order           Order   @relation(fields: [order_id], references: [order_id])
+  order           Order   @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
   order_id        Int
   book            Book    @relation(fields: [book_id], references: [book_id], onDelete: Cascade)
   book_id         Int
