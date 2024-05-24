@@ -8,28 +8,28 @@ import capitalizeWords from "../utils/capitalizeWords"
 const pageSize = 20
 
 // @desc Get list of Authors w/ pagination and filter
-// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filertvalue={string}
+// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filterBy={string}
 export const getAllAuthors = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const sort = req.query.sort?.toString().toLowerCase() || "last_name"
-    const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filterval = req.query.filterval?.toString() || ""
+    const sort = req.query.sort?.toString() || "last_name"
+    const order = req.query.order?.toString() || "asc"
+    const filterBy = req.query.filterBy?.toString() || ""
 
     const where: Prisma.AuthorWhereInput = {
       OR: [
         {
           last_name: {
-            contains: filterval,
+            contains: filterBy,
             mode: "insensitive",
           },
         },
         {
           first_name: {
-            contains: filterval,
+            contains: filterBy,
             mode: "insensitive",
           },
         },
