@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express"
-import { Prisma } from "@prisma/client"
 import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
-import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
@@ -77,22 +75,106 @@ export const getAllOrders = async (
   }
 }
 
-// @desc
-// @route
-// @body
+// @desc Get Order by Id
+// @route /api/order/:id
+export const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id)
 
-// @desc
-// @route
-// @body
+    const orderById = await prisma.order.findUnique({
+      where: {
+        order_id: id,
+      },
+      include: {
+        customer: true,
+        OrderDetail: {
+          include: {
+            book: true,
+          },
+        },
+      },
+    })
 
-// @desc
-// @route
-// @body
+    if (!orderById) {
+      return next(errorHandler(400, "Order not found"))
+    }
 
-// @desc
-// @route
-// @body
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: orderById,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
 
-// @desc
-// @route
-// @body
+// @desc Create new Order
+// @route POST /api/order
+// @body {customer_id: number, books: [{book_id: number, quantity: number}]}
+export const postOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
+    const data = req.body
+    const customer_id = Number(data.customer_id)
+    const books = data.books
+    const bookIdlist = books.map((book: { book_id: number }) => {
+      return book.book_id
+    })
+
+    const booksData = await prisma.book.findMany({
+      where: {
+        book_id: { in: bookIdlist },
+      },
+    })
+
+    let booksPrice = []
+    for (let i = 0; i < books.length; i++) {
+      const priceBook = booksData.filter(
+        (book) => book.book_id === books[i].book_id
+      )
+      booksPrice.push({ ...books[i], price_per_item: priceBook[0].price })
+    }
+
+    const total_amount = booksPrice.reduce(
+      (acc: number, val: { price_per_item: number; quantity: number }) => {
+        return acc + val.price_per_item * val.quantity
+      },
+      0
+    )
+
+    const newOrder = await prisma.order.create({
+      data: {
+        customer_id: customer_id,
+        total_amount: total_amount,
+        OrderDetail: {
+          create: booksPrice,
+        },
+      },
+    })
+    if (!newOrder) {
+      return next(errorHandler(400, "Error creating Order"))
+    }
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: newOrder,
+    })
+  } catch (error) {
+    return next(error)
+  }
+}

@@ -93,6 +93,7 @@ export const getCustomerById = async (
 
 // @desc Create new Customer
 // @route POST /api/customer
+// @body {first_name: string, last_name: string, email: string}
 export const postCustomer = async (
   req: Request,
   res: Response,

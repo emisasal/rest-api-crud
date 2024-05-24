@@ -135,6 +135,11 @@ The filter works in conjunction with pagination and sorting (orderBy).
 Prisma uses `where` to apply the filters.
 Because the ammount of elemets using `where` are different from the unfiltered list, the controllers use a filterHandler to pass the "where" object to `count` and `findMany`.
 
+## Orders and OrderDetails
+
+The OrderDetails (specifies the book, quantity and price per item) are always related to an Order.
+Because of this relation, only by creating a new Order the OrderDetails are added.
+
 ## Cors
 
 The dependency `cors` (along with `@types/cors` as devDependency) enables cors to comunicate with a frontend running with a different port.
@@ -148,14 +153,6 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 ## ToDo
 
 - Controllers:
-
-  - Define Order and OrderDetails relations
-
-  - Order:
-    - getAll w/sort and customer, order_date (range) filter, getByid, post, patchByid, deleteById
-  - OrderDetail:
-
-    - getAll w/sort and filter (book, define filters), getByid, post, patchByid, deleteById
 
   - Refactor filters logic
     - Add dates and other values range search
