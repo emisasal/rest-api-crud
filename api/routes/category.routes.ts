@@ -5,6 +5,6 @@ const router = Router()
 
 // @route /category
 router.get("/", categoryController.getModels)
-router.get("/model", categoryController.getCategory)
+router.get("/:name", categoryController.getCategory)
 
 export default router

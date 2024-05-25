@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { Prisma } from "@prisma/client"
 import capitalizeWords from "../utils/capitalizeWords"
 import errorHandler from "../utils/errorHandler"
+import { validationResult } from "express-validator"
 
 // @desc Get list of Model names
 // @route GET /api/category
@@ -28,18 +29,14 @@ export const getModels = async (
 }
 
 // @desc Get list of Model Columns
-// @route GET /api/category/model?name={string}
+// @route GET /api/category/:name
 export const getCategory = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name } = req.query
-
-    if (!name) {
-      return next(errorHandler(409, "Error gettig model param"))
-    }
+    const name = req.params.name as string
 
     const modelCap = capitalizeWords(name.toString())
 
