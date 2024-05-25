@@ -44,7 +44,7 @@ export const getAllAuthors = async (
 
     const count = await prisma.author.count({ where })
     const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
+    let page = Number(req.query.page)
     if (page > limit) {
       page = limit
     }

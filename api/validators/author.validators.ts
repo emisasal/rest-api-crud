@@ -1,7 +1,6 @@
 import { body, param, query } from "express-validator"
 
 export const getAllAuthorsValidator = [
-  query("page").notEmpty().withMessage("Query 'page' can't be empty"),
   query("sort").toLowerCase(),
   query("order").toLowerCase(),
   query("filterBy").optional().toLowerCase(),
@@ -22,7 +21,6 @@ export const postAuthorValidator = [
 ]
 
 export const patchAuthorValidator = [
-  param("id").notEmpty().withMessage("Param 'id' can't be empty"),
   body("first_name")
     .optional()
     .isString()
