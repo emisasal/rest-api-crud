@@ -5,7 +5,7 @@ import * as bookValidator from "../validators/book.validators"
 const router = Router()
 
 // @route /book
-router.get("/", bookController.getAllBooks)
+router.get("/", bookValidator.getAllBooksValidator, bookController.getAllBooks)
 router.get("/:id", bookController.getBookById)
 router.post("/", bookValidator.postBookValidator, bookController.postBook)
 router.patch(

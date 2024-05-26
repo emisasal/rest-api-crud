@@ -15,6 +15,12 @@ export const getAllAuthors = async (
   next: NextFunction
 ) => {
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((err) => err.msg)
+      return next(errorHandler(422, errorMessages.toString()))
+    }
+
     const sort = req.query.sort?.toString() || "last_name"
     const order = req.query.order?.toString() || "asc"
     const filterBy = req.query.filterBy?.toString() || ""
@@ -38,7 +44,7 @@ export const getAllAuthors = async (
 
     const count = await prisma.author.count({ where })
     const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
+    let page = Number(req.query.page)
     if (page > limit) {
       page = limit
     }

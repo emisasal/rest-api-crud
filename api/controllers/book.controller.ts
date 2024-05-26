@@ -15,16 +15,16 @@ export const getAllBooks = async (
   next: NextFunction
 ) => {
   try {
-    const sort = req.query.sort?.toString().toLowerCase() || "title"
-    const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filterkey = req.query.filterkey?.toString() || ""
+    const sort = req.query.sort?.toString() || "title"
+    const order = req.query.order?.toString() || "asc"
+    const filterBy = req.query.filterBy?.toString() || ""
     const filterval = req.query.filterval?.toString() || ""
 
     const bookFilterHandler: (
-      filterkey: string,
+      filterBy: string,
       filterval: string
-    ) => Prisma.BookWhereInput = (filterkey, filterval) => {
-      if (filterkey === "author") {
+    ) => Prisma.BookWhereInput = (filterBy, filterval) => {
+      if (filterBy === "author") {
         return {
           OR: [
             {
@@ -46,7 +46,7 @@ export const getAllBooks = async (
           ],
         }
       }
-      if (filterkey === "genre") {
+      if (filterBy === "genre") {
         return {
           genre: {
             name: {
@@ -56,7 +56,7 @@ export const getAllBooks = async (
           },
         }
       }
-      if (filterkey === "publisher") {
+      if (filterBy === "publisher") {
         return {
           publisher: {
             publisher_name: {
@@ -66,7 +66,7 @@ export const getAllBooks = async (
           },
         }
       }
-      if (filterkey === "isbn") {
+      if (filterBy === "isbn") {
         return {
           isbn: { contains: filterval, mode: "insensitive" },
         }
@@ -74,13 +74,13 @@ export const getAllBooks = async (
       return {}
     }
 
-    const where = bookFilterHandler(filterkey, filterval)
+    const where = bookFilterHandler(filterBy, filterval)
 
     const count = await prisma.book.count({
       where,
     })
     const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
+    let page = Number(req.query.page)
     if (page > limit) {
       page = limit
     }
