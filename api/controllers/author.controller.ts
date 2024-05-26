@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
-import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
@@ -15,12 +14,6 @@ export const getAllAuthors = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const sort = req.query.sort?.toString() || "last_name"
     const order = req.query.order?.toString() || "asc"
     const filterBy = req.query.filterBy?.toString() || ""
@@ -109,12 +102,6 @@ export const postAuthor = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     data.first_name = capitalizeWords(data.first_name)
     data.last_name = capitalizeWords(data.last_name)
@@ -156,15 +143,6 @@ export const patchAuthorById = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors
-        .array()
-        .map((err) => err.msg)
-        .toString()
-      return next(errorHandler(422, errorMessages))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.first_name) {

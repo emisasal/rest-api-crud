@@ -2,7 +2,6 @@ import { Request, Response, NextFunction, response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
-import { validationResult } from "express-validator"
 import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20

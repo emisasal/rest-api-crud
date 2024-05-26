@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
-import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
@@ -156,12 +155,6 @@ export const postBook = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const reqData = req.body
     const title = capitalizeWords(reqData.title)
     const data = { ...reqData, title }
@@ -201,15 +194,6 @@ export const patchBookById = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors
-        .array()
-        .map((err) => err.msg)
-        .toString()
-      return next(errorHandler(422, errorMessages))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.title) {
