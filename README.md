@@ -158,6 +158,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
     - Add dates and other values range search
     - change "filter" to key name for unique filter values
 
+- Update ERD: Customer
 - Cache with `cache-express` for Books, Authors, Genre and Publisher lists.
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT

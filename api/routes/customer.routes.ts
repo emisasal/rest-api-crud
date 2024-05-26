@@ -22,6 +22,7 @@ router.post(
 router.patch(
   "/:id",
   customerValidator.patchCustomerValidator,
+  validationError,
   customerController.patchCustomerByid
 )
 router.delete("/:id", customerController.deleteCustomer)

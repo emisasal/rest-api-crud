@@ -22,7 +22,8 @@ export const postCustomerValidator = [
     .notEmpty()
     .withMessage("Body 'email' can't be empty")
     .isEmail()
-    .withMessage("Body 'email' must have valid format"),
+    .withMessage("Body 'email' must have valid format")
+    .toLowerCase(),
 ]
 
 export const patchCustomerValidator = [
@@ -37,5 +38,6 @@ export const patchCustomerValidator = [
   body("email")
     .optional()
     .isEmail()
-    .withMessage("Body 'email' must have valid format"),
+    .withMessage("Body 'email' must have valid format")
+    .toLowerCase(),
 ]

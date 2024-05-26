@@ -103,7 +103,7 @@ export const postCustomer = async (
     const data = req.body
     data.first_name = capitalizeWords(data.first_name)
     data.last_name = capitalizeWords(data.last_name)
-    data.email = data.email.toLowerCase()
+    data.email = data.email
 
     const findCustomer = await prisma.customer.findFirst({
       where: { email: data.email },
@@ -137,12 +137,6 @@ export const patchCustomerByid = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.first_name) {
@@ -152,7 +146,7 @@ export const patchCustomerByid = async (
       data.last_name = capitalizeWords(data.last_name)
     }
     if (data.email) {
-      data.email = data.email.toLowerCase()
+      data.email = data.email
     }
 
     const patchedCustomer = await prisma.customer.update({

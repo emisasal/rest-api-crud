@@ -21,7 +21,7 @@ const booksIsoDate = bookSeed.map((book) => {
 const customersIsoDate = customerSeed.map((customer) => {
   return (customer = {
     ...customer,
-    registration_date: new Date(customer.registration_date).toISOString(),
+    created_at: new Date(customer.created_at).toISOString(),
   })
 })
 
