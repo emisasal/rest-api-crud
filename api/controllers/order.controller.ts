@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import { validationResult } from "express-validator"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 
@@ -13,8 +12,8 @@ export const getAllOrders = async (
   next: NextFunction
 ) => {
   try {
-    const sort = req.query.sort?.toString().toLowerCase() || "order_date"
-    const order = req.query.order?.toString().toLowerCase() || "desc"
+    const sort = req.query.sort?.toString() || "order_date"
+    const order = req.query.order?.toString() || "desc"
     const customer = Number(req.query.customer) || null
     const dateinit = req.query.dateinit?.toString() || ""
     const dateend = req.query.dateend?.toString() || ""
@@ -122,12 +121,6 @@ export const postOrder = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     const customer_id = Number(data.customer_id)
     const books = data.books

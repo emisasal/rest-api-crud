@@ -1,4 +1,4 @@
-import { body, param, query } from "express-validator"
+import { body, query } from "express-validator"
 
 export const getAllBooksValidator = [
   query("sort").toLowerCase(),

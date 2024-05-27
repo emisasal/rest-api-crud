@@ -2,26 +2,25 @@ import { Request, Response, NextFunction, response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
-import { validationResult } from "express-validator"
 import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
 // @desc Get Customers list w/ pagination and filter
-// @route GET /api/customer?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filterkey{ first_name | last_name | email }&filterval={string}
+// @route GET /api/customer?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filterBy{ first_name | last_name | email }&filterval={string}
 export const getAllCustomers = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const sort = req.query.sort?.toString().toLowerCase() || "last_name"
-    const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filterkey = req.query.filterkey?.toString() || ""
+    const sort = req.query.sort?.toString() || "last_name"
+    const order = req.query.order?.toString() || "asc"
+    const filterBy = req.query.filterBy?.toString() || ""
     const filterval = req.query.filterval?.toString() || ""
 
-    const where: Prisma.CustomerWhereInput = filterkey
-      ? { [filterkey]: { contains: filterval, mode: "insensitive" } }
+    const where: Prisma.CustomerWhereInput = filterBy
+      ? { [filterBy]: { contains: filterval, mode: "insensitive" } }
       : {}
 
     const count = await prisma.customer.count({ where })
@@ -100,16 +99,10 @@ export const postCustomer = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     data.first_name = capitalizeWords(data.first_name)
     data.last_name = capitalizeWords(data.last_name)
-    data.email = data.email.toLowerCase()
+    data.email = data.email
 
     const findCustomer = await prisma.customer.findFirst({
       where: { email: data.email },
@@ -143,12 +136,6 @@ export const patchCustomerByid = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.first_name) {
@@ -158,7 +145,7 @@ export const patchCustomerByid = async (
       data.last_name = capitalizeWords(data.last_name)
     }
     if (data.email) {
-      data.email = data.email.toLowerCase()
+      data.email = data.email
     }
 
     const patchedCustomer = await prisma.customer.update({

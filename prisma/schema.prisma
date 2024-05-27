@@ -77,13 +77,14 @@ model OrderDetail {
 // Customers
 
 model Customer {
-  customer_id       Int      @id @default(autoincrement())
-  first_name        String
-  last_name         String
-  email             String   @unique
-  registration_date DateTime @default(now()) @db.Timestamptz(2)
-  Order             Order[]
-  Review            Review[]
+  customer_id Int      @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  email       String   @unique
+  created_at  DateTime @default(now()) @db.Timestamptz(3)
+  updated_at  DateTime @updatedAt @db.Timestamptz(3)
+  Order       Order[]
+  Review      Review[]
 }
 
 model Review {

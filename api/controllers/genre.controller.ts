@@ -7,7 +7,7 @@ import errorHandler from "../utils/errorHandler"
 const pageSize = 20
 
 // @desc Get list of Genres w/ pagination and filter
-// @route GET /api/genre?page={number}&order={ asc | desc }&filter={string}
+// @route GET /api/genre?page={number}&order={ asc | desc }&filterBy={string}
 export const getAllGenres = async (
   req: Request,
   res: Response,
@@ -15,12 +15,12 @@ export const getAllGenres = async (
 ) => {
   try {
     const sort: string = "name"
-    const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filter = req.query.filter?.toString() || ""
+    const order = req.query.order?.toString() || "asc"
+    const filterBy = req.query.filterBy?.toString() || ""
 
     const where: Prisma.GenreWhereInput =
       {
-        name: { contains: filter, mode: "insensitive" },
+        name: { contains: filterBy, mode: "insensitive" },
       } || {}
 
     const count = await prisma.genre.count({ where })
@@ -90,12 +90,6 @@ export const postGenre = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     data.name = data.name.toLowerCase()
     data.description = data.description || null
@@ -134,15 +128,6 @@ export const patchGenreById = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors
-        .array()
-        .map((err) => err.msg)
-        .toString()
-      return next(errorHandler(422, errorMessages))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.name) {
