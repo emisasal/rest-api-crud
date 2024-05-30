@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
@@ -7,7 +6,7 @@ import capitalizeWords from "../utils/capitalizeWords"
 const pageSize = 20
 
 // @desc Get list of books
-// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={ asc | desc }&filterkey={ isbn | author | genre | publisher }&filterval={string}
+// @route GET /api/book?page={number}&sort=${ title | price | publish_date }&order={ asc | desc }&title={string}&author={string}&genre={string}&publisher={string}&isbn={string}&dateStart={yyyy-mm-dd}&dateEnd={yyyy-mm-dd}
 export const getAllBooks = async (
   req: Request,
   res: Response,
@@ -16,64 +15,75 @@ export const getAllBooks = async (
   try {
     const sort = req.query.sort?.toString() || "title"
     const order = req.query.order?.toString() || "asc"
-    const filterBy = req.query.filterBy?.toString() || ""
-    const filterval = req.query.filterval?.toString() || ""
+    const title = req.query.title?.toString() || ""
+    const author = req.query.author?.toString() || ""
+    const genre = req.query.genre?.toString() || ""
+    const publisher = req.query.publisher?.toString() || ""
+    const isbn = req.query.isbn?.toString() || ""
+    const dateStart = req.query.dateStart?.toString() || ""
+    const dateEnd = req.query.dateEnd?.toString() || ""
 
-    const bookFilterHandler: (
-      filterBy: string,
-      filterval: string
-    ) => Prisma.BookWhereInput = (filterBy, filterval) => {
-      if (filterBy === "author") {
-        return {
-          OR: [
-            {
-              author: {
-                last_name: {
-                  contains: filterval,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              author: {
-                first_name: {
-                  contains: filterval,
-                  mode: "insensitive",
-                },
-              },
-            },
-          ],
-        }
-      }
-      if (filterBy === "genre") {
-        return {
-          genre: {
-            name: {
-              contains: filterval,
-              mode: "insensitive",
-            },
-          },
-        }
-      }
-      if (filterBy === "publisher") {
-        return {
-          publisher: {
-            publisher_name: {
-              contains: filterval,
-              mode: "insensitive",
-            },
-          },
-        }
-      }
-      if (filterBy === "isbn") {
-        return {
-          isbn: { contains: filterval, mode: "insensitive" },
-        }
-      }
-      return {}
+    let where = {}
+    if (title) {
+      where = { ...where, title: { contains: title, mode: "insensitive" } }
     }
-
-    const where = bookFilterHandler(filterBy, filterval)
+    if (author) {
+      where = {
+        ...where,
+        OR: [
+          {
+            author: {
+              last_name: {
+                contains: author,
+                mode: "insensitive",
+              },
+            },
+          },
+          {
+            author: {
+              first_name: {
+                contains: author,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      }
+    }
+    if (genre) {
+      where = {
+        ...where,
+        genre: {
+          name: {
+            contains: genre,
+            mode: "insensitive",
+          },
+        },
+      }
+    }
+    if (publisher) {
+      where = {
+        ...where,
+        publisher: {
+          publisher_name: {
+            contains: publisher,
+            mode: "insensitive",
+          },
+        },
+      }
+    }
+    if (isbn) {
+      where = { ...where, isbn: { contains: isbn, mode: "insensitive" } }
+    }
+    if (dateStart && dateEnd) {
+      where = {
+        ...where,
+        publish_date: {
+          gte: new Date(dateStart),
+          lte: new Date(dateEnd),
+        },
+      }
+    }
 
     const count = await prisma.book.count({
       where,
