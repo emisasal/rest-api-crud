@@ -3,8 +3,13 @@ import { body, query } from "express-validator"
 export const getAllBooksValidator = [
   query("sort").toLowerCase(),
   query("order").toLowerCase(),
-  query("filterBy").optional().toLowerCase(),
-  query("filterval").optional().toLowerCase(),
+  query("title").optional().toUpperCase(),
+  query("author").optional().toUpperCase(),
+  query("genre").optional().toUpperCase(),
+  query("publisher").optional().toUpperCase(),
+  query("isbn").optional().toUpperCase(),
+  query("dateStart").optional(),
+  query("dateEnd").optional(),
 ]
 
 export const postBookValidator = [
