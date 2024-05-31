@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction, response } from "express"
-import { Prisma } from "@prisma/client"
+import { Request, Response, NextFunction } from "express"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
 // @desc Get Customers list w/ pagination and filter
-// @route GET /api/customer?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filterBy{ first_name | last_name | email }&filterval={string}
+// @route GET /api/customer?page={number}&sort={ first_name | last_name }&order={ asc | desc }&name{ string }&email={string}
 export const getAllCustomers = async (
   req: Request,
   res: Response,
@@ -16,19 +16,44 @@ export const getAllCustomers = async (
   try {
     const sort = req.query.sort?.toString() || "last_name"
     const order = req.query.order?.toString() || "asc"
-    const filterBy = req.query.filterBy?.toString() || ""
-    const filterval = req.query.filterval?.toString() || ""
+    const name = req.query.name?.toString() || ""
+    const email = req.query.email?.toString() || ""
 
-    const where: Prisma.CustomerWhereInput = filterBy
-      ? { [filterBy]: { contains: filterval, mode: "insensitive" } }
-      : {}
+    let where = {}
+    if (name) {
+      where = {
+        ...where,
+        OR: [
+          {
+            last_name: {
+              contains: name,
+              mode: "insensitive",
+            },
+          },
+          {
+            first_name: {
+              contains: name,
+              mode: "insensitive",
+            },
+          },
+        ],
+      }
+    }
+    if (email) {
+      where = { ...where, email: { contains: email, mode: "insensitive" } }
+    }
 
     const count = await prisma.customer.count({ where })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
+    // const limit = Math.floor(count / pageSize)
+    // let page = Number(req.query.page) || 0
+    // if (page > limit) {
+    //   page = limit
+    // }
 
     const customerList = await prisma.customer.findMany({
       where,

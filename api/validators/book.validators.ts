@@ -1,15 +1,66 @@
 import { body, query } from "express-validator"
 
 export const getAllBooksValidator = [
-  query("sort").toLowerCase(),
-  query("order").toLowerCase(),
-  query("title").optional().toUpperCase(),
-  query("author").optional().toUpperCase(),
-  query("genre").optional().toUpperCase(),
-  query("publisher").optional().toUpperCase(),
-  query("isbn").optional().toUpperCase(),
-  query("dateStart").optional(),
-  query("dateEnd").optional(),
+  query("page")
+    .notEmpty()
+    .withMessage("Query 'page' can't be empty")
+    .isInt()
+    .withMessage("Query 'page' must be number"),
+  query("sort")
+    .notEmpty()
+    .withMessage("Query 'sort' can't be empty")
+    .isString()
+    .withMessage("Query 'sort' must be string")
+    .toLowerCase(),
+  query("order")
+    .notEmpty()
+    .withMessage("Query 'order' can't be empty")
+    .isString()
+    .withMessage("Query 'order' must be string")
+    .toLowerCase(),
+  query("title")
+    .optional()
+    .isString()
+    .withMessage("Query 'title' must be string"),
+  query("author")
+    .optional()
+    .isString()
+    .withMessage("Query 'author' must be string"),
+  query("genre")
+    .optional()
+    .isString()
+    .withMessage("Query 'genre' must be string"),
+  query("publisher")
+    .optional()
+    .isString()
+    .withMessage("Query 'publisher' must be string"),
+  query("isbn").optional(),
+  query("dateStart")
+    .optional()
+    .isDate()
+    .withMessage("Query 'dateStart' must be yyyy-mm-dd")
+    .custom((date, { req }) => {
+      const dateStart = new Date(date)
+      const dateEnd = new Date(req.query?.dateEnd)
+      if (dateStart && !dateEnd) {
+        throw new Error("Query 'dateEnd' can't be empty")
+      }
+      return true
+    })
+    .toDate(),
+  query("dateEnd")
+    .optional()
+    .isDate()
+    .withMessage("Query 'dateEnd' must be yyyy-mm-dd")
+    .custom((date, { req }) => {
+      const dateEnd = new Date(date)
+      const dateStart = new Date(req.query?.dateStart)
+      if (dateEnd < dateStart) {
+        throw new Error("Query 'dateEnd' must be greater than dateStart")
+      }
+      return true
+    })
+    .toDate(),
 ]
 
 export const postBookValidator = [
