@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
@@ -15,13 +16,13 @@ export const getAllBooks = async (
   try {
     const sort = req.query.sort?.toString() || "title"
     const order = req.query.order?.toString() || "asc"
-    const title = req.query.title?.toString() || ""
-    const author = req.query.author?.toString() || ""
-    const genre = req.query.genre?.toString() || ""
-    const publisher = req.query.publisher?.toString() || ""
-    const isbn = req.query.isbn?.toString() || ""
-    const dateStart = req.query.dateStart?.toString() || ""
-    const dateEnd = req.query.dateEnd?.toString() || ""
+    const title = req.query.title?.toString()
+    const author = req.query.author?.toString()
+    const genre = req.query.genre?.toString()
+    const publisher = req.query.publisher?.toString()
+    const isbn = req.query.isbn?.toString()
+    const dateStart = req.query.dateStart
+    const dateEnd = req.query.dateEnd
 
     let where = {}
     if (title) {
@@ -79,8 +80,8 @@ export const getAllBooks = async (
       where = {
         ...where,
         publish_date: {
-          gte: new Date(dateStart),
-          lte: new Date(dateEnd),
+          gte: dateStart,
+          lte: dateEnd,
         },
       }
     }
@@ -88,11 +89,11 @@ export const getAllBooks = async (
     const count = await prisma.book.count({
       where,
     })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page)
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
 
     const bookList = await prisma.book.findMany({
       where,
