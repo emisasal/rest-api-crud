@@ -1,11 +1,29 @@
 import { body, query } from "express-validator"
 
 export const getAllOrdersValidator = [
-  query("sort").toLowerCase(),
-  query("order").toLowerCase(),
-  query("customer").optional(),
-  query("dateinit").optional(),
-  query("dateend").optional(),
+  query("page")
+    .notEmpty()
+    .withMessage("Query 'page' can't be empty")
+    .isInt()
+    .withMessage("Query 'page' must be number"),
+  query("sort")
+    .notEmpty()
+    .withMessage("Query 'sort' can't be empty")
+    .isString()
+    .withMessage("Query 'sort' must be string")
+    .toLowerCase(),
+  query("order")
+    .notEmpty()
+    .withMessage("Query 'order' can't be empty")
+    .isString()
+    .withMessage("Query 'order' must be string")
+    .toLowerCase(),
+  query("customer")
+    .optional()
+    .isInt()
+    .withMessage("Query 'customer' must be number"),
+  query("dateinit").optional().isDate(),
+  query("dateend").optional().isDate(),
 ]
 
 export const postOrderValidator = [
