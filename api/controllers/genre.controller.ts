@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express"
-import { validationResult } from "express-validator"
-import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
 // @desc Get list of Genres w/ pagination and filter
-// @route GET /api/genre?page={number}&order={ asc | desc }&filterBy={string}
+// @route GET /api/genre?page={number}&order={ asc | desc }&name={string}
 export const getAllGenres = async (
   req: Request,
   res: Response,
@@ -16,19 +15,21 @@ export const getAllGenres = async (
   try {
     const sort: string = "name"
     const order = req.query.order?.toString() || "asc"
-    const filterBy = req.query.filterBy?.toString() || ""
+    const name = req.query.name?.toString() || ""
 
-    const where: Prisma.GenreWhereInput =
-      {
-        name: { contains: filterBy, mode: "insensitive" },
-      } || {}
+    let where = {}
+    if (name) {
+      where = {
+        name: { contains: name, mode: "insensitive" },
+      }
+    }
 
     const count = await prisma.genre.count({ where })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
 
     const genresList = await prisma.genre.findMany({
       where,
@@ -84,6 +85,7 @@ export const getGenreById = async (
 
 // @desc Create new Genre
 // @route POST /api/genre
+// @body {name: string, description: string}
 export const postGenre = async (
   req: Request,
   res: Response,
