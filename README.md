@@ -124,16 +124,14 @@ Because the columns for the tables can change over time, the lists will always a
 
 ## Validation
 
-The data recieved in the body for `POST` and `PATCH` endpoints is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored un the route `/api/validators`.
+The data recieved by query and body is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored in the route `/api/validators`.
 
 ## Filtering
 
-For filtering the controllers uses two query params: `filterkey` and `filterval` (optional params).
-Filterkey is the element to filter the list.
-Filterval is the string to filter based on the filterkey value.
+Prisma uses a `where` object to apply the filters.
 The filter works in conjunction with pagination and sorting (orderBy).
-Prisma uses `where` to apply the filters.
-Because the ammount of elemets using `where` are different from the unfiltered list, the controllers use a filterHandler to pass the "where" object to `count` and `findMany`.
+Some of the filters are optionals and only passed to the `where` object if the query param exist.
+Because the amount of elemets using `where` are different from the unfiltered list, the controllers pass the "where" object to `count` and `findMany`.
 
 ## Orders and OrderDetails
 
@@ -148,21 +146,15 @@ Without an options file as parameter, cors will be enabled for all origins.
 
 ## Logger
 
-The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows mor details).
+The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows more details).
 
 ## ToDo
 
-- Controllers:
-
-  - Refactor filters logic
-    - Add dates and other values range search
-    - change "filter" to key name for unique filter values
-
 - Update ERD: Customer
-- Cache with `cache-express` for Books, Authors, Genre and Publisher lists.
+- Cache with `redis` for Books, Authors, Genre and Publisher lists.
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
-- Testing (`supertest`)
+- Testing (`supertest` or `node`)
 - Swagger
 - Export db to `.CSV`
 - docker
