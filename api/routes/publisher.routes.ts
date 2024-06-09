@@ -5,7 +5,11 @@ import * as publisherController from "../controllers/publisher.controller"
 const router = Router()
 
 // @route /publisher
-router.get("/", publisherController.getAllPublishers)
+router.get(
+  "/",
+  publisherValidator.getAllPublishersValidator,
+  publisherController.getAllPublishers
+)
 router.get("/:id", publisherController.getPublisherById)
 router.post(
   "/",

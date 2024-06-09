@@ -1,34 +1,49 @@
 import { NextFunction, Request, Response } from "express"
-import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
 import { validationResult } from "express-validator"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
 // @desc Get all the Reviews w/ pagination and filter
-// @route GET /api/review?page={number}&sort={ review_date | rating }&order={ asc | desc }&filterkey={ book_id | customer_id | rating }&filterval={ number }
+// @route GET /api/review?page={number}&sort={ review_date | rating }&order={ asc | desc }&book_id={ number}&customer_id={ number }&rateMin={number}&rateMax={number}
 export const getAllReviews = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const sort = req.query.sort?.toString().toLowerCase() || "review_date"
-    const order = req.query.order?.toString().toLowerCase() || "desc"
-    const filterkey = req.query.filterkey?.toString() || ""
-    const filterval = Number(req.query.filterval) || 0
+    const sort = req.query.sort?.toString() || "review_date"
+    const order = req.query.order?.toString() || "desc"
+    const book_id = Number(req.query.book_id) || 0
+    const customer_id = Number(req.query.customer_id) || 0
+    const rateMin = Number(req.query.rateMin) || 0
+    const rateMax = Number(req.query.rateMax) || 0
 
-    const where: Prisma.ReviewWhereInput = filterkey
-      ? { [filterkey]: filterval }
-      : {}
+    let where = {}
+    if (book_id) {
+      where = { ...where, book_id: book_id }
+    }
+    if (customer_id) {
+      where = { ...where, customer_id: customer_id }
+    }
+    if (rateMin && rateMax) {
+      where = {
+        ...where,
+        rating: {
+          gte: rateMin,
+          lte: rateMax,
+        },
+      }
+    }
 
     const count = await prisma.review.count({ where })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
 
     const reviewList = await prisma.review.findMany({
       where,

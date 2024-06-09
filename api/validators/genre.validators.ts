@@ -1,9 +1,21 @@
 import { body, query } from "express-validator"
 
 export const getAllGenresValidator = [
-  query("sort").toLowerCase(),
-  query("order").toLowerCase(),
-  query("filterBy").optional().toLowerCase(),
+  query("page")
+    .notEmpty()
+    .withMessage("Query 'page' can't be empty")
+    .isInt()
+    .withMessage("Query 'page' must be number"),
+  query("order")
+    .notEmpty()
+    .withMessage("Query 'order' can't be empty")
+    .isString()
+    .withMessage("Query 'order' must be string")
+    .toLowerCase(),
+  query("name")
+    .optional()
+    .isString()
+    .withMessage("Query 'name' must be string"),
 ]
 
 export const postGenreValidator = [

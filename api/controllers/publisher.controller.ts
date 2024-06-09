@@ -4,11 +4,12 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "../client"
 import capitalizeWords from "../utils/capitalizeWords"
 import errorHandler from "../utils/errorHandler"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
 // @desc Get list of Publisher w/ pagination and filter
-// @route GET /api/publisher?page={number}&order={ asc | desc}&filter={string}
+// @route GET /api/publisher?page={number}&order={ asc | desc}&name={string}
 export const getAllPublishers = async (
   req: Request,
   res: Response,
@@ -16,18 +17,18 @@ export const getAllPublishers = async (
 ) => {
   try {
     const sort: string = "publisher_name"
-    const order = req.query.order?.toString().toLowerCase() || "asc"
-    const filter = req.query.filter?.toString() || ""
+    const order = req.query.order?.toString() || "asc"
+    const name = req.query.name?.toString() || ""
 
     const where: Prisma.PublisherWhereInput =
-      { publisher_name: { contains: filter, mode: "insensitive" } } || {}
+      { publisher_name: { contains: name, mode: "insensitive" } } || {}
 
     const count = await prisma.publisher.count({ where })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
 
     const publisherList = await prisma.publisher.findMany({
       where,
@@ -83,6 +84,7 @@ export const getPublisherById = async (
 
 // @desc Create new Publisher
 // @route POST /api/publisher
+// @body {publisher_name: string, contact_name: string, phone_number: string}
 export const postPublisher = async (
   req: Request,
   res: Response,

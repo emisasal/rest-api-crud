@@ -49,11 +49,6 @@ export const getAllCustomers = async (
       pageSize,
       page: Number(req.query.page),
     })
-    // const limit = Math.floor(count / pageSize)
-    // let page = Number(req.query.page) || 0
-    // if (page > limit) {
-    //   page = limit
-    // }
 
     const customerList = await prisma.customer.findMany({
       where,

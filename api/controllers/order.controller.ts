@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { prisma } from "../client"
 import errorHandler from "../utils/errorHandler"
+import paginationHandler from "../utils/paginationHandler"
 
 const pageSize = 20
 
@@ -42,11 +43,11 @@ export const getAllOrders = async (
     const where = whereHandler(customer, dateinit, dateend)
 
     const count = await prisma.order.count({ where })
-    const limit = Math.floor(count / pageSize)
-    let page = Number(req.query.page) || 0
-    if (page > limit) {
-      page = limit
-    }
+    const { limit, page } = paginationHandler({
+      count,
+      pageSize,
+      page: Number(req.query.page),
+    })
 
     const ordersList = await prisma.order.findMany({
       where,
