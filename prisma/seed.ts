@@ -1,4 +1,4 @@
-import { prisma } from "../api/client"
+import { prisma } from "../api/config/prismaClient"
 
 import { bookSeed } from "./seedData/book.seed"
 import { authorSeed } from "./seedData/author.seed"
