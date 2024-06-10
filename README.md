@@ -1,22 +1,22 @@
 # REST API Crud
 
-#### Basic Backend using Express, Prisma ORM, TpeScript and Postgres database
+#### Basic Backend using Express, Prisma ORM, TypeScript and Postgres database.
 
 ---
 
 ## Start the project
 
-- After clonning this repository run from root folder `npm i`.
+- After clonning this repository run `npm i` from root folder.
 - Create a postgres db named `rest-api-crud`.
 - Push the schema and seeds with `npm run seed`.
 - Start the local server with `npm run dev`.
 
 ## Project creation
 
-- Install Node (if you have't already). For this project I'm currently using v20.12.1 LST.
-- Create an empty postgres database. The db I'm using is called `rest-api-crud`.
-- Create the folder and initialize npm with `npm init -y`.
-- Add git remote to the GithHub repository for the project.
+- Install the latest Node LTS version (if you have't already).
+- Create an empty postgres database with the name `rest-api-crud`.
+- Create the folder for the project and initialize npm with `npm init -y`.
+- Add the git remote to the GithHub repository for the project.
 - Install `express` dependency (node framework).
 - Install the devDependencies: `prisma`, `typescript`, `nodemon`, `ts-node`, `@types/node` and `@types/express`.
   - Prisma: the ORM (Object–relational mapping).
@@ -87,22 +87,23 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 > 1. Models without relations declaration.
 > 2. Models with relations to previous models.
 >
-> This happens because the seeds store false ids. If the second model tries to make a relation to a non-existent id it will return an error.
+> This happens because the seed stores false Ids. And if the second model tries to make a relation to a non-existent Id it will return error.
 
 To run the seeds in the db use the script `npm run seed`. It executes "prima db push" (forces db schema) combined with `prisma/seed.ts`.
 
 ## Routes
 
-The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the import of the routes in the server.
+The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the routes imports in the server.
 
 ## Error handling
 
-The middleware `globalErrorHandler` prevents repetition and consistency in error handling.
+The middleware `globalErrorHandler` prevents repetition and gives consistency in error handling.
 The class `CustomError` extends default Error adding status and mesage values.
 The middleware uses the class to recieve the errors.
 The controllers use the function `errorHandler` passing the params status and message. The function creates a new error extendend by `CustomError`.
-The wild card middleware that catches all the non existing routes pass the errors to `globalErrorHandler` with status 404s.
-The middleware `notFoundHandler` catches all the incorrect routes and returns status `404` with the recieved route and error message. The error passes to `globalErrorHandler`.
+The wild card middleware that catches all the non existing routes pass the errors to `globalErrorHandler` with status 400.
+
+The middleware `notFoundHandler` catches all the incorrect routes and returns status `404` with the recieved route and error message. The error is passed to `globalErrorHandler`.
 
 ## Send Files for book covers
 
@@ -122,9 +123,9 @@ The lists are intended to be used by the client side for dropdowns or filter's o
 For example, to filter books by `author`, `title`, etc.
 Because the columns for the tables can change over time, the lists will always allow the frontend to use faithful and up to date data.
 
-## Validation
+## Params Validation
 
-The data recieved by query and body is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored in the route `/api/validators`.
+The data recieved in the endpoints by query and body is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored in the route `/api/validators`.
 
 ## Filtering
 
@@ -147,6 +148,9 @@ Without an options file as parameter, cors will be enabled for all origins.
 ## Logger
 
 The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows more details).
+
+## Caching with Redis
+
 
 ## ToDo
 

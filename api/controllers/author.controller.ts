@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
-import { prisma } from "../client"
+import { prisma } from "../config/prismaClient"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 
