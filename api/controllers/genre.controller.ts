@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { prisma } from "../config/prismaClient"
+import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 import paginationHandler from "../utils/paginationHandler"
 
@@ -13,9 +14,26 @@ export const getAllGenres = async (
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort: string = "name"
     const order = req.query.order?.toString() || "asc"
     const name = req.query.name?.toString() || ""
+
+    const CACHE_KEY = `getAllGenres:page=${pageReq}&order=${order}&name=${name}`
+
+    const genresCache = await redis.get(CACHE_KEY)
+    if (genresCache) {
+      const cachedData = JSON.parse(genresCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.genresList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     let where = {}
     if (name) {
@@ -42,6 +60,13 @@ export const getAllGenres = async (
       return next(errorHandler(400, "Error getting Genre list"))
     }
 
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ genresList, count, page, limit }),
+      "EX",
+      3600
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -49,6 +74,7 @@ export const getAllGenres = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -112,6 +138,9 @@ export const postGenre = async (
       return next(errorHandler(400, "Error Creating Genre"))
     }
 
+    const cacheKeys = await redis.keys("getAllGenres:*")
+    await redis.del(cacheKeys)
+
     return res.status(201).send({
       success: true,
       statusCode: 201,
@@ -143,6 +172,9 @@ export const patchGenreById = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllGenres:*")
+    await redis.del(cacheKeys)
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -163,11 +195,14 @@ export const deleteGenre = async (
   try {
     const id = Number(req.params.id)
 
-    const deletedGenre = await prisma.genre.delete({
+    await prisma.genre.delete({
       where: {
         genre_id: id,
       },
     })
+
+    const cacheKeys = await redis.keys("getAllGenres:*")
+    await redis.del(cacheKeys)
 
     return res.status(200).send({
       success: true,

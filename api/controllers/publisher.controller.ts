@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { validationResult } from "express-validator"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
-import redis from "../config/redisConfig"
+import redis from "../config/redisClient"
 import capitalizeWords from "../utils/capitalizeWords"
 import errorHandler from "../utils/errorHandler"
 import paginationHandler from "../utils/paginationHandler"
@@ -27,7 +27,6 @@ export const getAllPublishers = async (
     const publishersCachedData = await redis.get(CACHE_KEY)
     if (publishersCachedData) {
       const cachedData = JSON.parse(publishersCachedData)
-
       return res.status(200).send({
         success: true,
         statusCode: 200,
@@ -63,10 +62,8 @@ export const getAllPublishers = async (
     redis.set(
       CACHE_KEY,
       JSON.stringify({ publisherList, count, page, limit }),
-      (err, reply) => {
-        if (err) console.error(err)
-        console.log(reply)
-      }
+      "EX",
+      3600
     )
 
     return res.status(200).send({
@@ -219,7 +216,7 @@ export const deletePublisher = async (
   try {
     const id = Number(req.params.id)
 
-    const deletedPublisher = await prisma.publisher.delete({
+    await prisma.publisher.delete({
       where: {
         publisher_id: id,
       },
