@@ -151,11 +151,16 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 ## Caching with Redis
 
+Redis is used as cache for some controllers to improve speed and prevevents overloads in the db.
+To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
+`ioredis` is the dependency used to interact with Redis from Node.
+To identify the responses from redis, the endpoints returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
+To monitor and manipulate the keys stored in Redis I'm using `Redis Insight`.
 
 ## ToDo
 
 - Update ERD: Customer
-- Cache with `redis` for Books, Authors, Genre and Publisher lists.
+- Cache with `redis` for Books, Authors and Genre lists.
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
 - Testing (`supertest` or `node`)
