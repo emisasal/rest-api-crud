@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { prisma } from "../config/prismaClient"
+import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 import paginationHandler from "../utils/paginationHandler"
@@ -14,6 +15,7 @@ export const getAllBooks = async (
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort = req.query.sort?.toString() || "title"
     const order = req.query.order?.toString() || "asc"
     const title = req.query.title?.toString()
@@ -23,6 +25,22 @@ export const getAllBooks = async (
     const isbn = req.query.isbn?.toString()
     const dateStart = req.query.dateStart
     const dateEnd = req.query.dateEnd
+
+    const CACHE_KEY = `getAllBooks:page=${pageReq}&sort=${sort}&order=${order}&title=${title}&author=${author}&genre=${genre}&publisher=${publisher}&isbn=${isbn}&dateStart=${dateStart}&dateEnd=${dateEnd}`
+
+    const booksCache = await redis.get(CACHE_KEY)
+    if (booksCache) {
+      const cachedData = JSON.parse(booksCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.bookList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: false,
+      })
+    }
 
     let where = {}
     if (title) {
@@ -113,6 +131,13 @@ export const getAllBooks = async (
       return next(errorHandler(409, "Error getting books"))
     }
 
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ bookList, count, page, limit }),
+      "EX",
+      3600
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -120,6 +145,7 @@ export const getAllBooks = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -189,6 +215,9 @@ export const postBook = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllBooks:*")
+    await redis.del(cacheKeys)
+
     return res
       .status(201)
       .send({ success: true, statusCode: 201, data: newBook })
@@ -218,6 +247,9 @@ export const patchBookById = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllBooks:*")
+    await redis.del(cacheKeys)
+
     return res
       .status(200)
       .send({ succes: true, statsuCode: 200, data: patchedBook })
@@ -235,11 +267,14 @@ export const deleteBook = async (
 ) => {
   try {
     const id = Number(req.params.id)
-    const deletedBook = await prisma.book.delete({
+    await prisma.book.delete({
       where: {
         book_id: id,
       },
     })
+
+    const cacheKeys = await redis.keys("getAllBooks:*")
+    await redis.del(cacheKeys)
 
     return res.status(200).send({
       success: true,

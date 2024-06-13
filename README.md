@@ -151,20 +151,23 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 ## Caching with Redis
 
-Redis is used as cache for some controllers to improve speed and prevevents overloads in the db.
+Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
 `ioredis` is the dependency used to interact with Redis from Node.
-To identify the responses from redis, the endpoints returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
+The redis client `/config/redisClient` informs by console the conection status.
+The endpoints using redis returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
 To monitor and manipulate the keys stored in Redis I'm using `Redis Insight`.
-To set expiration for the cache keys add the aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds. When the cache expires it removes itself 
+If the controller finds a cache key for the request it returns the cached values.
+If no chache is found the controller calls the db, stores in cache the result and then returns them.
+The aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. When the cache expires it removes itself from redis.
+The services to create, modify and delete elements removes all the existing cached keys for the related lists.
 
 ## ToDo
 
-- Update ERD: Customer
-- Cache with `redis` for Books and Genre lists.
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
-- Testing (`supertest` or `node`)
 - Swagger
+- Update ERD: Customer
+- Testing (`supertest` or `node`)
 - Export db to `.CSV`
-- docker
+- docker compose for db, redis and api.
