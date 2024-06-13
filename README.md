@@ -161,7 +161,7 @@ To set expiration for the cache keys add the aditional params "EX" (for seconds 
 ## ToDo
 
 - Update ERD: Customer
-- Cache with `redis` for Books, Authors and Genre lists.
+- Cache with `redis` for Books and Genre lists.
 - Customer login and session (bcrypt password)
 - Customer (and admin?) session with JWT
 - Testing (`supertest` or `node`)
