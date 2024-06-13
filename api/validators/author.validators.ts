@@ -3,7 +3,7 @@ import { body, param, query } from "express-validator"
 export const getAllAuthorsValidator = [
   query("sort").toLowerCase(),
   query("order").toLowerCase(),
-  query("filterBy").optional().toLowerCase(),
+  query("name").optional().toLowerCase(),
 ]
 
 export const postAuthorValidator = [

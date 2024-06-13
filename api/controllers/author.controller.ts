@@ -1,34 +1,52 @@
 import { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
+import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 
 const pageSize = 20
 
 // @desc Get list of Authors w/ pagination and filter
-// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&filterBy={string}
+// @route GET /api/author?page={number}&sort={ first_name | last_name }&order={ asc | desc }&name={string}
 export const getAllAuthors = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort = req.query.sort?.toString() || "last_name"
     const order = req.query.order?.toString() || "asc"
-    const filterBy = req.query.filterBy?.toString() || ""
+    const name = req.query.name?.toString() || ""
+
+    const CACHE_KEY = `getAllAuthors:page=${pageReq}&sort=${sort}&order=${order}&name=${name}`
+
+    const authorsCache = await redis.get(CACHE_KEY)
+    if (authorsCache) {
+      const cachedData = JSON.parse(authorsCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.authorsList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     const where: Prisma.AuthorWhereInput = {
       OR: [
         {
           last_name: {
-            contains: filterBy,
+            contains: name,
             mode: "insensitive",
           },
         },
         {
           first_name: {
-            contains: filterBy,
+            contains: name,
             mode: "insensitive",
           },
         },
@@ -53,6 +71,13 @@ export const getAllAuthors = async (
       return next(errorHandler(400, "Error getting Authors"))
     }
 
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ authorsList, count, page, limit }),
+      "EX",
+      3600
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -60,6 +85,7 @@ export const getAllAuthors = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -124,6 +150,9 @@ export const postAuthor = async (
       return next(errorHandler(400, "Error Creating Author"))
     }
 
+    const cacheKeys = await redis.keys("getAllAuthors:*")
+    await redis.del(cacheKeys)
+
     return res.status(201).send({
       success: true,
       statusCode: 201,
@@ -159,6 +188,9 @@ export const patchAuthorById = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllAuthors:*")
+    await redis.del(cacheKeys)
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -178,11 +210,14 @@ export const deleteAuthor = async (
 ) => {
   try {
     const id = Number(req.params.id)
-    const deletedAuthor = await prisma.author.delete({
+    await prisma.author.delete({
       where: {
         author_id: id,
       },
     })
+
+    const cacheKeys = await redis.keys("getAllAuthors:*")
+    await redis.del(cacheKeys)
 
     return res.status(200).send({
       success: true,

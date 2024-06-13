@@ -156,6 +156,7 @@ To start the redis server (after installing Redis locally) run `redis-server` on
 `ioredis` is the dependency used to interact with Redis from Node.
 To identify the responses from redis, the endpoints returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
 To monitor and manipulate the keys stored in Redis I'm using `Redis Insight`.
+To set expiration for the cache keys add the aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds. When the cache expires it removes itself 
 
 ## ToDo
 
