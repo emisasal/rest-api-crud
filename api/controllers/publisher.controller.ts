@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { validationResult } from "express-validator"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
+import redis from "../config/redisConfig"
 import capitalizeWords from "../utils/capitalizeWords"
 import errorHandler from "../utils/errorHandler"
 import paginationHandler from "../utils/paginationHandler"
@@ -16,9 +17,27 @@ export const getAllPublishers = async (
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort: string = "publisher_name"
     const order = req.query.order?.toString() || "asc"
     const name = req.query.name?.toString() || ""
+
+    const CACHE_KEY = `getAllPublishers:page=${pageReq}&order=${order}&name=${name}`
+
+    const publishersCachedData = await redis.get(CACHE_KEY)
+    if (publishersCachedData) {
+      const cachedData = JSON.parse(publishersCachedData)
+
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.publisherList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     const where: Prisma.PublisherWhereInput =
       { publisher_name: { contains: name, mode: "insensitive" } } || {}
@@ -41,6 +60,15 @@ export const getAllPublishers = async (
       return next(errorHandler(400, "Error getting Publisher list"))
     }
 
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ publisherList, count, page, limit }),
+      (err, reply) => {
+        if (err) console.error(err)
+        console.log(reply)
+      }
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -48,6 +76,7 @@ export const getAllPublishers = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -118,6 +147,9 @@ export const postPublisher = async (
       return next(errorHandler(400, "Error creating Publisher"))
     }
 
+    const cacheKeys = await redis.keys("getAllPublishers:*")
+    await redis.del(cacheKeys)
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -164,6 +196,9 @@ export const patchPublisherById = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllPublishers:*")
+    await redis.del(cacheKeys)
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -189,6 +224,9 @@ export const deletePublisher = async (
         publisher_id: id,
       },
     })
+
+    const cacheKeys = await redis.keys("getAllPublishers:*")
+    await redis.del(cacheKeys)
 
     return res.status(200).send({
       success: true,
