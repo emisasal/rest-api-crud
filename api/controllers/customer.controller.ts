@@ -144,9 +144,9 @@ export const getCustomerById = async (
 }
 
 // @desc Create new Customer
-// @route POST /api/customer
+// @route POST /api/customer/register
 // @body {first_name: string, last_name: string, email: string, password: string}
-export const postCustomer = async (
+export const postRegisterCustomer = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -187,6 +187,43 @@ export const postCustomer = async (
     })
   } catch (error) {
     return next(error)
+  }
+}
+
+// @desc Login Customer
+// @route POST /api/customer/login
+// @body {email: string, password: string}
+export const postLoginCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const email = req.body.email
+    const pass = req.body.password
+
+    const loginCustomer = await prisma.customer.findFirst({
+      where: { email: email },
+    })
+    if (!loginCustomer) {
+      return next(errorHandler(401, "Invalid credentials"))
+    }
+
+    const isValidCustomer = await bcrypt.compare(pass, loginCustomer?.password)
+    if (!isValidCustomer) {
+      return next(errorHandler(401, "Invalid credentials"))
+    }
+
+    const { password, created_at, updated_at, ...loginCustomerNoPass } =
+      loginCustomer
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: loginCustomerNoPass,
+    })
+  } catch (error) {
+    next(error)
   }
 }
 
