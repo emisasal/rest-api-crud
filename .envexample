@@ -8,5 +8,18 @@ NODE_ENV=
 PORT=
 
 # Redis
+
 REDIS_HOST=
 REDIS_PORT=
+
+# BCrypt
+
+SALT_ROUNDS=
+
+# JWT
+
+# from bash: $ openssl rand -base64 32
+
+# from node: require("crypto").randomBytes(64).toString("hex")
+
+JWT_ACCESS_SECRET=
