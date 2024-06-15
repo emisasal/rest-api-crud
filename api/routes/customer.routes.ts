@@ -14,10 +14,15 @@ router.get(
 )
 router.get("/:id", customerController.getCustomerById)
 router.post(
-  "/",
-  customerValidator.postCustomerValidator,
+  "/register",
+  customerValidator.postRegisterCustomerValidator,
   validationError,
-  customerController.postCustomer
+  customerController.postRegisterCustomer
+)
+router.post(
+  "/login",
+  customerValidator.postLoginCustomerValidator,
+  customerController.postLoginCustomer
 )
 router.patch(
   "/:id",

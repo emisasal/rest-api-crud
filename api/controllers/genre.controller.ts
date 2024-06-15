@@ -139,7 +139,7 @@ export const postGenre = async (
     }
 
     const cacheKeys = await redis.keys("getAllGenres:*")
-    await redis.del(cacheKeys)
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(201).send({
       success: true,
@@ -173,7 +173,7 @@ export const patchGenreById = async (
     })
 
     const cacheKeys = await redis.keys("getAllGenres:*")
-    await redis.del(cacheKeys)
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,
@@ -202,7 +202,7 @@ export const deleteGenre = async (
     })
 
     const cacheKeys = await redis.keys("getAllGenres:*")
-    await redis.del(cacheKeys)
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,

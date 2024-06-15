@@ -164,8 +164,7 @@ The services to create, modify and delete elements removes all the existing cach
 
 ## ToDo
 
-- Customer login and session (bcrypt password)
-- Customer (and admin?) session with JWT
+- Customer session with JWT
 - Swagger
 - Update ERD: Customer
 - Testing (`supertest` or `node`)

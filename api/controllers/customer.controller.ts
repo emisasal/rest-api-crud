@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express"
 import { prisma } from "../config/prismaClient"
+import bcrypt from "bcrypt"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 import paginationHandler from "../utils/paginationHandler"
+import redis from "../config/redisClient"
 
 const pageSize = 20
 
@@ -14,10 +16,27 @@ export const getAllCustomers = async (
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort = req.query.sort?.toString() || "last_name"
     const order = req.query.order?.toString() || "asc"
     const name = req.query.name?.toString() || ""
     const email = req.query.email?.toString() || ""
+
+    const CACHE_KEY = `getAllCustomers:page=${pageReq}&sort=${sort}&order=${order}&name=${name}&email=${email}`
+
+    const customersCache = await redis.get(CACHE_KEY)
+    if (customersCache) {
+      const cachedData = JSON.parse(customersCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.customerListNoPassword,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     let where = {}
     if (name) {
@@ -63,13 +82,27 @@ export const getAllCustomers = async (
       return next(errorHandler(409, "Error getting Customers"))
     }
 
+    const customerListNoPassword = customerList.map(
+      ({ password, ...rest }) => ({
+        ...rest,
+      })
+    )
+
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ customerListNoPassword, count, page, limit }),
+      "EX",
+      3600
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
-      data: customerList,
+      data: customerListNoPassword,
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -111,9 +144,9 @@ export const getCustomerById = async (
 }
 
 // @desc Create new Customer
-// @route POST /api/customer
-// @body {first_name: string, last_name: string, email: string}
-export const postCustomer = async (
+// @route POST /api/customer/register
+// @body {first_name: string, last_name: string, email: string, password: string}
+export const postRegisterCustomer = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -122,14 +155,17 @@ export const postCustomer = async (
     const data = req.body
     data.first_name = capitalizeWords(data.first_name)
     data.last_name = capitalizeWords(data.last_name)
-    data.email = data.email
 
     const findCustomer = await prisma.customer.findFirst({
       where: { email: data.email },
     })
     if (findCustomer) {
-      return next(errorHandler(409, "Customer arleady registered"))
+      return next(errorHandler(409, "Customer already registered"))
     }
+
+    const salt = await bcrypt.genSalt()
+    const hashPassword = await bcrypt.hash(data.password, salt)
+    data.password = hashPassword
 
     const newCustomer = await prisma.customer.create({
       data: data,
@@ -138,13 +174,56 @@ export const postCustomer = async (
       return next(errorHandler(400, "Error creating Customer"))
     }
 
+    const cacheKeys = await redis.keys("getAllCustomers:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
+
+    const { password, created_at, updated_at, ...newCustomerNoPass } =
+      newCustomer
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
-      data: newCustomer,
+      data: newCustomerNoPass,
     })
   } catch (error) {
     return next(error)
+  }
+}
+
+// @desc Login Customer
+// @route POST /api/customer/login
+// @body {email: string, password: string}
+export const postLoginCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const email = req.body.email
+    const pass = req.body.password
+
+    const loginCustomer = await prisma.customer.findFirst({
+      where: { email: email },
+    })
+    if (!loginCustomer) {
+      return next(errorHandler(401, "Invalid credentials"))
+    }
+
+    const isValidCustomer = await bcrypt.compare(pass, loginCustomer?.password)
+    if (!isValidCustomer) {
+      return next(errorHandler(401, "Invalid credentials"))
+    }
+
+    const { password, created_at, updated_at, ...loginCustomerNoPass } =
+      loginCustomer
+
+    return res.status(200).send({
+      success: true,
+      statusCode: 200,
+      data: loginCustomerNoPass,
+    })
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -175,10 +254,16 @@ export const patchCustomerByid = async (
       data: data,
     })
 
+    const cacheKeys = await redis.keys("getAllCustomers:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
+
+    const { password, created_at, updated_at, ...patchedCustomerNoPass } =
+      patchedCustomer
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
-      data: patchedCustomer,
+      data: patchedCustomerNoPass,
     })
   } catch (error) {
     return next(error)
@@ -195,11 +280,14 @@ export const deleteCustomer = async (
   try {
     const id = Number(req.params.id)
 
-    const deletedCustomer = await prisma.customer.delete({
+    await prisma.customer.delete({
       where: {
         customer_id: id,
       },
     })
+
+    const cacheKeys = await redis.keys("getAllCustomers:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,
