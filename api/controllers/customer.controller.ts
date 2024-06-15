@@ -63,10 +63,16 @@ export const getAllCustomers = async (
       return next(errorHandler(409, "Error getting Customers"))
     }
 
+    const customerListNoPassword = customerList.map(
+      ({ password, ...rest }) => ({
+        ...rest,
+      })
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
-      data: customerList,
+      data: customerListNoPassword,
       count: count,
       page: page,
       limit: limit,
