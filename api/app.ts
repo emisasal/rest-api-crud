@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
+import cookieParser from "cookie-parser"
 import { corsOptions } from "./config/corsOptions"
 import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
@@ -11,6 +12,7 @@ const app = express()
 app.use(cors(corsOptions))
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "common"))
 app.use(express.json())
+app.use(cookieParser())
 
 // Registered routes
 app.use("/api", routes)
