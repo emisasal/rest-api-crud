@@ -215,25 +215,48 @@ export const postLoginCustomer = async (
       return next(errorHandler(401, "Invalid credentials"))
     }
 
+    const { password, created_at, updated_at, ...loginCustomerNoPass } =
+      loginCustomer
+
     const accessToken = jwt.sign(
-      { sub: loginCustomer.customer_id },
+      {
+        id: loginCustomer.customer_id,
+        first_name: loginCustomer.first_name,
+        last_name: loginCustomer.last_name,
+      },
       process.env.JWT_ACCESS_SECRET as Secret,
       {
         expiresIn: "15m",
       }
     )
 
-    const { password, created_at, updated_at, ...loginCustomerNoPass } =
-      loginCustomer
+    const refreshToken = jwt.sign(
+      { sub: loginCustomer.customer_id },
+      process.env.JWT_REFRESH_SECRET as Secret,
+      {
+        expiresIn: "30d",
+      }
+    )
 
-      // Send cookie in res
-      // Create and manage refresh_token
-
-    return res.status(200).send({
-      success: true,
-      statusCode: 200,
-      data: loginCustomerNoPass,
-    })
+    return res
+      .cookie("access_token", accessToken, {
+        httpOnly: true, // only access through server
+        secure: process.env.NODE_ENV === "production", // https only
+        sameSite: "strict", // same domain access
+        maxAge: 60 * 1000 * 15, // 15min
+      })
+      .cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      })
+      .status(200)
+      .send({
+        success: true,
+        statusCode: 200,
+        data: loginCustomerNoPass,
+      })
   } catch (error) {
     next(error)
   }

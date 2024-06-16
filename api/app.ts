@@ -11,8 +11,9 @@ const app = express()
 
 app.use(cors(corsOptions))
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "common"))
-app.use(express.json())
 app.use(cookieParser())
+app.use(express.json()) // recognize body as json
+app.use(express.urlencoded({ extended: false })) // recognize body as string or array
 
 // Registered routes
 app.use("/api", routes)
