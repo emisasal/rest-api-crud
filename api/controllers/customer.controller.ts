@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { prisma } from "../config/prismaClient"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import jwt, { Secret } from "jsonwebtoken"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 import paginationHandler from "../utils/paginationHandler"
@@ -215,13 +215,19 @@ export const postLoginCustomer = async (
       return next(errorHandler(401, "Invalid credentials"))
     }
 
-    // Arreglar error secret!
-    const accessToken = jwt.sign({ sub: loginCustomer.customer_id }, process.env.JWT_ACCESS_SECRET, {
-      expiresIn: "1d",
-    })
+    const accessToken = jwt.sign(
+      { sub: loginCustomer.customer_id },
+      process.env.JWT_ACCESS_SECRET as Secret,
+      {
+        expiresIn: "15m",
+      }
+    )
 
     const { password, created_at, updated_at, ...loginCustomerNoPass } =
       loginCustomer
+
+      // Send cookie in res
+      // Create and manage refresh_token
 
     return res.status(200).send({
       success: true,
