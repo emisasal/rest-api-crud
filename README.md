@@ -162,6 +162,10 @@ If no chache is found the controller calls the db, stores in cache the result an
 The aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. When the cache expires it removes itself from redis.
 The services to create, modify and delete elements removes all the existing cached keys for the related lists.
 
+## JWT Access and Refresh
+
+
+
 ## ToDo
 
 - Customer session with JWT

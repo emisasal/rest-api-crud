@@ -7,12 +7,15 @@ import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 
+const { PORT, NODE_ENV, COOKIE_SECRET } = process.env
+
 const app = express()
 
 app.use(cors(corsOptions))
-app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "common"))
-app.use(express.json())
-app.use(cookieParser())
+app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
+app.use(cookieParser(COOKIE_SECRET))
+app.use(express.json()) // recognize body as json
+app.use(express.urlencoded({ extended: false })) // recognize body as string or array
 
 // Registered routes
 app.use("/api", routes)
@@ -23,6 +26,6 @@ app.use(notFoundHandler)
 app.use(globalErrorHandler)
 
 app.listen(process.env.PORT, () => {
-  console.log(`Enviroment: ${process.env.NODE_ENV}`)
-  console.log(`Server running on port: ${process.env.PORT}`)
+  console.log(`Enviroment: ${NODE_ENV}`)
+  console.log(`Server running on port: ${PORT}`)
 })
