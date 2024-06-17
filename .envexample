@@ -17,3 +17,6 @@ SALT_ROUNDS=
 # from node: require("crypto").randomBytes(64).toString("hex")
 JWT_ACCESS_SECRET=
 JWT_REFRESH_SECRET=
+
+# Cookie-Parser
+COOKIE_SECRET=

@@ -244,12 +244,14 @@ export const postLoginCustomer = async (
         secure: process.env.NODE_ENV === "production", // https only
         sameSite: "strict", // same domain access
         maxAge: 60 * 1000 * 15, // 15min
+        signed: true, // encrypt cookie (not content)
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        signed: true,
       })
       .status(200)
       .send({
