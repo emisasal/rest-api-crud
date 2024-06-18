@@ -168,7 +168,7 @@ The services to create, modify and delete elements removes all the existing cach
 
 ## ToDo
 
-- Customer session with JWT
+- Customer session with JWT (complete verifyJWT / check tokens logic)
 - Swagger
 - Update ERD: Customer
 - Testing (`supertest` or `node`)
