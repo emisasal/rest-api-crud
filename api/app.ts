@@ -1,4 +1,5 @@
 import express from "express"
+import helmet from "helmet"
 import cors from "cors"
 import morgan from "morgan"
 import cookieParser from "cookie-parser"
@@ -13,6 +14,7 @@ const { PORT, NODE_ENV, COOKIE_SECRET } = process.env
 
 const app = express()
 
+app.use(helmet())
 app.use(cors(corsOptions))
 app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
 app.use(cookieParser(COOKIE_SECRET))
