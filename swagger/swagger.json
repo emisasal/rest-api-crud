@@ -1,0 +1,110 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rest-Api-Crud Documentation",
+    "version": "1.0.0",
+    "description": "API endpoints documentation for the project Rest-Api-Crud."
+  },
+  "schemes": ["http"],
+  "servers": [{ "url": "http://localhost:8080/" }],
+  "paths": {
+    "/api/book": {
+      "get": {
+        "summary": "Get books list",
+        "tags": ["Book"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "The list's page number.",
+            "required": "true",
+            "schema": {
+              "type": "number"
+            },
+            "example": 0
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "The value to sort the list order.",
+            "required": "true",
+            "schema": {
+              "type": "string",
+              "enum": ["title", "price", "publish_date"]
+            },
+            "example": "title"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Defines the order of the list elements.",
+            "required": "true",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            },
+            "example": "asc"
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "description": "Filters the list by book title. Exact or parcial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "author",
+            "description": "Filters the list by author's name (first or last).exact or parcial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "genre",
+            "description": "Filters the list by genre's name. Exact or pacial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "publisher",
+            "description": "Filters the list by publisher's name. Exact or pacial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isbn",
+            "description": "Filters the list by publisher's name. Exact or pacial.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dateStart",
+            "description": "initial date to filter by books publishing date's range.",
+            "schema": {
+              "type": "date"
+            },
+            "example": "yyyy-MM-dd"
+          },
+          {
+            "in": "query",
+            "name": "dateEnd",
+            "description": "End date to filter by books publishing date's range.",
+            "schema": {
+              "type": "date"
+            },
+            "example": "yyyy-MM-dd"
+          }
+        ]
+      }
+    }
+  }
+}
