@@ -12,6 +12,7 @@ import {
   patchBookDoc,
   postBookDoc,
 } from "./bookDocs"
+import { getCategoryDoc, getModelsDoc } from "./categoryDocs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -84,6 +85,12 @@ const swaggerSpec = {
       patch: patchAuthorDoc,
       delete: deleteAuthorDoc,
     },
+    "/api/category": {
+      get: getModelsDoc
+    },
+    "/api/category/:name": {
+      get: getCategoryDoc
+    }
   },
 }
 

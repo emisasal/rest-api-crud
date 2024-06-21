@@ -56,7 +56,7 @@ export const getAllAuthorsDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book's list page",
+      description: "Success getting books list page",
       content: {
         "application/json": {
           schema: {
