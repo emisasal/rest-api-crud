@@ -89,6 +89,37 @@ export const dbErrorSchema = (message: string) => {
   }
 }
 
+// 422
+export const unprocessableContent = (message: string) => {
+  return {
+    description: "Unprocessable Content",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 422,
+            },
+            message: {
+              type: "string",
+              description: "Error description",
+              example: message,
+            },
+          },
+        },
+      },
+    },
+  }
+}
+
 // 500
 export const internalErrorSchema = {
   description: "Internal Server Error",

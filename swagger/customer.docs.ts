@@ -182,6 +182,7 @@ export const patchCustomerDoc = {
       name: "id",
       description: "Customer Id",
       required: "true",
+      example: 527,
       schema: {
         type: "number",
       },
@@ -265,6 +266,7 @@ export const deleteCustomerDoc = {
       name: "id",
       description: "Customer Id",
       required: "true",
+      example: 527,
       schema: {
         type: "number",
       },

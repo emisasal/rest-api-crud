@@ -19,6 +19,7 @@ import {
   getCustomerByIdDoc,
   patchCustomerDoc,
 } from "./customer.docs"
+import { getImageByIdDocs } from "./image.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -104,6 +105,9 @@ const swaggerSpec = {
       get: getCustomerByIdDoc,
       patch: patchCustomerDoc,
       delete: deleteCustomerDoc,
+    },
+    "/api/image/:id": {
+      get: getImageByIdDocs,
     },
   },
 }
