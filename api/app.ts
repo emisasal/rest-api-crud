@@ -12,6 +12,7 @@ import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
 
 import * as swaggerJson from "../swagger/swagger.json"
+import swaggerSpec from "../swagger/swaggerSpec"
 
 const { PORT, NODE_ENV, COOKIE_SECRET } = process.env
 
@@ -28,7 +29,7 @@ app.use(express.urlencoded({ extended: false })) // recognize body as string or 
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerJson, { explorer: true })
+  swaggerUi.setup(swaggerSpec, { explorer: true })
 )
 
 // Session routes

@@ -1,0 +1,450 @@
+import { bookData } from "./bookData"
+import {
+  dbErrorSchema,
+  globalErrorSchema,
+  internalErrorSchema,
+  notFoundSchema,
+} from "./swaggerErrorSchemas"
+
+const { author, genre, publisher, ...bookOnly } = bookData
+
+// @route GET /api/book
+export const getAllBooksDoc = {
+  tags: ["Book"],
+  summary: "Get books list",
+  description: "Get books list by page, order and filters",
+  operationId: "getAllBooksDoc",
+  parameters: [
+    {
+      in: "query",
+      name: "page",
+      description: "The list's page number.",
+      required: "true",
+      schema: {
+        type: "number",
+      },
+      example: 0,
+    },
+    {
+      in: "query",
+      name: "sort",
+      description: "The value to sort the list order.",
+      required: "true",
+      schema: {
+        type: "string",
+        enum: ["title", "price", "publish_date"],
+      },
+      example: "title",
+    },
+    {
+      in: "query",
+      name: "order",
+      description: "Defines the order of the list elements.",
+      required: "true",
+      schema: {
+        type: "string",
+        enum: ["asc", "desc"],
+      },
+      example: "asc",
+    },
+    {
+      in: "query",
+      name: "title",
+      description: "Filter by book title. Exact or parcial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "author",
+      description: "Filter by author's name (first or last). Exact or parcial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "genre",
+      description: "Filter by genre's name. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "publisher",
+      description: "Filter by publisher's name. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "isbn",
+      description: "Filter by isbn code. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "dateStart",
+      description:
+        "initial date to filter by publishing date. Must also include 'dateEnd'.",
+      schema: {
+        type: "date",
+      },
+      example: "yyyy-MM-dd",
+    },
+    {
+      in: "query",
+      name: "dateEnd",
+      description:
+        "End date to filter by publishing date. Must also include 'dateStart'.",
+      schema: {
+        type: "date",
+      },
+      example: "yyyy-MM-dd",
+    },
+  ],
+  responses: {
+    200: {
+      description: "Success getting book's list page",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "The response is successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "The response status code",
+                example: 200,
+              },
+              data: {
+                type: "array",
+                description: "Array of book's objects",
+                example: [bookData],
+              },
+              count: {
+                type: "number",
+                description: "Total amount of list elements",
+                example: 732,
+              },
+              page: {
+                type: "number",
+                description: "Actual page number",
+                example: 0,
+              },
+              limit: {
+                type: "number",
+                description: "Last list's page number",
+                example: 12,
+              },
+              cache: {
+                type: "boolean",
+                description: "Indicates if 'data' is returned from cache",
+                example: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema,
+    404: notFoundSchema("GET", "/api/book"),
+    409: dbErrorSchema("Error getting books"),
+    500: internalErrorSchema,
+  },
+}
+
+// @route GET /api/book/:id
+export const getBookByIdDoc = {
+  tags: ["Book"],
+  summary: "Get book by Id",
+  description: "Get single book by param Id",
+  operationId: "getBookByIdDoc",
+  parameters: [
+    {
+      in: "params",
+      name: "id",
+      description: "Id of book",
+      required: "true",
+      schema: {
+        type: "number",
+      },
+    },
+  ],
+  responses: {
+    200: {
+      description: "Success getting book",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "Response successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "Response status code",
+                example: 200,
+              },
+              data: {
+                type: "array",
+                description: "Book object data",
+                example: bookData,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema,
+    404: notFoundSchema("GET", "/api/book/id"),
+    409: dbErrorSchema("Error getting book"),
+    500: internalErrorSchema,
+  },
+}
+
+// @route POST /api/book
+export const postBookDoc = {
+  tags: ["Book"],
+  summary: "Post new book",
+  description: "Create new book with author, publisher and genre id's relation",
+  operationId: "postBookDoc",
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              example: "What happened in 1971",
+            },
+            description: {
+              type: "string",
+              example:
+                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
+            },
+            author_id: {
+              type: "number",
+              description: "Author Id",
+              example: 391,
+            },
+            genre_id: {
+              type: "number",
+              description: "Genre Id",
+              example: 7,
+            },
+            publisher_id: {
+              type: "number",
+              description: "Publisher Id",
+              example: 12,
+            },
+            price: {
+              type: "number",
+              description: "Price of the book",
+              example: 6.43,
+            },
+            publish_date: {
+              type: "date",
+              description: "Book's publishing date",
+              example: "2001-06-25T07:01:44.000Z",
+            },
+            isbn: {
+              type: "string",
+              description: "Book's ISBN code",
+              example: "502074967-2",
+            },
+          },
+        },
+      },
+    },
+    required: true,
+  },
+  responses: {
+    201: {
+      description: "Success creating book",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "Response successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "Response status code",
+                example: 201,
+              },
+              data: {
+                type: "object",
+                description: "New created book",
+                example: bookOnly,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema,
+    404: notFoundSchema("POST", "/api/book"),
+    409: dbErrorSchema("Book already registred with id 123"),
+    500: internalErrorSchema,
+  },
+}
+
+// @route PATCH /api/book
+export const patchBookDoc = {
+  tags: ["Book"],
+  summary: "Modify book by Id",
+  description: "Modify book by Id and body partially or completely",
+  operationId: "patchBookDoc",
+  parameters: [
+    {
+      in: "params",
+      name: "id",
+      description: "Id of book",
+      required: "true",
+      schema: {
+        type: "number",
+      },
+    },
+  ],
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              example: "What happened in 1971",
+            },
+            description: {
+              type: "string",
+              example:
+                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
+            },
+            author_id: {
+              type: "number",
+              description: "Author Id",
+              example: 391,
+            },
+            genre_id: {
+              type: "number",
+              description: "Genre Id",
+              example: 7,
+            },
+            publisher_id: {
+              type: "number",
+              description: "Publisher Id",
+              example: 12,
+            },
+            price: {
+              type: "number",
+              description: "Price of the book",
+              example: 6.43,
+            },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Success updating book",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "Response successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "Response status code",
+                example: 200,
+              },
+              data: {
+                type: "object",
+                description: "Updated book",
+                example: bookOnly,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema,
+    404: notFoundSchema("PATCH", "/api/book/:id"),
+    500: internalErrorSchema,
+  },
+}
+
+// @route DELETE /api/book/:id
+export const deleteBookDoc = {
+  tags: ["Book"],
+  summary: "Delete book by Id",
+  description: "Delete book and it's relations by Id",
+  operationId: "deleteBookDoc",
+  parameters: [
+    {
+      in: "params",
+      name: "id",
+      description: "Id of book",
+      required: "true",
+      schema: {
+        type: "number",
+      },
+    },
+  ],
+  responses: {
+    200: {
+      description: "Success deleting book",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "Response successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "Response status code",
+                example: 200,
+              },
+              message: {
+                type: "string",
+                description: "Deleted book",
+                example: "Book Id 123 Successfully Deleted",
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema,
+    404: notFoundSchema("DELETE", "/api/book/:id"),
+    500: internalErrorSchema,
+  },
+}

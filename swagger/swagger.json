@@ -48,7 +48,7 @@
           {
             "in": "query",
             "name": "title",
-            "description": "Filters the list by book title. Exact or parcial.",
+            "description": "Filter by book title. Exact or parcial.",
             "schema": {
               "type": "string"
             }
@@ -56,7 +56,7 @@
           {
             "in": "query",
             "name": "author",
-            "description": "Filters the list by author's name (first or last).exact or parcial.",
+            "description": "Filter by author's name (first or last). Exact or parcial.",
             "schema": {
               "type": "string"
             }
@@ -64,7 +64,7 @@
           {
             "in": "query",
             "name": "genre",
-            "description": "Filters the list by genre's name. Exact or pacial.",
+            "description": "Filter by genre's name. Exact or pacial.",
             "schema": {
               "type": "string"
             }
@@ -72,7 +72,7 @@
           {
             "in": "query",
             "name": "publisher",
-            "description": "Filters the list by publisher's name. Exact or pacial.",
+            "description": "Filter by publisher's name. Exact or pacial.",
             "schema": {
               "type": "string"
             }
@@ -80,7 +80,7 @@
           {
             "in": "query",
             "name": "isbn",
-            "description": "Filters the list by publisher's name. Exact or pacial.",
+            "description": "Filter by isbn code. Exact or pacial.",
             "schema": {
               "type": "string"
             }
@@ -88,7 +88,7 @@
           {
             "in": "query",
             "name": "dateStart",
-            "description": "initial date to filter by books publishing date's range.",
+            "description": "initial date to filter by publishing date. Must include 'dateEnd'.",
             "schema": {
               "type": "date"
             },
@@ -97,13 +97,41 @@
           {
             "in": "query",
             "name": "dateEnd",
-            "description": "End date to filter by books publishing date's range.",
+            "description": "End date to filter by publishing date. Must include 'dateStart'.",
             "schema": {
               "type": "date"
             },
             "example": "yyyy-MM-dd"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Success getting book's list page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "The response is successful",
+                      "example": true
+                    },
+                    "statusCode": {
+                      "type": "number",
+                      "description": "The response status code",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Array of book's objects"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
