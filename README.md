@@ -164,12 +164,12 @@ The services to create, modify and delete elements removes all the existing cach
 
 ## JWT Access and Refresh
 
-
+## Swagger documentation
 
 ## ToDo
 
 - Customer session with JWT (complete verifyJWT / check tokens logic)
-- Swagger
+- Swagger (complete routes)
 - Update ERD: Customer
 - Testing (`supertest` or `node`)
 - Export db to `.CSV`

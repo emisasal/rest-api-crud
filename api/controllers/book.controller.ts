@@ -186,6 +186,7 @@ export const getBookById = async (
 
 // @desc Create new Book
 // @route POST /api/book
+// @body {title: string, description: string, author_id: number, genre_id: number, publisher_id: number, price: number, publish_date: date, isbn: string}
 export const postBook = async (
   req: Request,
   res: Response,
@@ -228,6 +229,7 @@ export const postBook = async (
 
 // @desc Modify Book by Id
 // @route PATCH /api/book/:id
+// @body {title: string, description: string, author_id: number, genre_id: number, publisher_id: number, price: number, publish_date: date, isbn: string}
 export const patchBookById = async (
   req: Request,
   res: Response,
@@ -279,7 +281,7 @@ export const deleteBook = async (
     return res.status(200).send({
       success: true,
       statusCode: 200,
-      message: `Book Id ${id} Successfully Deleted `,
+      message: `Book Id ${id} Successfully Deleted`,
     })
   } catch (error) {
     return next(error)
