@@ -68,7 +68,7 @@ export const getAllAuthors = async (
     })
 
     if (!authorsList) {
-      return next(errorHandler(400, "Error getting Authors"))
+      return next(errorHandler(409, "Error getting Authors"))
     }
 
     redis.set(
@@ -108,7 +108,7 @@ export const getAuthorById = async (
     })
 
     if (!authorById) {
-      return next(errorHandler(400, "Author not found"))
+      return next(errorHandler(409, "Author not found"))
     }
 
     return res
@@ -121,7 +121,7 @@ export const getAuthorById = async (
 
 // @desc Create new Author
 // @route POST /api/author
-// @body {title: string, description: string, author_id: number, genre_id: number, publisher_id: number, price: number, publish_date: date, isbn: string}
+// @body {first_name: string, last_name: string, bio: string}
 export const postAuthor = async (
   req: Request,
   res: Response,

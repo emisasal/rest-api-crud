@@ -1,10 +1,17 @@
 import {
+  deleteAuthorDoc,
+  getAllAuthorsDoc,
+  getAuthorByIdDoc,
+  patchAuthorDoc,
+  postAuthorDoc,
+} from "./authorDocs"
+import {
   deleteBookDoc,
   getAllBooksDoc,
   getBookByIdDoc,
   patchBookDoc,
   postBookDoc,
-} from "./bookSwagger"
+} from "./bookDocs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -58,16 +65,24 @@ const swaggerSpec = {
       name: "Review",
     },
   ],
-  basePath: "/api",
   paths: {
     "/api/book": {
       get: getAllBooksDoc,
       post: postBookDoc,
     },
-    "/api/book/{id}": {
+    "/api/book/:id": {
       get: getBookByIdDoc,
       patch: patchBookDoc,
       delete: deleteBookDoc,
+    },
+    "/api/author": {
+      get: getAllAuthorsDoc,
+      post: postAuthorDoc,
+    },
+    "/api/author/:id": {
+      get: getAuthorByIdDoc,
+      patch: patchAuthorDoc,
+      delete: deleteAuthorDoc,
     },
   },
 }

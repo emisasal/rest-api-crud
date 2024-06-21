@@ -1,4 +1,4 @@
-import { bookData } from "./bookData"
+import { bookData } from "./data/bookData"
 import {
   dbErrorSchema,
   globalErrorSchema,
@@ -118,17 +118,17 @@ export const getAllBooksDoc = {
             properties: {
               success: {
                 type: "boolean",
-                description: "The response is successful",
+                description: "Response successful",
                 example: true,
               },
               statusCode: {
                 type: "number",
-                description: "The response status code",
+                description: "Response status code",
                 example: 200,
               },
               data: {
                 type: "array",
-                description: "Array of book's objects",
+                description: "Array of book objects",
                 example: [bookData],
               },
               count: {
@@ -143,7 +143,7 @@ export const getAllBooksDoc = {
               },
               limit: {
                 type: "number",
-                description: "Last list's page number",
+                description: "Last page number of the list",
                 example: 12,
               },
               cache: {

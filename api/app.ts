@@ -10,8 +10,6 @@ import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
-
-import * as swaggerJson from "../swagger/swagger.json"
 import swaggerSpec from "../swagger/swaggerSpec"
 
 const { PORT, NODE_ENV, COOKIE_SECRET } = process.env
