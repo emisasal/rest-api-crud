@@ -1,30 +1,32 @@
 //  400
-export const globalErrorSchema = {
-  description: "Error getting db data",
-  content: {
-    "application/json": {
-      schema: {
-        type: "object",
-        properties: {
-          success: {
-            type: "boolean",
-            description: "Response not successful",
-            example: false,
-          },
-          statusCode: {
-            type: "number",
-            description: "Response status code",
-            example: 400,
-          },
-          message: {
-            type: "string",
-            description: "Error description",
-            example: "Error obtaining elements",
+export const globalErrorSchema = (message: string | null = null) => {
+  return {
+    description: "Error getting data",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 400,
+            },
+            message: {
+              type: "string",
+              description: "Error description",
+              example: message || "Bad Request",
+            },
           },
         },
       },
     },
-  },
+  }
 }
 
 // 404

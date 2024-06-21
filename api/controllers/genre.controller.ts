@@ -128,14 +128,14 @@ export const postGenre = async (
       },
     })
     if (findGenre) {
-      return next(errorHandler(409, "Genre already registred"))
+      return next(errorHandler(400, "Genre already registred"))
     }
 
     const newGenre = await prisma.genre.create({
       data: data,
     })
     if (!newGenre) {
-      return next(errorHandler(400, "Error Creating Genre"))
+      return next(errorHandler(409, "Error Creating Genre"))
     }
 
     const cacheKeys = await redis.keys("getAllGenres:*")
@@ -153,6 +153,7 @@ export const postGenre = async (
 
 // @desc Modify Genre by Id
 // @route PATCH /api/genre/:id
+// @body {name: string, description: string}
 export const patchGenreById = async (
   req: Request,
   res: Response,
@@ -171,6 +172,10 @@ export const patchGenreById = async (
       },
       data: data,
     })
+
+    if (!patchedGenre) {
+      return next(errorHandler(409, "Error updating Genre"))
+    }
 
     const cacheKeys = await redis.keys("getAllGenres:*")
     cacheKeys ?? (await redis.del(cacheKeys))

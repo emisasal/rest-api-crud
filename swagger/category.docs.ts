@@ -1,6 +1,5 @@
 import { categoryListDoc, modelsListData } from "./data/categoryData"
 import {
-  dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
@@ -14,7 +13,7 @@ export const getModelsDoc = {
   operationId: "getModelsDoc",
   responses: {
     200: {
-      description: "Success getting models list",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -40,9 +39,8 @@ export const getModelsDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Error getting models list"),
     404: notFoundSchema("GET", "/api/category"),
-    409: dbErrorSchema("Error getting models list"),
     500: internalErrorSchema,
   },
 }
@@ -66,7 +64,7 @@ export const getCategoryDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting categories list",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -92,9 +90,8 @@ export const getCategoryDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Error getting categories list"),
     404: notFoundSchema("GET", "/api/category/:name"),
-    409: dbErrorSchema("Error getting categories list"),
     500: internalErrorSchema,
   },
 }

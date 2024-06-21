@@ -19,6 +19,13 @@ import {
   getCustomerByIdDoc,
   patchCustomerDoc,
 } from "./customer.docs"
+import {
+  deleteGenreDoc,
+  getAllGenresDoc,
+  getGenreByIdDoc,
+  patchGenreDoc,
+  postGenreDoc,
+} from "./genre.docs"
 import { getImageByIdDocs } from "./image.docs"
 
 const swaggerSpec = {
@@ -105,6 +112,15 @@ const swaggerSpec = {
       get: getCustomerByIdDoc,
       patch: patchCustomerDoc,
       delete: deleteCustomerDoc,
+    },
+    "/api/genre": {
+      get: getAllGenresDoc,
+      post: postGenreDoc,
+    },
+    "/api/genre/:id": {
+      get: getGenreByIdDoc,
+      patch: patchGenreDoc,
+      delete: deleteGenreDoc,
     },
     "/api/image/:id": {
       get: getImageByIdDocs,

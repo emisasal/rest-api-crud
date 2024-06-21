@@ -78,7 +78,7 @@ export const getAllCustomers = async (
     })
 
     if (!customerList) {
-      return next(errorHandler(409, "Error getting Customers"))
+      return next(errorHandler(400, "Error getting Customers"))
     }
 
     const customerListNoPassword = customerList.map(
@@ -129,7 +129,7 @@ export const getCustomerById = async (
     })
 
     if (!customerByid) {
-      return next(errorHandler(409, "Customer not found"))
+      return next(errorHandler(400, "Customer not found"))
     }
 
     return res.status(200).send({
@@ -169,6 +169,10 @@ export const patchCustomerByid = async (
       },
       data: data,
     })
+
+    if (!patchedCustomer) {
+      return next(errorHandler(409, "Error updating customer"))
+    }
 
     const cacheKeys = await redis.keys("getAllCustomers:*")
     cacheKeys ?? (await redis.del(cacheKeys))

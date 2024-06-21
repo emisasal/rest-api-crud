@@ -64,7 +64,7 @@ export const getAllCustomersDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book's list page",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -110,9 +110,8 @@ export const getAllCustomersDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Error getting Customers"),
     404: notFoundSchema("GET", "/api/customer"),
-    409: dbErrorSchema("Error getting Customers"),
     500: internalErrorSchema,
   },
 }
@@ -137,7 +136,7 @@ export const getCustomerByIdDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -163,9 +162,8 @@ export const getCustomerByIdDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Customer not found"),
     404: notFoundSchema("GET", "/api/customer/:id"),
-    409: dbErrorSchema("Customer not found"),
     500: internalErrorSchema,
   },
 }
@@ -222,7 +220,7 @@ export const patchCustomerDoc = {
   },
   responses: {
     200: {
-      description: "Success updating book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -248,8 +246,9 @@ export const patchCustomerDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("PATCH", "/api/customer/:id"),
+    409: dbErrorSchema("Error updating customer"),
     500: internalErrorSchema,
   },
 }
@@ -274,7 +273,7 @@ export const deleteCustomerDoc = {
   ],
   responses: {
     200: {
-      description: "Success deleting book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -300,7 +299,7 @@ export const deleteCustomerDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("DELETE", "/api/customer/:id"),
     500: internalErrorSchema,
   },

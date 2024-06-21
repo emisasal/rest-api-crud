@@ -68,7 +68,7 @@ export const getAllAuthors = async (
     })
 
     if (!authorsList) {
-      return next(errorHandler(409, "Error getting Authors"))
+      return next(errorHandler(400, "Error getting Authors"))
     }
 
     redis.set(
@@ -108,7 +108,7 @@ export const getAuthorById = async (
     })
 
     if (!authorById) {
-      return next(errorHandler(409, "Author not found"))
+      return next(errorHandler(400, "Author not found"))
     }
 
     return res
@@ -140,14 +140,14 @@ export const postAuthor = async (
       },
     })
     if (findAuthor) {
-      return next(errorHandler(409, "Author already registred"))
+      return next(errorHandler(400, "Author already registred"))
     }
 
     const newAuthor = await prisma.author.create({
       data: data,
     })
     if (!newAuthor) {
-      return next(errorHandler(400, "Error Creating Author"))
+      return next(errorHandler(409, "Error Creating Author"))
     }
 
     const cacheKeys = await redis.keys("getAllAuthors:*")
@@ -187,6 +187,9 @@ export const patchAuthorById = async (
       },
       data: data,
     })
+
+    if (!patchedAuthor) {
+      return next(errorHandler(409, "Error updating author"))    }
 
     const cacheKeys = await redis.keys("getAllAuthors:*")
     cacheKeys ?? (await redis.del(cacheKeys))

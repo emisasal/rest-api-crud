@@ -1,4 +1,4 @@
-import { bookData } from "./data/bookData"
+import { genreData } from "./data/genreData"
 import {
   dbErrorSchema,
   globalErrorSchema,
@@ -6,14 +6,12 @@ import {
   notFoundSchema,
 } from "./swaggerErrorSchemas"
 
-const { author, genre, publisher, ...bookOnly } = bookData
-
-// @route GET /api/book
-export const getAllBooksDoc = {
-  tags: ["Book"],
-  summary: "Get books list",
-  description: "Get books list by page, order and filters",
-  operationId: "getAllBooksDoc",
+// @route /api/genre
+export const getAllGenresDoc = {
+  tags: ["Genre"],
+  summary: "Get genres list",
+  description: "Get genres list by page, order and filters",
+  operationId: "getAllGenresDoc",
   parameters: [
     {
       in: "query",
@@ -24,17 +22,6 @@ export const getAllBooksDoc = {
         type: "number",
       },
       example: 0,
-    },
-    {
-      in: "query",
-      name: "sort",
-      description: "Value to sort list order.",
-      required: "true",
-      schema: {
-        type: "string",
-        enum: ["title", "price", "publish_date"],
-      },
-      example: "title",
     },
     {
       in: "query",
@@ -49,63 +36,11 @@ export const getAllBooksDoc = {
     },
     {
       in: "query",
-      name: "title",
-      description: "Filter by book title. Exact or parcial.",
+      name: "name",
+      description: "Filter by genre name. Exact or parcial.",
       schema: {
         type: "string",
       },
-    },
-    {
-      in: "query",
-      name: "author",
-      description: "Filter by author name (first or last). Exact or parcial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "genre",
-      description: "Filter by genre name. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "publisher",
-      description: "Filter by publisher name. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "isbn",
-      description: "Filter by isbn code. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "dateStart",
-      description:
-        "initial date to filter by publishing date. Must also include 'dateEnd'.",
-      schema: {
-        type: "date",
-      },
-      example: "yyyy-MM-dd",
-    },
-    {
-      in: "query",
-      name: "dateEnd",
-      description:
-        "End date to filter by publishing date. Must also include 'dateStart'.",
-      schema: {
-        type: "date",
-      },
-      example: "yyyy-MM-dd",
     },
   ],
   responses: {
@@ -128,13 +63,13 @@ export const getAllBooksDoc = {
               },
               data: {
                 type: "array",
-                description: "Array of book objects",
-                example: [bookData],
+                description: "Array of genres",
+                example: [genreData],
               },
               count: {
                 type: "number",
                 description: "Total amount of list elements",
-                example: 732,
+                example: 124,
               },
               page: {
                 type: "number",
@@ -144,7 +79,7 @@ export const getAllBooksDoc = {
               limit: {
                 type: "number",
                 description: "Last page number of the list",
-                example: 12,
+                example: 6,
               },
               cache: {
                 type: "boolean",
@@ -156,23 +91,23 @@ export const getAllBooksDoc = {
         },
       },
     },
-    400: globalErrorSchema("Error getting books"),
-    404: notFoundSchema("GET", "/api/book"),
+    400: globalErrorSchema("Error getting Genre list"),
+    404: notFoundSchema("GET", "/api/genre"),
     500: internalErrorSchema,
   },
 }
 
-// @route GET /api/book/:id
-export const getBookByIdDoc = {
-  tags: ["Book"],
-  summary: "Get book by Id",
-  description: "Get single book by param Id",
-  operationId: "getBookByIdDoc",
+// @route GET /api/genre/:id
+export const getGenreByIdDoc = {
+  tags: ["Genre"],
+  summary: "Get genre by Id",
+  description: "Get single genre by param Id",
+  operationId: "getGenreByIdDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Genre Id",
       required: "true",
       schema: {
         type: "number",
@@ -200,71 +135,41 @@ export const getBookByIdDoc = {
               data: {
                 type: "array",
                 description: "Book object data",
-                example: bookData,
+                example: genreData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Error getting book"),
-    404: notFoundSchema("GET", "/api/book/:id"),
+    400: globalErrorSchema("Genre Not Found"),
+    404: notFoundSchema("GET", "/api/genre/:id"),
     500: internalErrorSchema,
   },
 }
 
-// @route POST /api/book
-export const postBookDoc = {
-  tags: ["Book"],
-  summary: "Post new book",
-  description: "Create new book with author, publisher and genre id's relation",
-  operationId: "postBookDoc",
+// @route POST /api/genre
+export const postGenreDoc = {
+  tags: ["Genre"],
+  summary: "Post new genre",
+  description: "Create new genre",
+  operationId: "postGenreDoc",
   requestBody: {
     content: {
       "application/json": {
         schema: {
           type: "object",
           properties: {
-            title: {
+            name: {
               type: "string",
-              description: "Book title",
-              example: "What happened in 1971",
+              description: "Genre name",
+              example: "Fantasy",
             },
             description: {
               type: "string",
-              description: "Book description",
+              description: "Genre description",
               example:
-                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-            },
-            author_id: {
-              type: "number",
-              description: "Author Id",
-              example: 391,
-            },
-            genre_id: {
-              type: "number",
-              description: "Genre Id",
-              example: 7,
-            },
-            publisher_id: {
-              type: "number",
-              description: "Publisher Id",
-              example: 12,
-            },
-            price: {
-              type: "number",
-              description: "Book price",
-              example: 6.43,
-            },
-            publish_date: {
-              type: "date",
-              description: "Book publishing date",
-              example: "2001-06-25T07:01:44.000Z",
-            },
-            isbn: {
-              type: "string",
-              description: "Book ISBN code",
-              example: "502074967-2",
+                "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
             },
           },
         },
@@ -293,31 +198,31 @@ export const postBookDoc = {
               data: {
                 type: "object",
                 description: "New book created",
-                example: bookOnly,
+                example: genreData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Book already registred with id 123"),
-    404: notFoundSchema("POST", "/api/book"),
-    409: dbErrorSchema("Error creating book"),
+    400: globalErrorSchema("Genre already registred"),
+    404: notFoundSchema("POST", "/api/genre"),
+    409: dbErrorSchema("Error Creating Genre"),
     500: internalErrorSchema,
   },
 }
 
-// @route PATCH /api/book/:id
-export const patchBookDoc = {
-  tags: ["Book"],
-  summary: "Modify book by Id",
-  description: "Modify book by Id and body partially or completely",
-  operationId: "patchBookDoc",
+// @route PATCH /api/genre/:id
+export const patchGenreDoc = {
+  tags: ["Genre"],
+  summary: "Modify genre by Id",
+  description: "Modify genre by Id and body partially or completely",
+  operationId: "patchGenreDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Genre Id",
       required: "true",
       schema: {
         type: "number",
@@ -330,39 +235,23 @@ export const patchBookDoc = {
         schema: {
           type: "object",
           properties: {
-            title: {
+            name: {
               type: "string",
-              example: "What happened in 1971",
+              description: "Genre name",
+              example: "Fantasy",
+              required: true,
             },
             description: {
               type: "string",
+              description: "Genre description",
               example:
-                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-            },
-            author_id: {
-              type: "number",
-              description: "Author Id",
-              example: 391,
-            },
-            genre_id: {
-              type: "number",
-              description: "Genre Id",
-              example: 7,
-            },
-            publisher_id: {
-              type: "number",
-              description: "Publisher Id",
-              example: 12,
-            },
-            price: {
-              type: "number",
-              description: "Book price",
-              example: 6.43,
+                "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
             },
           },
         },
       },
     },
+    required: true,
   },
   responses: {
     200: {
@@ -385,7 +274,7 @@ export const patchBookDoc = {
               data: {
                 type: "object",
                 description: "Book updated",
-                example: bookOnly,
+                example: genreData,
               },
             },
           },
@@ -393,23 +282,23 @@ export const patchBookDoc = {
       },
     },
     400: globalErrorSchema(),
-    404: notFoundSchema("PATCH", "/api/book/:id"),
-    409: dbErrorSchema("Error updating book"),
+    404: notFoundSchema("PATCH", "/api/genre/:id"),
+    409: dbErrorSchema("Error updating Genre"),
     500: internalErrorSchema,
   },
 }
 
-// @route DELETE /api/book/:id
-export const deleteBookDoc = {
-  tags: ["Book"],
-  summary: "Delete book by Id",
-  description: "Delete book and it's relations by Id",
-  operationId: "deleteBookDoc",
+// @route DELETE /api/genre/:id
+export const deleteGenreDoc = {
+  tags: ["Genre"],
+  summary: "Delete genre by Id",
+  description: "Delete genre by Id",
+  operationId: "deleteGenreDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Genre Id",
       required: "true",
       schema: {
         type: "number",
@@ -436,8 +325,8 @@ export const deleteBookDoc = {
               },
               message: {
                 type: "string",
-                description: "Book deleted",
-                example: "Book Id 123 Successfully Deleted",
+                description: "Genre deleted",
+                example: "Genre successfully deleted",
               },
             },
           },
@@ -445,7 +334,7 @@ export const deleteBookDoc = {
       },
     },
     400: globalErrorSchema(),
-    404: notFoundSchema("DELETE", "/api/book/:id"),
+    404: notFoundSchema("DELETE", "/api/genre/:id"),
     500: internalErrorSchema,
   },
 }

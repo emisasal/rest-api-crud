@@ -16,7 +16,7 @@ export const getModels = async (
       .flat(2)
 
     if (!modelList) {
-      return next(errorHandler(409, "Error getting models list"))
+      return next(errorHandler(400, "Error getting models list"))
     }
 
     return res
@@ -45,7 +45,7 @@ export const getCategory = async (
       .flat(2)
 
     if (!categoryList) {
-      return next(errorHandler(409, "Error getting categories list"))
+      return next(errorHandler(400, "Error getting categories list"))
     }
 
     return res
