@@ -18,7 +18,7 @@ export const getAllBooksDoc = {
     {
       in: "query",
       name: "page",
-      description: "The list's page number.",
+      description: "List page number.",
       required: "true",
       schema: {
         type: "number",
@@ -28,7 +28,7 @@ export const getAllBooksDoc = {
     {
       in: "query",
       name: "sort",
-      description: "The value to sort the list order.",
+      description: "Value to sort list order.",
       required: "true",
       schema: {
         type: "string",
@@ -58,7 +58,7 @@ export const getAllBooksDoc = {
     {
       in: "query",
       name: "author",
-      description: "Filter by author's name (first or last). Exact or parcial.",
+      description: "Filter by author name (first or last). Exact or parcial.",
       schema: {
         type: "string",
       },
@@ -66,7 +66,7 @@ export const getAllBooksDoc = {
     {
       in: "query",
       name: "genre",
-      description: "Filter by genre's name. Exact or pacial.",
+      description: "Filter by genre name. Exact or pacial.",
       schema: {
         type: "string",
       },
@@ -74,7 +74,7 @@ export const getAllBooksDoc = {
     {
       in: "query",
       name: "publisher",
-      description: "Filter by publisher's name. Exact or pacial.",
+      description: "Filter by publisher name. Exact or pacial.",
       schema: {
         type: "string",
       },
@@ -110,7 +110,7 @@ export const getAllBooksDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book's list page",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -156,9 +156,8 @@ export const getAllBooksDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Error getting books"),
     404: notFoundSchema("GET", "/api/book"),
-    409: dbErrorSchema("Error getting books"),
     500: internalErrorSchema,
   },
 }
@@ -173,7 +172,7 @@ export const getBookByIdDoc = {
     {
       in: "params",
       name: "id",
-      description: "Id of book",
+      description: "Book Id",
       required: "true",
       schema: {
         type: "number",
@@ -182,7 +181,7 @@ export const getBookByIdDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -208,9 +207,8 @@ export const getBookByIdDoc = {
         },
       },
     },
-    400: globalErrorSchema,
-    404: notFoundSchema("GET", "/api/book/id"),
-    409: dbErrorSchema("Error getting book"),
+    400: globalErrorSchema("Error getting book"),
+    404: notFoundSchema("GET", "/api/book/:id"),
     500: internalErrorSchema,
   },
 }
@@ -229,10 +227,12 @@ export const postBookDoc = {
           properties: {
             title: {
               type: "string",
+              description: "Book title",
               example: "What happened in 1971",
             },
             description: {
               type: "string",
+              description: "Book description",
               example:
                 "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
             },
@@ -253,17 +253,17 @@ export const postBookDoc = {
             },
             price: {
               type: "number",
-              description: "Price of the book",
+              description: "Book price",
               example: 6.43,
             },
             publish_date: {
               type: "date",
-              description: "Book's publishing date",
+              description: "Book publishing date",
               example: "2001-06-25T07:01:44.000Z",
             },
             isbn: {
               type: "string",
-              description: "Book's ISBN code",
+              description: "Book ISBN code",
               example: "502074967-2",
             },
           },
@@ -274,7 +274,7 @@ export const postBookDoc = {
   },
   responses: {
     201: {
-      description: "Success creating book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -292,7 +292,7 @@ export const postBookDoc = {
               },
               data: {
                 type: "object",
-                description: "New created book",
+                description: "New book created",
                 example: bookOnly,
               },
             },
@@ -300,14 +300,14 @@ export const postBookDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Book already registred with id 123"),
     404: notFoundSchema("POST", "/api/book"),
-    409: dbErrorSchema("Book already registred with id 123"),
+    409: dbErrorSchema("Error creating book"),
     500: internalErrorSchema,
   },
 }
 
-// @route PATCH /api/book
+// @route PATCH /api/book/:id
 export const patchBookDoc = {
   tags: ["Book"],
   summary: "Modify book by Id",
@@ -317,7 +317,7 @@ export const patchBookDoc = {
     {
       in: "params",
       name: "id",
-      description: "Id of book",
+      description: "Book Id",
       required: "true",
       schema: {
         type: "number",
@@ -356,7 +356,7 @@ export const patchBookDoc = {
             },
             price: {
               type: "number",
-              description: "Price of the book",
+              description: "Book price",
               example: 6.43,
             },
           },
@@ -366,7 +366,7 @@ export const patchBookDoc = {
   },
   responses: {
     200: {
-      description: "Success updating book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -384,7 +384,7 @@ export const patchBookDoc = {
               },
               data: {
                 type: "object",
-                description: "Updated book",
+                description: "Book updated",
                 example: bookOnly,
               },
             },
@@ -392,8 +392,9 @@ export const patchBookDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("PATCH", "/api/book/:id"),
+    409: dbErrorSchema("Error updating book"),
     500: internalErrorSchema,
   },
 }
@@ -408,7 +409,7 @@ export const deleteBookDoc = {
     {
       in: "params",
       name: "id",
-      description: "Id of book",
+      description: "Book Id",
       required: "true",
       schema: {
         type: "number",
@@ -417,7 +418,7 @@ export const deleteBookDoc = {
   ],
   responses: {
     200: {
-      description: "Success deleting book",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -435,7 +436,7 @@ export const deleteBookDoc = {
               },
               message: {
                 type: "string",
-                description: "Deleted book",
+                description: "Book deleted",
                 example: "Book Id 123 Successfully Deleted",
               },
             },
@@ -443,7 +444,7 @@ export const deleteBookDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("DELETE", "/api/book/:id"),
     500: internalErrorSchema,
   },

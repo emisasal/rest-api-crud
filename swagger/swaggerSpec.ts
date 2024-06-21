@@ -4,14 +4,29 @@ import {
   getAuthorByIdDoc,
   patchAuthorDoc,
   postAuthorDoc,
-} from "./authorDocs"
+} from "./author.docs"
 import {
   deleteBookDoc,
   getAllBooksDoc,
   getBookByIdDoc,
   patchBookDoc,
   postBookDoc,
-} from "./bookDocs"
+} from "./book.docs"
+import { getCategoryDoc, getModelsDoc } from "./category.docs"
+import {
+  deleteCustomerDoc,
+  getAllCustomersDoc,
+  getCustomerByIdDoc,
+  patchCustomerDoc,
+} from "./customer.docs"
+import {
+  deleteGenreDoc,
+  getAllGenresDoc,
+  getGenreByIdDoc,
+  patchGenreDoc,
+  postGenreDoc,
+} from "./genre.docs"
+import { getImageByIdDocs } from "./image.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -83,6 +98,32 @@ const swaggerSpec = {
       get: getAuthorByIdDoc,
       patch: patchAuthorDoc,
       delete: deleteAuthorDoc,
+    },
+    "/api/category": {
+      get: getModelsDoc,
+    },
+    "/api/category/:name": {
+      get: getCategoryDoc,
+    },
+    "/api/customer": {
+      get: getAllCustomersDoc,
+    },
+    "/api/customer/:id": {
+      get: getCustomerByIdDoc,
+      patch: patchCustomerDoc,
+      delete: deleteCustomerDoc,
+    },
+    "/api/genre": {
+      get: getAllGenresDoc,
+      post: postGenreDoc,
+    },
+    "/api/genre/:id": {
+      get: getGenreByIdDoc,
+      patch: patchGenreDoc,
+      delete: deleteGenreDoc,
+    },
+    "/api/image/:id": {
+      get: getImageByIdDocs,
     },
   },
 }

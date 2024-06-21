@@ -78,7 +78,7 @@ export const getAllCustomers = async (
     })
 
     if (!customerList) {
-      return next(errorHandler(409, "Error getting Customers"))
+      return next(errorHandler(400, "Error getting Customers"))
     }
 
     const customerListNoPassword = customerList.map(
@@ -144,6 +144,7 @@ export const getCustomerById = async (
 
 // @desc Modify Customer by Id
 // @route PATCH /api/customer/:id
+// @body {first_name: string, last_name: string, email: string, password: string}
 export const patchCustomerByid = async (
   req: Request,
   res: Response,
@@ -168,6 +169,10 @@ export const patchCustomerByid = async (
       },
       data: data,
     })
+
+    if (!patchedCustomer) {
+      return next(errorHandler(409, "Error updating customer"))
+    }
 
     const cacheKeys = await redis.keys("getAllCustomers:*")
     cacheKeys ?? (await redis.del(cacheKeys))

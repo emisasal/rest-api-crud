@@ -56,7 +56,7 @@ export const getAllAuthorsDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting book's list page",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -102,9 +102,8 @@ export const getAllAuthorsDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Error getting Authors"),
     404: notFoundSchema("GET", "/api/author"),
-    409: dbErrorSchema("Error getting Authors"),
     500: internalErrorSchema,
   },
 }
@@ -128,7 +127,7 @@ export const getAuthorByIdDoc = {
   ],
   responses: {
     200: {
-      description: "Success getting author",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -154,9 +153,8 @@ export const getAuthorByIdDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Author not found"),
     404: notFoundSchema("GET", "/api/author/id"),
-    409: dbErrorSchema("Author not found"),
     500: internalErrorSchema,
   },
 }
@@ -198,7 +196,7 @@ export const postAuthorDoc = {
   },
   responses: {
     201: {
-      description: "Success creating author",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -224,9 +222,9 @@ export const postAuthorDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema("Author already registred"),
     404: notFoundSchema("POST", "/api/author/:id"),
-    409: dbErrorSchema("Author already registred"),
+    409: dbErrorSchema("Error Creating Author"),
     500: internalErrorSchema,
   },
 }
@@ -277,7 +275,7 @@ export const patchAuthorDoc = {
   },
   responses: {
     200: {
-      description: "Success updating author",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -303,8 +301,9 @@ export const patchAuthorDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("PATCH", "/api/book/:id"),
+    409: dbErrorSchema("Error updating Author"),
     500: internalErrorSchema,
   },
 }
@@ -328,7 +327,7 @@ export const deleteAuthorDoc = {
   ],
   responses: {
     200: {
-      description: "Success deleting author",
+      description: "OK",
       content: {
         "application/json": {
           schema: {
@@ -354,7 +353,7 @@ export const deleteAuthorDoc = {
         },
       },
     },
-    400: globalErrorSchema,
+    400: globalErrorSchema(),
     404: notFoundSchema("DELETE", "/api/author/:id"),
     500: internalErrorSchema,
   },

@@ -128,7 +128,7 @@ export const getAllBooks = async (
     })
 
     if (!bookList) {
-      return next(errorHandler(409, "Error getting books"))
+      return next(errorHandler(400, "Error getting books"))
     }
 
     redis.set(
@@ -173,7 +173,7 @@ export const getBookById = async (
     })
 
     if (!bookById) {
-      return next(errorHandler(409, "Book not found"))
+      return next(errorHandler(400, "Book not found"))
     }
 
     return res
@@ -206,7 +206,7 @@ export const postBook = async (
     if (findBookIsbn) {
       return next(
         errorHandler(
-          409,
+          400,
           `Book already registred with id ${findBookIsbn.book_id}`
         )
       )
@@ -215,6 +215,10 @@ export const postBook = async (
     const newBook = await prisma.book.create({
       data: data,
     })
+
+    if (!newBook) {
+      return next(errorHandler(409, "Error creating book"))
+    }
 
     const cacheKeys = await redis.keys("getAllBooks:*")
     cacheKeys ?? (await redis.del(cacheKeys))
@@ -248,6 +252,10 @@ export const patchBookById = async (
       },
       data: data,
     })
+
+    if (!patchedBook) {
+      return next(errorHandler(409, "Error updating book"))
+    }
 
     const cacheKeys = await redis.keys("getAllBooks:*")
     cacheKeys ?? (await redis.del(cacheKeys))
