@@ -4,15 +4,21 @@ import {
   getAuthorByIdDoc,
   patchAuthorDoc,
   postAuthorDoc,
-} from "./authorDocs"
+} from "./author.docs"
 import {
   deleteBookDoc,
   getAllBooksDoc,
   getBookByIdDoc,
   patchBookDoc,
   postBookDoc,
-} from "./bookDocs"
-import { getCategoryDoc, getModelsDoc } from "./categoryDocs"
+} from "./book.docs"
+import { getCategoryDoc, getModelsDoc } from "./category.docs"
+import {
+  deleteCustomerDoc,
+  getAllCustomersDoc,
+  getCustomerByIdDoc,
+  patchCustomerDoc,
+} from "./customer.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -86,11 +92,19 @@ const swaggerSpec = {
       delete: deleteAuthorDoc,
     },
     "/api/category": {
-      get: getModelsDoc
+      get: getModelsDoc,
     },
     "/api/category/:name": {
-      get: getCategoryDoc
-    }
+      get: getCategoryDoc,
+    },
+    "/api/customer": {
+      get: getAllCustomersDoc,
+    },
+    "/api/customer/:id": {
+      get: getCustomerByIdDoc,
+      patch: patchCustomerDoc,
+      delete: deleteCustomerDoc,
+    },
   },
 }
 

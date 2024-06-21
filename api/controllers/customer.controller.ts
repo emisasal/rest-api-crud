@@ -129,7 +129,7 @@ export const getCustomerById = async (
     })
 
     if (!customerByid) {
-      return next(errorHandler(400, "Customer not found"))
+      return next(errorHandler(409, "Customer not found"))
     }
 
     return res.status(200).send({
@@ -144,6 +144,7 @@ export const getCustomerById = async (
 
 // @desc Modify Customer by Id
 // @route PATCH /api/customer/:id
+// @body {first_name: string, last_name: string, email: string, password: string}
 export const patchCustomerByid = async (
   req: Request,
   res: Response,
