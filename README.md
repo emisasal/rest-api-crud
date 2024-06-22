@@ -153,6 +153,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
+The redis server can be stopped using `ctrl-c` or `redis-cli stop`.
 `ioredis` is the dependency used to interact with Redis from Node.
 The redis client `/config/redisClient` informs by console the conection status.
 The endpoints using redis returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
@@ -162,13 +163,30 @@ If no chache is found the controller calls the db, stores in cache the result an
 The aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. When the cache expires it removes itself from redis.
 The services to create, modify and delete elements removes all the existing cached keys for the related lists.
 
+## Password hash and salt
+
+New users passwords are encrypted using `bcrypt` hash and salt.
+Bcrypt hashes the password and adds salt to avoid rainbow table attacks.
+Because the password stored in db is hashed, only the user knows the password.
+If the user forgets or needs to change the password a new password must be entered.
+Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the has and salt must be equal). The hashed password never gets decrypted.
+
 ## JWT Access and Refresh
+
+When the user successfully login the server returns two jwt (Jason Web Token) in http only cookies: `access_token` and `refresh_token`.
+This allows for stateless user session and permissions (client side).
+The cookies prevent the jwt to be javascript accessible from the client side.
+Only the signatures for the jwt and the cookies are encrypted, not the tokens content.
+
+- The `access_token` informs the server if the user have access to the resources. The token and the cookie are short-lived to prevent signature forgery and other types of attacks.
+  When the token gets invalidated or the cookie expires, if the `refresh_token` is valid, a new `access_token` is generated.
+- The `refresh_token` validation is longer and gives the user session in the client side.
+  As long the `refresh_token` is valid, new `access_token` are generated allowing the user to access the permitted resources.
 
 ## Swagger documentation
 
 ## ToDo
 
-- Customer session with JWT (complete verifyJWT / check tokens logic)
 - Swagger (complete routes)
 - Update ERD: Customer
 - Testing (`supertest` or `node`)
