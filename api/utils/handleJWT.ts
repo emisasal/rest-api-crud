@@ -1,28 +1,17 @@
 import jwt, { Secret } from "jsonwebtoken"
 
-type Customer = {
-  customer_id: number
-  first_name: string
-  last_name: string
-}
-
-export const signAccessJWT = (customer: Customer) => {
+export const signAccessJWT = (id: number | string) => {
   const accessToken = jwt.sign(
-    {
-      id: customer.customer_id,
-      first_name: customer.first_name,
-      last_name: customer.last_name,
-    },
+    { sub: id },
     process.env.JWT_ACCESS_SECRET as Secret,
     {
-      expiresIn: "10m",
+      expiresIn: "15m",
     }
   )
-
   return accessToken
 }
 
-export const signRefreshToken = (id: string | number) => {
+export const signRefreshJWT = (id: string | number) => {
   const refreshToken = jwt.sign(
     { sub: id },
     process.env.JWT_REFRESH_SECRET as Secret,
@@ -30,4 +19,5 @@ export const signRefreshToken = (id: string | number) => {
       expiresIn: "30d",
     }
   )
+  return refreshToken
 }
