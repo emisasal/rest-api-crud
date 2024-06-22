@@ -18,7 +18,7 @@
   "author": "Emiliano Sasal",
   "license": "ISC",
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.44.1",
+    "@dotenvx/dotenvx": "^0.45.0",
     "@prisma/client": "^5.12.1",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
