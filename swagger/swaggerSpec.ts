@@ -33,6 +33,13 @@ import {
   getOrderByIdDoc,
   postOrderDoc,
 } from "./order.docs"
+import {
+  deletePublisherDoc,
+  getAllPublishersDoc,
+  getPublisherByIdDoc,
+  patchPublisherDoc,
+  postPublisherDoc,
+} from "./publisher.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -135,6 +142,15 @@ const swaggerSpec = {
     "/api/order/:id": {
       get: getOrderByIdDoc,
       delete: deleteOrderDoc,
+    },
+    "/api/publisher": {
+      get: getAllPublishersDoc,
+      post: postPublisherDoc,
+    },
+    "/api/publisher/:id": {
+      get: getPublisherByIdDoc,
+      patch: patchPublisherDoc,
+      delete: deletePublisherDoc,
     },
   },
 }

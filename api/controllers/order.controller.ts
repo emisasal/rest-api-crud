@@ -21,7 +21,7 @@ export const getAllOrders = async (
     const dateStart = req.query.dateStart?.toString() || ""
     const dateEnd = req.query.dateEnd?.toString() || ""
 
-    const CACHE_KEY = `getAllBooks:page=${pageReq}&sort=${sort}&order=${order}&customer=${customer}&dateStart=${dateStart}&dateEnd=${dateEnd}`
+    const CACHE_KEY = `getAllOrders:page=${pageReq}&sort=${sort}&order=${order}&customer=${customer}&dateStart=${dateStart}&dateEnd=${dateEnd}`
 
     const ordersCache = await redis.get(CACHE_KEY)
     if (ordersCache) {
@@ -189,6 +189,9 @@ export const postOrder = async (
       return next(errorHandler(409, "Error creating Order"))
     }
 
+    const cacheKeys = await redis.keys("getAllOrders:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
+
     return res.status(201).send({
       success: true,
       statusCode: 201,
@@ -218,6 +221,9 @@ export const deleteOrderById = async (
     if (!deletedOrder) {
       return next(errorHandler(409, "Error deleting Order"))
     }
+
+    const cacheKeys = await redis.keys("getAllOrders:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,
