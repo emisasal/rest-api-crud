@@ -3,8 +3,9 @@ import {
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { publisherData } from "./data/publisherData"
+import { publisherData } from "./data"
 
 export const getAllPublishersDoc = {
   tags: ["Publisher"],
@@ -91,6 +92,7 @@ export const getAllPublishersDoc = {
       },
     },
     400: globalErrorSchema("Error getting Publisher list"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/publisher"),
     500: internalErrorSchema,
   },
@@ -142,6 +144,7 @@ export const getPublisherByIdDoc = {
       },
     },
     400: globalErrorSchema("Publisher not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/publisher/:id"),
     500: internalErrorSchema,
   },
@@ -211,6 +214,7 @@ export const postPublisherDoc = {
       },
     },
     400: globalErrorSchema("Error creating Publisher"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/publisher"),
     409: dbErrorSchema("Publisher already registred"),
     500: internalErrorSchema,
@@ -290,6 +294,7 @@ export const patchPublisherDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/publisher/:id"),
     409: dbErrorSchema("Error updating publisher"),
     500: internalErrorSchema,
@@ -342,6 +347,7 @@ export const deletePublisherDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/publisher/:id"),
     409: dbErrorSchema("Error deleting publisher"),
     500: internalErrorSchema,

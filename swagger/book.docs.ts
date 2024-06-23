@@ -1,9 +1,10 @@
-import { bookData } from "./data/bookData"
+import { bookData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 const { author, genre, publisher, ...bookOnly } = bookData
@@ -157,6 +158,7 @@ export const getAllBooksDoc = {
       },
     },
     400: globalErrorSchema("Error getting books"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/book"),
     500: internalErrorSchema,
   },
@@ -208,6 +210,7 @@ export const getBookByIdDoc = {
       },
     },
     400: globalErrorSchema("Error getting book"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/book/:id"),
     500: internalErrorSchema,
   },
@@ -309,6 +312,7 @@ export const postBookDoc = {
       },
     },
     400: globalErrorSchema("Book already registred with id 123"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/book"),
     409: dbErrorSchema("Error creating book"),
     500: internalErrorSchema,
@@ -402,6 +406,7 @@ export const patchBookDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/book/:id"),
     409: dbErrorSchema("Error updating book"),
     500: internalErrorSchema,
@@ -454,6 +459,7 @@ export const deleteBookDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/book/:id"),
     500: internalErrorSchema,
   },

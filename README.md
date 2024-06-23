@@ -185,9 +185,12 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 
 ## Swagger documentation
 
+The list of endpoints are documented with Swagger in `http://localhost:8080/api-docs`.
+The endpoints are ordered by types and include params, query params and body. And all the responses with status code and examples.
+
 ## ToDo
 
-- Swagger (complete routes)
+- Swagger (investigate executing endpoints)
 - User session in Redis (`express-session`, `connect-redis`). Store user id and refresh token in redis to compare against recieived cookie.
 - Update ERD: Customer
 - Testing (`jest` and `supertest`)

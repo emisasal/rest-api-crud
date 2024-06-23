@@ -1,9 +1,10 @@
-import { genreData } from "./data/genreData"
+import { genreData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route /api/genre
@@ -92,6 +93,7 @@ export const getAllGenresDoc = {
       },
     },
     400: globalErrorSchema("Error getting Genre list"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/genre"),
     500: internalErrorSchema,
   },
@@ -143,6 +145,7 @@ export const getGenreByIdDoc = {
       },
     },
     400: globalErrorSchema("Genre Not Found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/genre/:id"),
     500: internalErrorSchema,
   },
@@ -208,6 +211,7 @@ export const postGenreDoc = {
       },
     },
     400: globalErrorSchema("Genre already registred"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/genre"),
     409: dbErrorSchema("Error Creating Genre"),
     500: internalErrorSchema,
@@ -283,6 +287,7 @@ export const patchGenreDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/genre/:id"),
     409: dbErrorSchema("Error updating Genre"),
     500: internalErrorSchema,
@@ -335,6 +340,7 @@ export const deleteGenreDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/genre/:id"),
     500: internalErrorSchema,
   },

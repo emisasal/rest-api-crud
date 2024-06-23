@@ -3,8 +3,9 @@ import {
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { orderData } from "./data/orderData"
+import { orderData } from "./data"
 
 // @route GET /api/order
 export const getAllOrdersDoc = {
@@ -122,6 +123,7 @@ export const getAllOrdersDoc = {
       },
     },
     400: globalErrorSchema("Error getting Orders"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/order"),
     500: internalErrorSchema,
   },
@@ -173,6 +175,7 @@ export const getOrderByIdDoc = {
       },
     },
     400: globalErrorSchema("Order not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/order/:id"),
     500: internalErrorSchema,
   },
@@ -238,6 +241,7 @@ export const postOrderDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/order"),
     409: dbErrorSchema("Error creating Order"),
     500: internalErrorSchema,
@@ -290,6 +294,7 @@ export const deleteOrderDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/order/:id"),
     409: dbErrorSchema("Error deleting Order"),
     500: internalErrorSchema,

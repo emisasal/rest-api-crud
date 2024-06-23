@@ -3,8 +3,9 @@ import {
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { reviewData } from "./data/reviewData"
+import { reviewData } from "./data"
 
 // @route GET /api/REVIEW
 export const getAllReviewsDoc = {
@@ -131,6 +132,7 @@ export const getAllReviewsDoc = {
       },
     },
     400: globalErrorSchema("Error getting Reviews list"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/review"),
     500: internalErrorSchema,
   },
@@ -182,6 +184,7 @@ export const getReviewByIdDoc = {
       },
     },
     400: globalErrorSchema("Review not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/review/:id"),
     500: internalErrorSchema,
   },
@@ -258,6 +261,7 @@ export const postReviewDoc = {
       },
     },
     400: globalErrorSchema("Review for book already exist"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/review"),
     409: dbErrorSchema("Review for book already exist"),
     500: internalErrorSchema,
@@ -310,6 +314,7 @@ export const deleteReviewDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/review/:id"),
     409: dbErrorSchema("Error deleting Review"),
     500: internalErrorSchema,

@@ -2,6 +2,7 @@ import {
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
   unprocessableContent,
 } from "./swaggerErrorSchemas"
 
@@ -34,6 +35,7 @@ export const getImageByIdDocs = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/image/:id"),
     422: unprocessableContent("Unable to get image 12.jpg"),
     500: internalErrorSchema,

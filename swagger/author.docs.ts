@@ -1,9 +1,10 @@
-import { authorData } from "./data/authorData"
+import { authorData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route GET /api/author
@@ -103,6 +104,7 @@ export const getAllAuthorsDoc = {
       },
     },
     400: globalErrorSchema("Error getting Authors"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/author"),
     500: internalErrorSchema,
   },
@@ -154,6 +156,7 @@ export const getAuthorByIdDoc = {
       },
     },
     400: globalErrorSchema("Author not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/author/id"),
     500: internalErrorSchema,
   },
@@ -223,6 +226,7 @@ export const postAuthorDoc = {
       },
     },
     400: globalErrorSchema("Author already registred"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/author/:id"),
     409: dbErrorSchema("Error Creating Author"),
     500: internalErrorSchema,
@@ -302,6 +306,7 @@ export const patchAuthorDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/book/:id"),
     409: dbErrorSchema("Error updating Author"),
     500: internalErrorSchema,
@@ -354,6 +359,7 @@ export const deleteAuthorDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/author/:id"),
     500: internalErrorSchema,
   },

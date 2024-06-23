@@ -1,4 +1,4 @@
-import { customerData } from "./data/customerData"
+import { customerData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,

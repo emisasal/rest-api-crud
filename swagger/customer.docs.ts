@@ -1,9 +1,10 @@
-import { customerData } from "./data/customerData"
+import { customerData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route /api/customer
@@ -163,6 +164,7 @@ export const getCustomerByIdDoc = {
       },
     },
     400: globalErrorSchema("Customer not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/customer/:id"),
     500: internalErrorSchema,
   },
@@ -247,6 +249,7 @@ export const patchCustomerDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/customer/:id"),
     409: dbErrorSchema("Error updating customer"),
     500: internalErrorSchema,
@@ -300,6 +303,7 @@ export const deleteCustomerDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/customer/:id"),
     500: internalErrorSchema,
   },
