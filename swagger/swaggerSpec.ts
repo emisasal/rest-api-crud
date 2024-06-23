@@ -40,6 +40,12 @@ import {
   patchPublisherDoc,
   postPublisherDoc,
 } from "./publisher.docs"
+import {
+  deleteReviewDoc,
+  getAllReviewsDoc,
+  getReviewByIdDoc,
+  postReviewDoc,
+} from "./review.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -151,6 +157,14 @@ const swaggerSpec = {
       get: getPublisherByIdDoc,
       patch: patchPublisherDoc,
       delete: deletePublisherDoc,
+    },
+    "/api/review": {
+      get: getAllReviewsDoc,
+      post: postReviewDoc,
+    },
+    "/api/review/:id": {
+      get: getReviewByIdDoc,
+      delete: deleteReviewDoc,
     },
   },
 }
