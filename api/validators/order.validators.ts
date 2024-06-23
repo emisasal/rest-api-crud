@@ -22,8 +22,8 @@ export const getAllOrdersValidator = [
     .optional()
     .isInt()
     .withMessage("Query 'customer' must be number"),
-  query("dateinit").optional().isDate(),
-  query("dateend").optional().isDate(),
+  query("dateStart").optional().isDate(),
+  query("dateEnd").optional().isDate(),
 ]
 
 export const postOrderValidator = [

@@ -188,7 +188,8 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 ## ToDo
 
 - Swagger (complete routes)
+- User session in Redis (`express-session`, `connect-redis`). Store user id and refresh token in redis to compare against recieived cookie.
 - Update ERD: Customer
-- Testing (`supertest` or `node`)
+- Testing (`jest` and `supertest`)
 - Export db to `.CSV`
 - docker compose for db, redis and api.

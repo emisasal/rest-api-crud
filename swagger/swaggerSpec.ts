@@ -27,6 +27,12 @@ import {
   postGenreDoc,
 } from "./genre.docs"
 import { getImageByIdDocs } from "./image.docs"
+import {
+  deleteOrderDoc,
+  getAllOrdersDoc,
+  getOrderByIdDoc,
+  postOrderDoc,
+} from "./order.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -69,9 +75,6 @@ const swaggerSpec = {
     },
     {
       name: "Order",
-    },
-    {
-      name: "Order Detail",
     },
     {
       name: "Publisher",
@@ -124,6 +127,14 @@ const swaggerSpec = {
     },
     "/api/image/:id": {
       get: getImageByIdDocs,
+    },
+    "/api/order": {
+      get: getAllOrdersDoc,
+      post: postOrderDoc,
+    },
+    "/api/order/:id": {
+      get: getOrderByIdDoc,
+      delete: deleteOrderDoc,
     },
   },
 }
