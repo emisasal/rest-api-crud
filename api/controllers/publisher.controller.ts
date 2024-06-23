@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import { validationResult } from "express-validator"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
 import redis from "../config/redisClient"
@@ -117,12 +116,6 @@ export const postPublisher = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     data.publisher_name = capitalizeWords(data.publisher_name)
     if (data.contact_name) {
@@ -147,9 +140,9 @@ export const postPublisher = async (
     const cacheKeys = await redis.keys("getAllPublishers:*")
     cacheKeys ?? (await redis.del(cacheKeys))
 
-    return res.status(200).send({
+    return res.status(201).send({
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: newPublisher,
     })
   } catch (error) {
@@ -159,21 +152,13 @@ export const postPublisher = async (
 
 // @desc Modify Publisher by Id
 // @route PATCH /api/publisher/:id
+// @body {publisher_name: string, contact_name: string, phone_number: string}
 export const patchPublisherById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors
-        .array()
-        .map((err) => err.msg)
-        .toString()
-      return next(errorHandler(422, errorMessages))
-    }
-
     const id = Number(req.params.id)
     const data = req.body
     if (data.publisher_name) {
@@ -192,6 +177,10 @@ export const patchPublisherById = async (
       },
       data: data,
     })
+
+    if (!patchedPublisher) {
+      return next(errorHandler(409, "Error updating publisher"))
+    }
 
     const cacheKeys = await redis.keys("getAllPublishers:*")
     cacheKeys ?? (await redis.del(cacheKeys))
@@ -216,11 +205,15 @@ export const deletePublisher = async (
   try {
     const id = Number(req.params.id)
 
-    await prisma.publisher.delete({
+    const deletedPublisher = await prisma.publisher.delete({
       where: {
         publisher_id: id,
       },
     })
+
+    if (!deletedPublisher) {
+      return next(errorHandler(409, "Error deleting publisher"))
+    }
 
     const cacheKeys = await redis.keys("getAllPublishers:*")
     cacheKeys ?? (await redis.del(cacheKeys))

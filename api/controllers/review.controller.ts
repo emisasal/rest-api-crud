@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { prisma } from "../config/prismaClient"
 import errorHandler from "../utils/errorHandler"
-import { validationResult } from "express-validator"
 import paginationHandler from "../utils/paginationHandler"
+import redis from "config/redisClient"
 
 const pageSize = 20
 
@@ -14,12 +14,29 @@ export const getAllReviews = async (
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort = req.query.sort?.toString() || "review_date"
     const order = req.query.order?.toString() || "desc"
     const book_id = Number(req.query.book_id) || 0
     const customer_id = Number(req.query.customer_id) || 0
     const rateMin = Number(req.query.rateMin) || 0
     const rateMax = Number(req.query.rateMax) || 0
+
+    const CACHE_KEY = `getAllReviews:page=${pageReq}&sort=${sort}&order=${order}&book_id=${book_id}&customer_id=${customer_id}&rateMin=${rateMin}&rateMax=${rateMax}`
+
+    const reviewsCache = await redis.get(CACHE_KEY)
+    if (reviewsCache) {
+      const cachedData = JSON.parse(reviewsCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.reviewList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     let where = {}
     if (book_id) {
@@ -55,8 +72,15 @@ export const getAllReviews = async (
     })
 
     if (!reviewList) {
-      return next(errorHandler(409, "Error getting Reviews list"))
+      return next(errorHandler(400, "Error getting Reviews list"))
     }
+
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ reviewList, count, page, limit }),
+      "EX",
+      3600
+    )
 
     return res.status(200).send({
       success: true,
@@ -65,6 +89,7 @@ export const getAllReviews = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -114,12 +139,6 @@ export const postReview = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((err) => err.msg)
-      return next(errorHandler(422, errorMessages.toString()))
-    }
-
     const data = req.body
     data.book_id = Number(data.book_id)
     data.customer_id = Number(data.customer_id)
@@ -138,19 +157,22 @@ export const postReview = async (
       },
     })
     if (findReview) {
-      return next(errorHandler(409, "Review for book already exist"))
+      return next(errorHandler(400, "Review for book already exist"))
     }
 
     const createReview = await prisma.review.create({
       data: data,
     })
     if (!createReview) {
-      return next(errorHandler(400, "Error posting review"))
+      return next(errorHandler(409, "Error posting review"))
     }
 
-    return res.status(200).send({
+    const cacheKeys = await redis.keys("getAllReviews:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
+
+    return res.status(201).send({
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: createReview,
     })
   } catch (error) {
@@ -173,6 +195,13 @@ export const deleteReview = async (
         review_id: id,
       },
     })
+
+    if (!deletedReview) {
+      return next(errorHandler(409, "Error deleting Review"))
+    }
+
+    const cacheKeys = await redis.keys("getAllReviews:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,

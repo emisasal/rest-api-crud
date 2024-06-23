@@ -1,9 +1,10 @@
-import { authorData } from "./data/authorData"
+import { authorData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route GET /api/author
@@ -17,7 +18,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "page",
       description: "The list's page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +28,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "sort",
       description: "The value to sort the list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["first_name", "last_name"],
@@ -38,7 +39,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "order",
       description: "Defines order of elements list",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -103,6 +104,7 @@ export const getAllAuthorsDoc = {
       },
     },
     400: globalErrorSchema("Error getting Authors"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/author"),
     500: internalErrorSchema,
   },
@@ -119,7 +121,7 @@ export const getAuthorByIdDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -154,12 +156,13 @@ export const getAuthorByIdDoc = {
       },
     },
     400: globalErrorSchema("Author not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/author/id"),
     500: internalErrorSchema,
   },
 }
 
-// @route POST /api/book
+// @route POST /api/author
 export const postAuthorDoc = {
   tags: ["Author"],
   summary: "Post new author",
@@ -189,10 +192,10 @@ export const postAuthorDoc = {
               example: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
             },
           },
-          required: true,
         },
       },
     },
+    required: true,
   },
   responses: {
     201: {
@@ -223,6 +226,7 @@ export const postAuthorDoc = {
       },
     },
     400: globalErrorSchema("Author already registred"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("POST", "/api/author/:id"),
     409: dbErrorSchema("Error Creating Author"),
     500: internalErrorSchema,
@@ -240,7 +244,7 @@ export const patchAuthorDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -268,10 +272,10 @@ export const patchAuthorDoc = {
               example: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
             },
           },
-          required: true,
         },
       },
     },
+    required: true,
   },
   responses: {
     200: {
@@ -302,6 +306,7 @@ export const patchAuthorDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/book/:id"),
     409: dbErrorSchema("Error updating Author"),
     500: internalErrorSchema,
@@ -319,7 +324,7 @@ export const deleteAuthorDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -354,6 +359,7 @@ export const deleteAuthorDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/author/:id"),
     500: internalErrorSchema,
   },

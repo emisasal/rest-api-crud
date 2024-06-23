@@ -2,45 +2,63 @@ import { NextFunction, Request, Response } from "express"
 import { prisma } from "../config/prismaClient"
 import errorHandler from "../utils/errorHandler"
 import paginationHandler from "../utils/paginationHandler"
+import redis from "config/redisClient"
 
 const pageSize = 20
 
 // @desc Get list of Orders w/ pagination and filter
-// @route /api/order?page={number}&sort={ order_date | total_amount }&order={ asc | desc }&customer={ customer_id }&dateinit={yyyy-dd-mm}&dateend={yyyy-dd-mm}
+// @route /api/order?page={number}&sort={ order_date | total_amount }&order={ asc | desc }&customer={ customer_id }&dateStart={yyyy-dd-mm}&dateEnd={yyyy-dd-mm}
 export const getAllOrders = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const pageReq = Number(req.query.page)
     const sort = req.query.sort?.toString() || "order_date"
     const order = req.query.order?.toString() || "desc"
     const customer = Number(req.query.customer) || null
-    const dateinit = req.query.dateinit?.toString() || ""
-    const dateend = req.query.dateend?.toString() || ""
+    const dateStart = req.query.dateStart?.toString() || ""
+    const dateEnd = req.query.dateEnd?.toString() || ""
+
+    const CACHE_KEY = `getAllOrders:page=${pageReq}&sort=${sort}&order=${order}&customer=${customer}&dateStart=${dateStart}&dateEnd=${dateEnd}`
+
+    const ordersCache = await redis.get(CACHE_KEY)
+    if (ordersCache) {
+      const cachedData = JSON.parse(ordersCache)
+      return res.status(200).send({
+        success: true,
+        statusCode: 200,
+        data: cachedData.ordersList,
+        count: cachedData.count,
+        page: cachedData.page,
+        limit: cachedData.limit,
+        cache: true,
+      })
+    }
 
     const whereHandler = (
       customer: number | null,
-      dateinit: string | null,
-      dateend: string | null
+      dateStart: string | null,
+      dateEnd: string | null
     ) => {
       let where = {}
       if (customer) {
         where = { customer_id: customer }
       }
-      if (dateinit && dateend) {
+      if (dateStart && dateEnd) {
         where = {
           ...where,
           order_date: {
-            gte: new Date(dateinit),
-            lte: new Date(dateend),
+            gte: new Date(dateStart),
+            lte: new Date(dateEnd),
           },
         }
       }
       return where
     }
 
-    const where = whereHandler(customer, dateinit, dateend)
+    const where = whereHandler(customer, dateStart, dateEnd)
 
     const count = await prisma.order.count({ where })
     const { limit, page } = paginationHandler({
@@ -59,8 +77,15 @@ export const getAllOrders = async (
     })
 
     if (!ordersList) {
-      return next(errorHandler(409, "Error getting Orders"))
+      return next(errorHandler(400, "Error getting Orders"))
     }
+
+    redis.set(
+      CACHE_KEY,
+      JSON.stringify({ ordersList, count, page, limit }),
+      "EX",
+      3600
+    )
 
     return res.status(200).send({
       success: true,
@@ -69,6 +94,7 @@ export const getAllOrders = async (
       count: count,
       page: page,
       limit: limit,
+      cache: false,
     })
   } catch (error) {
     return next(error)
@@ -160,12 +186,15 @@ export const postOrder = async (
       },
     })
     if (!newOrder) {
-      return next(errorHandler(400, "Error creating Order"))
+      return next(errorHandler(409, "Error creating Order"))
     }
 
-    return res.status(200).send({
+    const cacheKeys = await redis.keys("getAllOrders:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
+
+    return res.status(201).send({
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: newOrder,
     })
   } catch (error) {
@@ -188,6 +217,13 @@ export const deleteOrderById = async (
         order_id: id,
       },
     })
+
+    if (!deletedOrder) {
+      return next(errorHandler(409, "Error deleting Order"))
+    }
+
+    const cacheKeys = await redis.keys("getAllOrders:*")
+    cacheKeys ?? (await redis.del(cacheKeys))
 
     return res.status(200).send({
       success: true,

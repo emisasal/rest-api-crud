@@ -1,9 +1,10 @@
-import { customerData } from "./data/customerData"
+import { customerData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route /api/customer
@@ -17,7 +18,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "page",
       description: "The list's page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +28,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "sort",
       description: "The value to sort the list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["first_name", "last_name"],
@@ -38,7 +39,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -127,7 +128,7 @@ export const getCustomerByIdDoc = {
       in: "params",
       name: "id",
       description: "Id of customer",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",
@@ -163,6 +164,7 @@ export const getCustomerByIdDoc = {
       },
     },
     400: globalErrorSchema("Customer not found"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/customer/:id"),
     500: internalErrorSchema,
   },
@@ -179,7 +181,7 @@ export const patchCustomerDoc = {
       in: "params",
       name: "id",
       description: "Customer Id",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",
@@ -216,7 +218,7 @@ export const patchCustomerDoc = {
         },
       },
     },
-    required: "true",
+    required: true,
   },
   responses: {
     200: {
@@ -247,6 +249,7 @@ export const patchCustomerDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("PATCH", "/api/customer/:id"),
     409: dbErrorSchema("Error updating customer"),
     500: internalErrorSchema,
@@ -264,7 +267,7 @@ export const deleteCustomerDoc = {
       in: "params",
       name: "id",
       description: "Customer Id",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",
@@ -300,6 +303,7 @@ export const deleteCustomerDoc = {
       },
     },
     400: globalErrorSchema(),
+    401: unauthorizedSchema(),
     404: notFoundSchema("DELETE", "/api/customer/:id"),
     500: internalErrorSchema,
   },

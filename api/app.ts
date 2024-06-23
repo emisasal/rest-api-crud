@@ -18,10 +18,10 @@ const app = express()
 
 app.use(helmet())
 app.use(cors(corsOptions))
-app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
-app.use(cookieParser(COOKIE_SECRET))
 app.use(express.json()) // recognize body as json
-app.use(express.urlencoded({ extended: false })) // recognize body as string or array
+app.use(express.urlencoded({ extended: true })) // recognize body as string or array
+app.use(cookieParser(COOKIE_SECRET))
+app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
 
 // Swagger
 app.use(

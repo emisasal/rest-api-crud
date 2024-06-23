@@ -1,8 +1,9 @@
-import { categoryListDoc, modelsListData } from "./data/categoryData"
+import { categoryListDoc, modelsListData } from "./data"
 import {
   globalErrorSchema,
   internalErrorSchema,
   notFoundSchema,
+  unauthorizedSchema,
 } from "./swaggerErrorSchemas"
 
 // @route /api/category
@@ -40,6 +41,7 @@ export const getModelsDoc = {
       },
     },
     400: globalErrorSchema("Error getting models list"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/category"),
     500: internalErrorSchema,
   },
@@ -56,7 +58,7 @@ export const getCategoryDoc = {
       in: "params",
       name: "name",
       description: "Model name",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
       },
@@ -91,6 +93,7 @@ export const getCategoryDoc = {
       },
     },
     400: globalErrorSchema("Error getting categories list"),
+    401: unauthorizedSchema(),
     404: notFoundSchema("GET", "/api/category/:name"),
     500: internalErrorSchema,
   },

@@ -1,4 +1,3 @@
-import { genreData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
@@ -6,13 +5,14 @@ import {
   notFoundSchema,
   unauthorizedSchema,
 } from "./swaggerErrorSchemas"
+import { reviewData } from "./data"
 
-// @route /api/genre
-export const getAllGenresDoc = {
-  tags: ["Genre"],
-  summary: "Get genres list",
-  description: "Get genres list by page, order and filters",
-  operationId: "getAllGenresDoc",
+// @route GET /api/REVIEW
+export const getAllReviewsDoc = {
+  tags: ["Review"],
+  summary: "Get reviews list",
+  description: "Get reviews list by page, order and filters",
+  operationId: "getAllReviewsDoc",
   parameters: [
     {
       in: "query",
@@ -23,6 +23,17 @@ export const getAllGenresDoc = {
         type: "number",
       },
       example: 0,
+    },
+    {
+      in: "query",
+      name: "sort",
+      description: "Value to sort list order.",
+      required: true,
+      schema: {
+        type: "string",
+        enum: ["review_date", "rating"],
+      },
+      example: "review_date",
     },
     {
       in: "query",
@@ -37,11 +48,39 @@ export const getAllGenresDoc = {
     },
     {
       in: "query",
-      name: "name",
-      description: "Filter by genre name. Exact or parcial.",
+      name: "book_id",
+      description: "Filter by book Id.",
       schema: {
-        type: "string",
+        type: "number",
       },
+      example: 492,
+    },
+    {
+      in: "query",
+      name: "customer_id",
+      description: "Filter by customer Id",
+      schema: {
+        type: "number",
+      },
+      example: 420,
+    },
+    {
+      in: "query",
+      name: "rateMin",
+      description: "Filter rating range. Must include rateMax",
+      schema: {
+        type: "number",
+      },
+      example: 4,
+    },
+    {
+      in: "query",
+      name: "rateMax",
+      description: "Filter rating range. Must include rateMin",
+      schema: {
+        type: "number",
+      },
+      example: 7,
     },
   ],
   responses: {
@@ -64,13 +103,13 @@ export const getAllGenresDoc = {
               },
               data: {
                 type: "array",
-                description: "Array of genres",
-                example: [genreData],
+                description: "Array of book objects",
+                example: [reviewData],
               },
               count: {
                 type: "number",
                 description: "Total amount of list elements",
-                example: 124,
+                example: 732,
               },
               page: {
                 type: "number",
@@ -80,7 +119,7 @@ export const getAllGenresDoc = {
               limit: {
                 type: "number",
                 description: "Last page number of the list",
-                example: 6,
+                example: 12,
               },
               cache: {
                 type: "boolean",
@@ -92,24 +131,24 @@ export const getAllGenresDoc = {
         },
       },
     },
-    400: globalErrorSchema("Error getting Genre list"),
+    400: globalErrorSchema("Error getting Reviews list"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("GET", "/api/genre"),
+    404: notFoundSchema("GET", "/api/review"),
     500: internalErrorSchema,
   },
 }
 
-// @route GET /api/genre/:id
-export const getGenreByIdDoc = {
-  tags: ["Genre"],
-  summary: "Get genre by Id",
-  description: "Get single genre by param Id",
-  operationId: "getGenreByIdDoc",
+// @route GET /api/review/:id
+export const getReviewByIdDoc = {
+  tags: ["Review"],
+  summary: "Get review by Id",
+  description: "Get single review by param Id",
+  operationId: "getReviewByIdDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Genre Id",
+      description: "Review Id",
       required: true,
       schema: {
         type: "number",
@@ -136,45 +175,56 @@ export const getGenreByIdDoc = {
               },
               data: {
                 type: "array",
-                description: "Book object data",
-                example: genreData,
+                description: "Review object data",
+                example: reviewData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Genre Not Found"),
+    400: globalErrorSchema("Review not found"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("GET", "/api/genre/:id"),
+    404: notFoundSchema("GET", "/api/review/:id"),
     500: internalErrorSchema,
   },
 }
 
-// @route POST /api/genre
-export const postGenreDoc = {
-  tags: ["Genre"],
-  summary: "Post new genre",
-  description: "Create new genre",
-  operationId: "postGenreDoc",
+// @route POST /api/review
+export const postReviewDoc = {
+  tags: ["Review"],
+  summary: "Post new review",
+  description:
+    "Create new review with book and customer id, rating and comment.",
+  operationId: "postReviewDoc",
   requestBody: {
     content: {
       "application/json": {
         schema: {
           type: "object",
           properties: {
-            name: {
-              type: "string",
-              description: "Genre name",
-              example: "Fantasy",
+            book_id: {
+              type: "number",
+              description: "Book id",
+              example: 486,
               required: true,
             },
-            description: {
-              type: "string",
-              description: "Genre description",
-              example:
-                "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+            customer_id: {
+              type: "number",
+              description: "Customer Id",
+              example: 420,
               required: true,
+            },
+            rating: {
+              type: "number",
+              description: "Review rate",
+              example: 6,
+              required: true,
+            },
+            comment: {
+              type: "string",
+              description: "Customer review comment",
+              example: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
             },
           },
         },
@@ -202,109 +252,33 @@ export const postGenreDoc = {
               },
               data: {
                 type: "object",
-                description: "New book created",
-                example: genreData,
+                description: "New review created",
+                example: reviewData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Genre already registred"),
+    400: globalErrorSchema("Review for book already exist"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("POST", "/api/genre"),
-    409: dbErrorSchema("Error Creating Genre"),
+    404: notFoundSchema("POST", "/api/review"),
+    409: dbErrorSchema("Review for book already exist"),
     500: internalErrorSchema,
   },
 }
 
-// @route PATCH /api/genre/:id
-export const patchGenreDoc = {
-  tags: ["Genre"],
-  summary: "Modify genre by Id",
-  description: "Modify genre by Id and body partially or completely",
-  operationId: "patchGenreDoc",
+// @route DELETE /api/review/:id
+export const deleteReviewDoc = {
+  tags: ["Review"],
+  summary: "Delete review by Id",
+  description: "Delete review and it's relations by Id",
+  operationId: "deleteReviewDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Genre Id",
-      required: true,
-      schema: {
-        type: "number",
-      },
-    },
-  ],
-  requestBody: {
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            name: {
-              type: "string",
-              description: "Genre name",
-              example: "Fantasy",
-            },
-            description: {
-              type: "string",
-              description: "Genre description",
-              example:
-                "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
-            },
-          },
-        },
-      },
-    },
-    required: true,
-  },
-  responses: {
-    200: {
-      description: "OK",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              success: {
-                type: "boolean",
-                description: "Response successful",
-                example: true,
-              },
-              statusCode: {
-                type: "number",
-                description: "Response status code",
-                example: 200,
-              },
-              data: {
-                type: "object",
-                description: "Book updated",
-                example: genreData,
-              },
-            },
-          },
-        },
-      },
-    },
-    400: globalErrorSchema(),
-    401: unauthorizedSchema(),
-    404: notFoundSchema("PATCH", "/api/genre/:id"),
-    409: dbErrorSchema("Error updating Genre"),
-    500: internalErrorSchema,
-  },
-}
-
-// @route DELETE /api/genre/:id
-export const deleteGenreDoc = {
-  tags: ["Genre"],
-  summary: "Delete genre by Id",
-  description: "Delete genre by Id",
-  operationId: "deleteGenreDoc",
-  parameters: [
-    {
-      in: "params",
-      name: "id",
-      description: "Genre Id",
+      description: "Review Id",
       required: true,
       schema: {
         type: "number",
@@ -331,8 +305,8 @@ export const deleteGenreDoc = {
               },
               message: {
                 type: "string",
-                description: "Genre deleted",
-                example: "Genre successfully deleted",
+                description: "Review deleted",
+                example: "Review successfully deleted",
               },
             },
           },
@@ -341,7 +315,8 @@ export const deleteGenreDoc = {
     },
     400: globalErrorSchema(),
     401: unauthorizedSchema(),
-    404: notFoundSchema("DELETE", "/api/genre/:id"),
+    404: notFoundSchema("DELETE", "/api/review/:id"),
+    409: dbErrorSchema("Error deleting Review"),
     500: internalErrorSchema,
   },
 }

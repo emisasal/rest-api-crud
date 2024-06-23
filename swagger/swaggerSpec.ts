@@ -1,32 +1,13 @@
-import {
-  deleteAuthorDoc,
-  getAllAuthorsDoc,
-  getAuthorByIdDoc,
-  patchAuthorDoc,
-  postAuthorDoc,
-} from "./author.docs"
-import {
-  deleteBookDoc,
-  getAllBooksDoc,
-  getBookByIdDoc,
-  patchBookDoc,
-  postBookDoc,
-} from "./book.docs"
-import { getCategoryDoc, getModelsDoc } from "./category.docs"
-import {
-  deleteCustomerDoc,
-  getAllCustomersDoc,
-  getCustomerByIdDoc,
-  patchCustomerDoc,
-} from "./customer.docs"
-import {
-  deleteGenreDoc,
-  getAllGenresDoc,
-  getGenreByIdDoc,
-  patchGenreDoc,
-  postGenreDoc,
-} from "./genre.docs"
+import * as authorDocs from "./author.docs"
+import * as bookDocs from "./book.docs"
+import * as categoryDocs from "./category.docs"
+import * as customerDocs from "./customer.docs"
+import * as customerSessionDocs from "./customerSession.docs"
+import * as genreDocs from "./genre.docs"
 import { getImageByIdDocs } from "./image.docs"
+import * as orderDocs from "./order.docs"
+import * as publisherDocs from "./publisher.docs"
+import * as reviewDocs from "./review.docs"
 
 const swaggerSpec = {
   openapi: "3.0.1",
@@ -59,9 +40,6 @@ const swaggerSpec = {
       name: "Customer",
     },
     {
-      name: "Customer Session",
-    },
-    {
       name: "Genre",
     },
     {
@@ -69,9 +47,6 @@ const swaggerSpec = {
     },
     {
       name: "Order",
-    },
-    {
-      name: "Order Detail",
     },
     {
       name: "Publisher",
@@ -82,48 +57,82 @@ const swaggerSpec = {
   ],
   paths: {
     "/api/book": {
-      get: getAllBooksDoc,
-      post: postBookDoc,
+      get: bookDocs.getAllBooksDoc,
+      post: bookDocs.postBookDoc,
     },
     "/api/book/:id": {
-      get: getBookByIdDoc,
-      patch: patchBookDoc,
-      delete: deleteBookDoc,
+      get: bookDocs.getBookByIdDoc,
+      patch: bookDocs.patchBookDoc,
+      delete: bookDocs.deleteBookDoc,
     },
     "/api/author": {
-      get: getAllAuthorsDoc,
-      post: postAuthorDoc,
+      get: authorDocs.getAllAuthorsDoc,
+      post: authorDocs.postAuthorDoc,
     },
     "/api/author/:id": {
-      get: getAuthorByIdDoc,
-      patch: patchAuthorDoc,
-      delete: deleteAuthorDoc,
+      get: authorDocs.getAuthorByIdDoc,
+      patch: authorDocs.patchAuthorDoc,
+      delete: authorDocs.deleteAuthorDoc,
     },
     "/api/category": {
-      get: getModelsDoc,
+      get: categoryDocs.getModelsDoc,
     },
     "/api/category/:name": {
-      get: getCategoryDoc,
+      get: categoryDocs.getCategoryDoc,
     },
     "/api/customer": {
-      get: getAllCustomersDoc,
+      get: customerDocs.getAllCustomersDoc,
     },
     "/api/customer/:id": {
-      get: getCustomerByIdDoc,
-      patch: patchCustomerDoc,
-      delete: deleteCustomerDoc,
+      get: customerDocs.getCustomerByIdDoc,
+      patch: customerDocs.patchCustomerDoc,
+      delete: customerDocs.deleteCustomerDoc,
+    },
+    "/api/customer/register": {
+      post: customerSessionDocs.postRegisterCustomerDoc,
+    },
+    "/api/customer/login": {
+      post: customerSessionDocs.postLoginCustomerDoc,
+    },
+    "/api/customer/logout": {
+      post: customerSessionDocs.postLogoutCustomerDoc,
     },
     "/api/genre": {
-      get: getAllGenresDoc,
-      post: postGenreDoc,
+      get: genreDocs.getAllGenresDoc,
+      post: genreDocs.postGenreDoc,
     },
     "/api/genre/:id": {
-      get: getGenreByIdDoc,
-      patch: patchGenreDoc,
-      delete: deleteGenreDoc,
+      get: genreDocs.getGenreByIdDoc,
+      patch: genreDocs.patchGenreDoc,
+      delete: genreDocs.deleteGenreDoc,
     },
     "/api/image/:id": {
       get: getImageByIdDocs,
+    },
+    "/api/order": {
+      get: orderDocs.getAllOrdersDoc,
+      post: orderDocs.postOrderDoc,
+    },
+    "/api/order/:id": {
+      get: orderDocs.getOrderByIdDoc,
+      delete: orderDocs.deleteOrderDoc,
+    },
+    "/api/publisher": {
+      get: publisherDocs.getAllPublishersDoc,
+      post: publisherDocs.postPublisherDoc,
+    },
+    "/api/publisher/:id": {
+      get: publisherDocs.getPublisherByIdDoc,
+      patch: publisherDocs.patchPublisherDoc,
+      delete: publisherDocs.deletePublisherDoc,
+    },
+    "/api/review": {
+      get: reviewDocs.getAllReviewsDoc,
+      post: reviewDocs.postReviewDoc,
+    },
+    "/api/review/:id": {
+      get: reviewDocs.getReviewByIdDoc,
+      delete: reviewDocs.deleteReviewDoc,
     },
   },
 }

@@ -1,4 +1,3 @@
-import { bookData } from "./data"
 import {
   dbErrorSchema,
   globalErrorSchema,
@@ -6,15 +5,13 @@ import {
   notFoundSchema,
   unauthorizedSchema,
 } from "./swaggerErrorSchemas"
+import { publisherData } from "./data"
 
-const { author, genre, publisher, ...bookOnly } = bookData
-
-// @route GET /api/book
-export const getAllBooksDoc = {
-  tags: ["Book"],
-  summary: "Get books list",
-  description: "Get books list by page, order and filters",
-  operationId: "getAllBooksDoc",
+export const getAllPublishersDoc = {
+  tags: ["Publisher"],
+  summary: "Get publishers list",
+  description: "Get publishers list by page, order and name",
+  operationId: "getAllPublishersDoc",
   parameters: [
     {
       in: "query",
@@ -25,17 +22,6 @@ export const getAllBooksDoc = {
         type: "number",
       },
       example: 0,
-    },
-    {
-      in: "query",
-      name: "sort",
-      description: "Value to sort list order.",
-      required: true,
-      schema: {
-        type: "string",
-        enum: ["title", "price", "publish_date"],
-      },
-      example: "title",
     },
     {
       in: "query",
@@ -50,63 +36,11 @@ export const getAllBooksDoc = {
     },
     {
       in: "query",
-      name: "title",
-      description: "Filter by book title. Exact or parcial.",
+      name: "name",
+      description: "Filter by publisher name. Exact or parcial.",
       schema: {
         type: "string",
       },
-    },
-    {
-      in: "query",
-      name: "author",
-      description: "Filter by author name (first or last). Exact or parcial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "genre",
-      description: "Filter by genre name. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "publisher",
-      description: "Filter by publisher name. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "isbn",
-      description: "Filter by isbn code. Exact or pacial.",
-      schema: {
-        type: "string",
-      },
-    },
-    {
-      in: "query",
-      name: "dateStart",
-      description:
-        "initial date to filter by publishing date. Must also include 'dateEnd'.",
-      schema: {
-        type: "date",
-      },
-      example: "yyyy-MM-dd",
-    },
-    {
-      in: "query",
-      name: "dateEnd",
-      description:
-        "End date to filter by publishing date. Must also include 'dateStart'.",
-      schema: {
-        type: "date",
-      },
-      example: "yyyy-MM-dd",
     },
   ],
   responses: {
@@ -130,7 +64,7 @@ export const getAllBooksDoc = {
               data: {
                 type: "array",
                 description: "Array of book objects",
-                example: [bookData],
+                example: [publisherData],
               },
               count: {
                 type: "number",
@@ -157,24 +91,24 @@ export const getAllBooksDoc = {
         },
       },
     },
-    400: globalErrorSchema("Error getting books"),
+    400: globalErrorSchema("Error getting Publisher list"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("GET", "/api/book"),
+    404: notFoundSchema("GET", "/api/publisher"),
     500: internalErrorSchema,
   },
 }
 
-// @route GET /api/book/:id
-export const getBookByIdDoc = {
-  tags: ["Book"],
-  summary: "Get book by Id",
-  description: "Get single book by param Id",
-  operationId: "getBookByIdDoc",
+// @route GET /api/publisher/:id
+export const getPublisherByIdDoc = {
+  tags: ["Publisher"],
+  summary: "Get publisher by Id",
+  description: "Get single publisher by param Id",
+  operationId: "getPublisherByIdDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Publisher Id",
       required: true,
       schema: {
         type: "number",
@@ -202,79 +136,47 @@ export const getBookByIdDoc = {
               data: {
                 type: "array",
                 description: "Book object data",
-                example: bookData,
+                example: publisherData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Error getting book"),
+    400: globalErrorSchema("Publisher not found"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("GET", "/api/book/:id"),
+    404: notFoundSchema("GET", "/api/publisher/:id"),
     500: internalErrorSchema,
   },
 }
 
-// @route POST /api/book
-export const postBookDoc = {
-  tags: ["Book"],
-  summary: "Post new book",
-  description: "Create new book with author, publisher and genre id's relation",
-  operationId: "postBookDoc",
+// @route POST /api/publisher
+export const postPublisherDoc = {
+  tags: ["Publisher"],
+  summary: "Post new publisher",
+  description: "Create new publisher with name, contact name and phone number",
+  operationId: "postPublisherDoc",
   requestBody: {
     content: {
       "application/json": {
         schema: {
           type: "object",
           properties: {
-            title: {
+            publisher_name: {
               type: "string",
-              description: "Book title",
-              example: "What happened in 1971",
+              description: "Publisher name",
+              example: "Abshire-Farrell",
               required: true,
             },
-            description: {
+            contact_name: {
               type: "string",
-              description: "Book description",
-              example:
-                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-              required: true,
+              description: "Contact name",
+              example: "Tildie Dorking",
             },
-            author_id: {
-              type: "number",
-              description: "Author Id",
-              example: 391,
-              required: true,
-            },
-            genre_id: {
-              type: "number",
-              description: "Genre Id",
-              example: 7,
-              required: true,
-            },
-            publisher_id: {
-              type: "number",
-              description: "Publisher Id",
-              example: 12,
-              required: true,
-            },
-            price: {
-              type: "number",
-              description: "Book price",
-              example: 6.43,
-              required: true,
-            },
-            publish_date: {
-              type: "date",
-              description: "Book publishing date",
-              example: "2001-06-25T07:01:44.000Z",
-              required: true,
-            },
-            isbn: {
+            phone_number: {
               type: "string",
-              description: "Book ISBN code",
-              example: "502074967-2",
+              description: "Publisher's phone number",
+              example: "910-966-6762",
               required: true,
             },
           },
@@ -304,32 +206,32 @@ export const postBookDoc = {
               data: {
                 type: "object",
                 description: "New book created",
-                example: bookOnly,
+                example: publisherData,
               },
             },
           },
         },
       },
     },
-    400: globalErrorSchema("Book already registred with id 123"),
+    400: globalErrorSchema("Error creating Publisher"),
     401: unauthorizedSchema(),
-    404: notFoundSchema("POST", "/api/book"),
-    409: dbErrorSchema("Error creating book"),
+    404: notFoundSchema("POST", "/api/publisher"),
+    409: dbErrorSchema("Publisher already registred"),
     500: internalErrorSchema,
   },
 }
 
-// @route PATCH /api/book/:id
-export const patchBookDoc = {
-  tags: ["Book"],
-  summary: "Modify book by Id",
-  description: "Modify book by Id and body partially or completely",
-  operationId: "patchBookDoc",
+// @route PATCH /api/publisher/:id
+export const patchPublisherDoc = {
+  tags: ["Publisher"],
+  summary: "Modify publisher by Id",
+  description: "Modify publisher by Id and body partially or completely",
+  operationId: "patchPublisherDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Publisher Id",
       required: true,
       schema: {
         type: "number",
@@ -342,34 +244,20 @@ export const patchBookDoc = {
         schema: {
           type: "object",
           properties: {
-            title: {
+            publisher_name: {
               type: "string",
-              example: "What happened in 1971",
+              description: "Publisher name",
+              example: "Abshire-Farrell",
             },
-            description: {
+            contact_name: {
               type: "string",
-              example:
-                "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
+              description: "Contact name",
+              example: "Tildie Dorking",
             },
-            author_id: {
-              type: "number",
-              description: "Author Id",
-              example: 391,
-            },
-            genre_id: {
-              type: "number",
-              description: "Genre Id",
-              example: 7,
-            },
-            publisher_id: {
-              type: "number",
-              description: "Publisher Id",
-              example: 12,
-            },
-            price: {
-              type: "number",
-              description: "Book price",
-              example: 6.43,
+            phone_number: {
+              type: "string",
+              description: "Publisher's phone number",
+              example: "910-966-6762",
             },
           },
         },
@@ -398,7 +286,7 @@ export const patchBookDoc = {
               data: {
                 type: "object",
                 description: "Book updated",
-                example: bookOnly,
+                example: publisherData,
               },
             },
           },
@@ -407,23 +295,23 @@ export const patchBookDoc = {
     },
     400: globalErrorSchema(),
     401: unauthorizedSchema(),
-    404: notFoundSchema("PATCH", "/api/book/:id"),
-    409: dbErrorSchema("Error updating book"),
+    404: notFoundSchema("PATCH", "/api/publisher/:id"),
+    409: dbErrorSchema("Error updating publisher"),
     500: internalErrorSchema,
   },
 }
 
-// @route DELETE /api/book/:id
-export const deleteBookDoc = {
-  tags: ["Book"],
-  summary: "Delete book by Id",
-  description: "Delete book and it's relations by Id",
-  operationId: "deleteBookDoc",
+// @route DELETE /api/publisher/:id
+export const deletePublisherDoc = {
+  tags: ["Publisher"],
+  summary: "Delete publisher by Id",
+  description: "Delete publisher and it's relations by Id",
+  operationId: "deletePublisherDoc",
   parameters: [
     {
       in: "params",
       name: "id",
-      description: "Book Id",
+      description: "Publisher Id",
       required: true,
       schema: {
         type: "number",
@@ -450,8 +338,8 @@ export const deleteBookDoc = {
               },
               message: {
                 type: "string",
-                description: "Book deleted",
-                example: "Book Id 123 Successfully Deleted",
+                description: "Publisher deleted",
+                example: "Publisher successfully deleted",
               },
             },
           },
@@ -460,7 +348,8 @@ export const deleteBookDoc = {
     },
     400: globalErrorSchema(),
     401: unauthorizedSchema(),
-    404: notFoundSchema("DELETE", "/api/book/:id"),
+    404: notFoundSchema("DELETE", "/api/publisher/:id"),
+    409: dbErrorSchema("Error deleting publisher"),
     500: internalErrorSchema,
   },
 }

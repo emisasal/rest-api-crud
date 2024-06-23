@@ -38,7 +38,7 @@ export const getAllBooks = async (
         count: cachedData.count,
         page: cachedData.page,
         limit: cachedData.limit,
-        cache: false,
+        cache: true,
       })
     }
 

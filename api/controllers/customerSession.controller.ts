@@ -23,7 +23,7 @@ export const postRegisterCustomer = async (
       where: { email: data.email },
     })
     if (findCustomer) {
-      return next(errorHandler(409, "Customer already registered"))
+      return next(errorHandler(400, "Customer already registered"))
     }
 
     const saltRounds = Number(process.env.SALT_ROUNDS)
@@ -34,7 +34,7 @@ export const postRegisterCustomer = async (
       data: data,
     })
     if (!newCustomer) {
-      return next(errorHandler(400, "Error creating Customer"))
+      return next(errorHandler(409, "Error creating Customer"))
     }
 
     const cacheKeys = await redis.keys("getAllCustomers:*")
@@ -120,7 +120,12 @@ export const postLogoutCustomer = async (
     return res
       .clearCookie("access_token")
       .clearCookie("refresh_token")
-      .status(204)
+      .status(200)
+      .send({
+        success: true,
+        statusCode: 200,
+        message: "Customer logout",
+      })
       .end()
   } catch (error) {
     return next(error)
