@@ -15,10 +15,10 @@ export const getImageByIdDocs = {
       in: "params",
       name: "id",
       description: "Image Id",
-      required: "true",
       schema: {
         type: "number",
       },
+      required: true,
     },
   ],
   responses: {

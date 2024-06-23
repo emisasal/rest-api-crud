@@ -20,6 +20,11 @@ import {
   patchCustomerDoc,
 } from "./customer.docs"
 import {
+  postLoginCustomerDoc,
+  postLogoutCustomerDoc,
+  postRegisterCustomerDoc,
+} from "./customerSession.docs"
+import {
   deleteGenreDoc,
   getAllGenresDoc,
   getGenreByIdDoc,
@@ -78,9 +83,6 @@ const swaggerSpec = {
       name: "Customer",
     },
     {
-      name: "Customer Session",
-    },
-    {
       name: "Genre",
     },
     {
@@ -128,6 +130,15 @@ const swaggerSpec = {
       get: getCustomerByIdDoc,
       patch: patchCustomerDoc,
       delete: deleteCustomerDoc,
+    },
+    "/api/customer/register": {
+      post: postRegisterCustomerDoc,
+    },
+    "/api/customer/login": {
+      post: postLoginCustomerDoc,
+    },
+    "/api/customer/logout": {
+      post: postLogoutCustomerDoc,
     },
     "/api/genre": {
       get: getAllGenresDoc,

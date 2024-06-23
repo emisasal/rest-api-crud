@@ -17,7 +17,7 @@ export const getAllGenresDoc = {
       in: "query",
       name: "page",
       description: "List page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +27,7 @@ export const getAllGenresDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -108,7 +108,7 @@ export const getGenreByIdDoc = {
       in: "params",
       name: "id",
       description: "Genre Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -164,12 +164,14 @@ export const postGenreDoc = {
               type: "string",
               description: "Genre name",
               example: "Fantasy",
+              required: true,
             },
             description: {
               type: "string",
               description: "Genre description",
               example:
                 "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+              required: true,
             },
           },
         },
@@ -223,7 +225,7 @@ export const patchGenreDoc = {
       in: "params",
       name: "id",
       description: "Genre Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -239,7 +241,6 @@ export const patchGenreDoc = {
               type: "string",
               description: "Genre name",
               example: "Fantasy",
-              required: true,
             },
             description: {
               type: "string",
@@ -299,7 +300,7 @@ export const deleteGenreDoc = {
       in: "params",
       name: "id",
       description: "Genre Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },

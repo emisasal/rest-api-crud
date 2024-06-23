@@ -16,7 +16,7 @@ export const getAllPublishersDoc = {
       in: "query",
       name: "page",
       description: "List page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -26,7 +26,7 @@ export const getAllPublishersDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -107,7 +107,7 @@ export const getPublisherByIdDoc = {
       in: "params",
       name: "id",
       description: "Publisher Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -228,7 +228,7 @@ export const patchPublisherDoc = {
       in: "params",
       name: "id",
       description: "Publisher Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -259,6 +259,7 @@ export const patchPublisherDoc = {
         },
       },
     },
+    required: true,
   },
   responses: {
     200: {
@@ -306,7 +307,7 @@ export const deletePublisherDoc = {
       in: "params",
       name: "id",
       description: "Publisher Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },

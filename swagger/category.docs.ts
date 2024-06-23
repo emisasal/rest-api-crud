@@ -56,7 +56,7 @@ export const getCategoryDoc = {
       in: "params",
       name: "name",
       description: "Model name",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
       },

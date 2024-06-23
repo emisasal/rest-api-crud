@@ -29,6 +29,37 @@ export const globalErrorSchema = (message: string | null = null) => {
   }
 }
 
+// 401
+export const unauthorizedSchema = (message: string | null = null) => {
+  return {
+    description: "Unauthorized",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 401,
+            },
+            message: {
+              type: "string",
+              description: "Unauthorized",
+              example: message || "Unauthorized",
+            },
+          },
+        },
+      },
+    },
+  }
+}
+
 // 404
 export const notFoundSchema = (method: string, originalUrl: string) => {
   return {

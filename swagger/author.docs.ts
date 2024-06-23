@@ -17,7 +17,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "page",
       description: "The list's page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +27,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "sort",
       description: "The value to sort the list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["first_name", "last_name"],
@@ -38,7 +38,7 @@ export const getAllAuthorsDoc = {
       in: "query",
       name: "order",
       description: "Defines order of elements list",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -119,7 +119,7 @@ export const getAuthorByIdDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -159,7 +159,7 @@ export const getAuthorByIdDoc = {
   },
 }
 
-// @route POST /api/book
+// @route POST /api/author
 export const postAuthorDoc = {
   tags: ["Author"],
   summary: "Post new author",
@@ -189,10 +189,10 @@ export const postAuthorDoc = {
               example: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
             },
           },
-          required: true,
         },
       },
     },
+    required: true,
   },
   responses: {
     201: {
@@ -240,7 +240,7 @@ export const patchAuthorDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -268,10 +268,10 @@ export const patchAuthorDoc = {
               example: "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
             },
           },
-          required: true,
         },
       },
     },
+    required: true,
   },
   responses: {
     200: {
@@ -319,7 +319,7 @@ export const deleteAuthorDoc = {
       in: "params",
       name: "id",
       description: "Author Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },

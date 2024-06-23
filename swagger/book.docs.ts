@@ -19,7 +19,7 @@ export const getAllBooksDoc = {
       in: "query",
       name: "page",
       description: "List page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -29,7 +29,7 @@ export const getAllBooksDoc = {
       in: "query",
       name: "sort",
       description: "Value to sort list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["title", "price", "publish_date"],
@@ -40,7 +40,7 @@ export const getAllBooksDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -173,7 +173,7 @@ export const getBookByIdDoc = {
       in: "params",
       name: "id",
       description: "Book Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -229,42 +229,50 @@ export const postBookDoc = {
               type: "string",
               description: "Book title",
               example: "What happened in 1971",
+              required: true,
             },
             description: {
               type: "string",
               description: "Book description",
               example:
                 "Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
+              required: true,
             },
             author_id: {
               type: "number",
               description: "Author Id",
               example: 391,
+              required: true,
             },
             genre_id: {
               type: "number",
               description: "Genre Id",
               example: 7,
+              required: true,
             },
             publisher_id: {
               type: "number",
               description: "Publisher Id",
               example: 12,
+              required: true,
             },
             price: {
               type: "number",
               description: "Book price",
               example: 6.43,
+              required: true,
             },
             publish_date: {
               type: "date",
               description: "Book publishing date",
               example: "2001-06-25T07:01:44.000Z",
+              required: true,
             },
             isbn: {
               type: "string",
               description: "Book ISBN code",
               example: "502074967-2",
+              required: true,
             },
           },
         },
@@ -318,7 +326,7 @@ export const patchBookDoc = {
       in: "params",
       name: "id",
       description: "Book Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -363,6 +371,7 @@ export const patchBookDoc = {
         },
       },
     },
+    required: true,
   },
   responses: {
     200: {
@@ -410,7 +419,7 @@ export const deleteBookDoc = {
       in: "params",
       name: "id",
       description: "Book Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },

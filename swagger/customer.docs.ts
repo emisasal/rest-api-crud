@@ -17,7 +17,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "page",
       description: "The list's page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +27,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "sort",
       description: "The value to sort the list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["first_name", "last_name"],
@@ -38,7 +38,7 @@ export const getAllCustomersDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -127,7 +127,7 @@ export const getCustomerByIdDoc = {
       in: "params",
       name: "id",
       description: "Id of customer",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",
@@ -179,7 +179,7 @@ export const patchCustomerDoc = {
       in: "params",
       name: "id",
       description: "Customer Id",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",
@@ -216,7 +216,7 @@ export const patchCustomerDoc = {
         },
       },
     },
-    required: "true",
+    required: true,
   },
   responses: {
     200: {
@@ -264,7 +264,7 @@ export const deleteCustomerDoc = {
       in: "params",
       name: "id",
       description: "Customer Id",
-      required: "true",
+      required: true,
       example: 527,
       schema: {
         type: "number",

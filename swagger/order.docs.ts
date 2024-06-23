@@ -17,7 +17,7 @@ export const getAllOrdersDoc = {
       in: "query",
       name: "page",
       description: "List page number.",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -27,7 +27,7 @@ export const getAllOrdersDoc = {
       in: "query",
       name: "sort",
       description: "Value to sort list order.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["order_date", "total_amount"],
@@ -38,7 +38,7 @@ export const getAllOrdersDoc = {
       in: "query",
       name: "order",
       description: "Defines the order of the list elements.",
-      required: "true",
+      required: true,
       schema: {
         type: "string",
         enum: ["asc", "desc"],
@@ -138,7 +138,7 @@ export const getOrderByIdDoc = {
       in: "params",
       name: "id",
       description: "Order Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
@@ -255,7 +255,7 @@ export const deleteOrderDoc = {
       in: "params",
       name: "id",
       description: "Order Id",
-      required: "true",
+      required: true,
       schema: {
         type: "number",
       },
