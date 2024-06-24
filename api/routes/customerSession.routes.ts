@@ -9,6 +9,7 @@ const router = Router()
 // @route /
 router.post(
   "/customer/register",
+  rateLimiter,
   customerValidator.postRegisterCustomerValidator,
   validationError,
   customerSessionController.postRegisterCustomer

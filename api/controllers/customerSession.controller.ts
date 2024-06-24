@@ -1,18 +1,10 @@
 import { Request, Response, NextFunction } from "express"
-import { Session } from "express-session"
 import { prisma } from "../config/prismaClient"
 import bcrypt from "bcrypt"
 import { signAccessJWT, signRefreshJWT } from "../utils/handleJWT"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 import redis from "../config/redisClient"
-
-interface SessionData extends Session {
-  user: {
-    id: number
-    refreshToken: string
-  }
-}
 
 // @desc Create new Customer
 // @route POST /api/customer/register
@@ -107,12 +99,6 @@ export const postLoginCustomer = async (
       signed: true,
     })
 
-    const session = req.session as SessionData
-    session.user = {
-      id: customer.customer_id,
-      refreshToken: refreshToken,
-    }
-
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -131,12 +117,6 @@ export const postLogoutCustomer = async (
   next: NextFunction
 ) => {
   try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(err)
-      }
-    })
-    
     return res
       .clearCookie("access_token")
       .clearCookie("refresh_token")

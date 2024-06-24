@@ -14,6 +14,7 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   if (response[0][1] > 10) {
     return next(errorHandler(429, "Too Many Requests"))
   }
+  
   next()
 }
 
