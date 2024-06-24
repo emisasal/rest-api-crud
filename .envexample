@@ -19,7 +19,10 @@ SALT_ROUNDS=
 # from bash: openssl rand -base64 64
 # from node: require("crypto").randomBytes(64).toString("hex")
 JWT_ACCESS_SECRET=
+JWT_ACCESS_EXPIRATION=
+
 JWT_REFRESH_SECRET=
+JWT_REFRESH_EXPIRATION=
 
 # Cookie-Parser
 COOKIE_SECRET=

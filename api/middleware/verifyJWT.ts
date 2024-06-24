@@ -61,7 +61,3 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 export default verifyJWT
-
-// Recieve access_token and refresh_token jwt in cookies
-// If invalid or no refresh_token, return 401 and clear cookies
-// if invalid or no access_token with valid refresh_token, create and return new access_token and send cookie

@@ -198,7 +198,7 @@ The endpoints are ordered by types and include params, query params and body. An
 ## ToDo
 
 - Swagger (investigate executing endpoints)
-- User session in Redis (`express-session`, `connect-redis`). Store user id and refresh token in redis to compare against recieived cookie.
+- Store user id and refresh token in redis to compare against recieived cookie.
 - Update ERD: Customer
 - Testing (`jest` and `supertest`)
 - Export db to `.CSV`
