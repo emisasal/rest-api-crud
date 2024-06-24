@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from "express"
 import jwt, { Secret } from "jsonwebtoken"
 import { signAccessJWT } from "utils/handleJWT"
 
-export interface Session extends Request {
-  session: { user: string | null }
-}
+// export interface Session extends Request {
+//   session: { user: string | null }
+// }
 
-const verifyJWT = (req: Session, res: Response, next: NextFunction) => {
+const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req.signedCookies
   const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env
   //   req.session.user = null
