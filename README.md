@@ -171,6 +171,13 @@ Because the password stored in db is hashed, only the user knows the password.
 If the user forgets or needs to change the password a new password must be entered.
 Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the has and salt must be equal). The hashed password never gets decrypted.
 
+# Rate Limiter
+
+The middleware `rateLimiter.middleware.ts` prevents from too many requests.
+The middleware stores the user ip un Redis with the number of attemps. The TTL (time to live) for the Redis key is declared in `expire`.
+If the user identified by IP try more than 10 times in less than 60 seconds the middleware returns status 429 (Too many requests).
+This prevents from db overload and brute force attacks.
+
 ## JWT Access and Refresh
 
 When the user successfully login the server returns two jwt (Jason Web Token) in http only cookies: `access_token` and `refresh_token`.

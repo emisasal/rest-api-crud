@@ -9,6 +9,9 @@ PORT=
 REDIS_HOST=
 REDIS_PORT=
 
+# Express-Session
+SESSION_SECRET=
+
 # BCrypt
 SALT_ROUNDS=
 
