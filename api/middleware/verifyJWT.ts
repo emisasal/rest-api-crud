@@ -1,15 +1,11 @@
+import redis from "config/redisClient"
 import { Request, Response, NextFunction } from "express"
 import jwt, { Secret } from "jsonwebtoken"
 import { signAccessJWT } from "utils/handleJWT"
 
-// export interface Session extends Request {
-//   session: { user: string | null }
-// }
-
-const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
+const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req.signedCookies
   const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env
-  //   req.session.user = null
 
   const refreshToken = refresh_token
     ? jwt.verify(refresh_token, JWT_REFRESH_SECRET as Secret)
@@ -26,6 +22,24 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
         message: "Unauthorized",
       })
       .end()
+  }
+
+  const redisSession = await redis.get(`session:${refreshToken.sub}`)
+  if (redisSession) {
+    const refreshSession = JSON.parse(redisSession)
+    if (refreshSession !== refresh_token) {
+      await redis.del(`session:${refreshToken.sub}`)
+      return res
+        .clearCookie("access_token")
+        .clearCookie("refresh_token")
+        .status(401)
+        .send({
+          success: false,
+          statusCode: 401,
+          message: "Unauthorized",
+        })
+        .end()
+    }
   }
 
   const accessToken = access_token

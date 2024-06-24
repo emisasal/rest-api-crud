@@ -11,9 +11,8 @@ import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
 import swaggerSpec from "../swagger/swaggerSpec"
-import redis from "config/redisClient"
 
-const { PORT, NODE_ENV, SESSION_SECRET, COOKIE_SECRET } = process.env
+const { PORT, NODE_ENV, COOKIE_SECRET } = process.env
 
 const app = express()
 

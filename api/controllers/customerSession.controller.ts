@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { prisma } from "../config/prismaClient"
 import bcrypt from "bcrypt"
+import jwt, { Secret } from "jsonwebtoken"
 import { signAccessJWT, signRefreshJWT } from "../utils/handleJWT"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
@@ -72,6 +73,20 @@ export const postLoginCustomer = async (
       return next(errorHandler(401, "Invalid credentials"))
     }
 
+    const redisSession = await redis.get(`session:${loginCustomer.customer_id}`)
+    if (redisSession) {
+      const refreshSession = JSON.parse(redisSession)
+      const { refresh_token } = req.signedCookies
+
+      if (refresh_token === refreshSession) {
+        return res.status(200).send({
+          success: true,
+          statusCode: 200,
+          message: "User already logged",
+        })
+      }
+    }
+
     const isValidCustomer = await bcrypt.compare(pass, loginCustomer?.password)
     if (!isValidCustomer) {
       return next(errorHandler(401, "Invalid credentials"))
@@ -99,6 +114,13 @@ export const postLoginCustomer = async (
       signed: true,
     })
 
+    redis.set(
+      `session:${customer.customer_id}`,
+      JSON.stringify(refreshToken),
+      "EX",
+      2629743
+    )
+
     return res.status(200).send({
       success: true,
       statusCode: 200,
@@ -117,6 +139,21 @@ export const postLogoutCustomer = async (
   next: NextFunction
 ) => {
   try {
+    const { refresh_token, access_token } = req.signedCookies
+    const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env
+
+    const refreshToken = refresh_token
+      ? jwt.verify(refresh_token, JWT_REFRESH_SECRET as Secret)
+      : null
+
+    const accessToken = access_token
+      ? jwt.verify(access_token, JWT_ACCESS_SECRET as Secret)
+      : null
+
+    if (refreshToken || accessToken) {
+      await redis.del(`session:${refreshToken?.sub || accessToken?.sub}`)
+    }
+
     return res
       .clearCookie("access_token")
       .clearCookie("refresh_token")
