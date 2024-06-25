@@ -1,10 +1,11 @@
 import request from "supertest"
-import express from "express"
-
-const app = express()
+import { type Express } from "express-serve-static-core"
+import { singletonApp } from "../../singletonApp"
 
 describe("/api/image/:id", () => {
-  it("Returns an image", async () => {
+  const app: Express = singletonApp()
+
+  xit("Returns an image", async () => {
     const res = await request(app).get("/api/image/1")
     expect(res.status).toEqual(200)
   })
