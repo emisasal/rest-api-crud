@@ -1,9 +1,15 @@
 import { Redis } from "ioredis"
+import redisMock from "ioredis-mock"
 
 const REDIS_HOST = process.env.REDIS_HOST ?? "http://localhost"
 const REDIS_PORT = parseInt(process.env.REDIS_PORT ?? "6379", 10)
 
-const redis = new Redis(REDIS_PORT, REDIS_HOST)
+const redis =
+  process.env.NODE_ENV === "test"
+    ? new redisMock()
+    : new Redis(REDIS_PORT, REDIS_HOST)
+
+// const redis = new Redis(REDIS_PORT, REDIS_HOST)
 
 redis
   .on("connect", () => {

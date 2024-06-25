@@ -195,10 +195,15 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 The list of endpoints are documented with Swagger in `http://localhost:8080/api-docs`.
 The endpoints are ordered by types and include params, query params and body. And all the responses with status code and examples.
 
+## Testing
+
 ## ToDo
 
+The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
+To initialize jest in the project run the command `npx ts-jest config:init`. This will create a file `jest.config.js`.
+The script `npm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
+
 - Swagger (investigate executing endpoints)
-- User session in Redis (`express-session`, `connect-redis`). Store user id and refresh token in redis to compare against recieived cookie.
 - Update ERD: Customer
 - Testing (`jest` and `supertest`)
 - Export db to `.CSV`

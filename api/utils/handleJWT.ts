@@ -5,7 +5,7 @@ export const signAccessJWT = (id: number | string) => {
     { sub: id },
     process.env.JWT_ACCESS_SECRET as Secret,
     {
-      expiresIn: "15m",
+      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
     }
   )
   return accessToken
@@ -16,7 +16,7 @@ export const signRefreshJWT = (id: string | number) => {
     { sub: id },
     process.env.JWT_REFRESH_SECRET as Secret,
     {
-      expiresIn: "30d",
+      expiresIn: process.env.JWT_REFRESH_EXPIRATION,
     }
   )
   return refreshToken
