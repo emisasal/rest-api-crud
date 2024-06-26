@@ -1,6 +1,6 @@
 import request from "supertest"
 import { type Express } from "express-serve-static-core"
-import { singletonApp } from "../../singletonApp"
+import { singletonApp } from "../../server"
 
 describe("/api/image/:id", () => {
   const app: Express = singletonApp()

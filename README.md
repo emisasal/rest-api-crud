@@ -205,6 +205,6 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 - Swagger (investigate executing endpoints)
 - Update ERD: Customer
-- Testing (`jest` and `supertest`)
+- Testing (`jest` and `supertest`) / redis errors
 - Export db to `.CSV`
 - docker compose for db, redis and api.

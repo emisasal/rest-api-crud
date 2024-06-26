@@ -2,11 +2,11 @@
   "name": "rest-api-crud",
   "version": "1.0.0",
   "description": "",
-  "main": "api/app.ts",
+  "main": "api/server.ts",
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts",
+    "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/server.ts",
     "build": "dotenvx run --env-file=.env.production --env-file=.env -- npx tsc",
-    "start": "node dist/app.ts",
+    "start": "node dist/server.ts",
     "test": "jest",
     "seed": "prisma db push && ts-node prisma/seed.ts"
   },
@@ -18,7 +18,7 @@
   "author": "Emiliano Sasal",
   "license": "ISC",
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.45.0",
+    "@dotenvx/dotenvx": "^1.0.0",
     "@prisma/client": "^5.12.1",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
