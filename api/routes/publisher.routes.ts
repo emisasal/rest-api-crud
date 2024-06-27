@@ -1,7 +1,7 @@
 import { Router } from "express"
 import * as publisherValidator from "../validators/publisher.validators"
 import * as publisherController from "../controllers/publisher.controller"
-import validationError from "middleware/validationError.middleware"
+import validationError from "../middleware/validationError.middleware"
 
 const router = Router()
 

@@ -1,7 +1,7 @@
 import { Router } from "express"
 import * as reviewValidator from "../validators/review.validators"
 import * as reviewController from "../controllers/review.controller"
-import validationError from "middleware/validationError.middleware"
+import validationError from "../middleware/validationError.middleware"
 
 const router = Router()
 

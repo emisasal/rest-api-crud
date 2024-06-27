@@ -1,7 +1,7 @@
-import redis from "config/redisClient"
 import { Request, Response, NextFunction } from "express"
 import jwt, { Secret } from "jsonwebtoken"
-import { signAccessJWT } from "utils/handleJWT"
+import redis from "../config/redisClient"
+import { signAccessJWT } from "../utils/handleJWT"
 
 const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req.signedCookies

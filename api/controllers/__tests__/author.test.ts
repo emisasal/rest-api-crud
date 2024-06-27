@@ -6,10 +6,10 @@ import { getAuthorById } from "../author.controller"
 //     })
 // })
 
-describe("getAuthorById", () => {
-  xit("Returns a single Author", async () => {
-    await getAuthorById(mockRequest, mockResponse, mockNext)
+// describe("getAuthorById", () => {
+//   xit("Returns a single Author", async () => {
+//     await getAuthorById(mockRequest, mockResponse, mockNext)
 
-    expect(mockResponse.send).toHaveBeenCalled()
-  })
-})
+//     expect(mockResponse.send).toHaveBeenCalled()
+//   })
+// })
