@@ -2,7 +2,7 @@ import { Router } from "express"
 import * as customerValidator from "../validators/customer.validators"
 import * as customerSessionController from "../controllers/customerSession.controller"
 import validationError from "../middleware/validationError.middleware"
-import rateLimiter from "middleware/rateLimiter.middleware"
+import rateLimiter from "../middleware/rateLimiter.middleware"
 
 const router = Router()
 

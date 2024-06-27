@@ -1,7 +1,7 @@
-import redis from "config/redisClient"
+import redis from "../config/redisClient"
 import { Request, Response, NextFunction } from "express"
 import { RedisKey } from "ioredis"
-import errorHandler from "utils/errorHandler"
+import errorHandler from "../utils/errorHandler"
 
 const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip
@@ -14,7 +14,7 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   if (response[0][1] > 10) {
     return next(errorHandler(429, "Too Many Requests"))
   }
-  
+
   next()
 }
 
