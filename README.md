@@ -153,7 +153,7 @@ The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "
 
 Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
-The redis server can be stopped using `ctrl-c` or `redis-cli stop`.
+The redis server can be stopped using `ctrl-c` or `redis-cli shutdown`.
 `ioredis` is the dependency used to interact with Redis from Node.
 The redis client `/config/redisClient` informs by console the conection status.
 The endpoints using redis returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.

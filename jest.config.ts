@@ -1,15 +1,14 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-// /** @type {import('ts-jest').pathsToModuleNameMapper} */
-
-module.exports = {
+import type { Config } from "@jest/types"
+const config: Config.InitialOptions = {
   preset: "ts-jest",
   testEnvironment: "node",
   testMatch: ["**/**/*.test.ts"],
   verbose: true,
   clearMocks: true,
-  resetMocks: true,
-  restoreMocks: true,
+  // resetMocks: true,
+  // restoreMocks: true,
   modulePaths: ["api"],
+  setupFiles: ["<rootDir>/.jest/setEnvVars.ts"],
   // moduleNameMapper: pathsToModuleNameMapper({
   //   "config/*": ["config/*"],
   //   "controllers/*": ["controllers/*"],
@@ -18,3 +17,5 @@ module.exports = {
   //   "utils/*": ["utils/*"],
   // }),
 }
+
+export default config

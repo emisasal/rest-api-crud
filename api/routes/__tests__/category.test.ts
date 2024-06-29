@@ -1,15 +1,11 @@
-import { describe, it, mock } from "node:test"
-import assert from "node:assert"
+import request from "supertest"
+import app from "../../app"
+import { customerData } from "../../../swagger/data"
+import redis from "../../config/redisClient";
 
-describe("/api/category", () => {
-    it("Returns models list", () => {
-        
-    })
-})
-
-// import request from "supertest"
-// import app from "../../app"
-// import { customerData } from "../../../swagger/data"
+afterAll(async () => {
+    await redis.quit();
+});
 
 // let testRequest
 
