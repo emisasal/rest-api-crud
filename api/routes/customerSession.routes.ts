@@ -14,6 +14,7 @@ router.post(
   validationError,
   customerSessionController.postRegisterCustomer
 )
+
 router.post(
   "/customer/login",
   rateLimiter,
@@ -21,6 +22,7 @@ router.post(
   validationError,
   customerSessionController.postLoginCustomer
 )
+
 router.post("/customer/logout", customerSessionController.postLogoutCustomer)
 
 export default router

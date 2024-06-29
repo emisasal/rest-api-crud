@@ -44,9 +44,9 @@ export const postRegisterCustomer = async (
     const { password, created_at, updated_at, ...newCustomerNoPass } =
       newCustomer
 
-    return res.status(200).send({
+    return res.status(201).send({
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: newCustomerNoPass,
     })
   } catch (error) {
