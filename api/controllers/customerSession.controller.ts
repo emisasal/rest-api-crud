@@ -161,7 +161,7 @@ export const postLogoutCustomer = async (
       .send({
         success: true,
         statusCode: 200,
-        message: "Customer logout",
+        message: refreshToken ? "Customer logout" : "No Customer to logout",
       })
       .end()
   } catch (error) {
