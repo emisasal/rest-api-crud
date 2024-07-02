@@ -7,7 +7,8 @@
     "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/server.ts",
     "build": "dotenvx run --env-file=.env.production --env-file=.env -- npx tsc",
     "start": "node dist/server.ts",
-    "test": "jest --watchAll  --detectOpenHandles",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watchAll  --detectOpenHandles",
     "seed": "prisma db push && ts-node prisma/seed.ts"
   },
   "keywords": [

@@ -7,6 +7,7 @@ import {
 import { prisma } from "config/prismaClient"
 import CustomError from "classes/CustomError"
 import { clearRedisCache } from "__mocks__/clearRedisCache"
+import { createCustomer, registeredCustomer } from "__mocks__/customerMocks"
 
 jest.mock("express-validator", () => ({
   validationResult: jest.fn(() => ({
@@ -14,20 +15,6 @@ jest.mock("express-validator", () => ({
     array: jest.fn(() => []),
   })),
 }))
-
-const registeredCustomer = {
-  first_name: "Tom",
-  last_name: "Petty",
-  email: "tom@petty.com",
-  password: "testPassw@rd1",
-}
-
-const createCustomer = {
-  first_name: "Bob",
-  last_name: "Dylan",
-  email: "bob@dylan.com",
-  password: "testPassw@rd2",
-}
 
 describe("customerSession controller", () => {
   beforeAll(async () => {

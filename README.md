@@ -197,6 +197,10 @@ The endpoints are ordered by types and include params, query params and body. An
 
 ## Testing
 
+The routes (E2E) and controllers (unit-testing) are tested using `jest` and `supertest`.
+Aditionally the devDependencies `@types/jest`, `@types/supertest` and `ts-jest` are required to work with TypeScript.
+`ioredis-mock` is used to mock Redis in testing enviroment.
+
 ## ToDo
 
 The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
@@ -205,6 +209,6 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 - Swagger (investigate executing endpoints)
 - Update ERD: Customer
-- Testing (`jest` and `supertest`) / redis errors
+- Testing (complete controllers / full routes)
 - Export db to `.CSV`
 - docker compose for db, redis and api.
