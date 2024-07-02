@@ -134,24 +134,28 @@ describe("customerSession controller", () => {
   })
 
   describe("postLogoutCustomer", () => {
-    // test not detecting loged user / fix
-    test.skip("Logout customer successfully", async () => {
+    test("Logout customer successfully", async () => {
       mockRequest.body = { email: "tom@petty.com", password: "testPassw@rd1" }
       await postLoginCustomer(mockRequest, mockResponse, mockNext)
 
-      expect(mockResponse.send).toHaveBeenCalled()
+      expect(mockResponse.status).toHaveBeenCalledWith(200)
+      expect.objectContaining({
+        data: expect.objectContaining("tom@petty.com"),
+      })
 
       await postLogoutCustomer(mockRequest, mockResponse, mockNext)
 
       expect(mockResponse.clearCookie).toHaveBeenCalledTimes(2)
       expect(mockResponse.status).toHaveBeenCalledWith(200)
-      expect(mockResponse.send).toHaveBeenCalledWith("jh")
+      expect.objectContaining({
+        message: expect.objectContaining("Customer logout"),
+      })
     })
 
     test("No customer to logout", async () => {
       await postLogoutCustomer(mockRequest, mockResponse, mockNext)
 
-      // expect(mockNext).toHaveBeenCalledWith("jkhfjkd")
+      expect(mockResponse.status).toHaveBeenCalledWith(200)
       expect(mockResponse.send).toHaveBeenCalledWith({
         message: "No Customer to logout",
         statusCode: 200,
