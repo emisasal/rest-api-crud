@@ -5,10 +5,12 @@ import errorHandler from "../utils/errorHandler"
 
 const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip
+  const { email } = req.body
+
   const response: any = await redis
     .multi()
-    .incr(ip as RedisKey)
-    .expire(ip as RedisKey, 60) // seconds
+    .incr(`${email}${ip}` as RedisKey)
+    .expire(`${email}${ip}` as RedisKey, 60) // seconds
     .exec()
 
   if (response[0][1] > 10) {

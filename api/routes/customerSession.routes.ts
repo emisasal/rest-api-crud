@@ -23,6 +23,10 @@ router.post(
   customerSessionController.postLoginCustomer
 )
 
-router.post("/customer/logout", customerSessionController.postLogoutCustomer)
+router.post(
+  "/customer/logout",
+  rateLimiter,
+  customerSessionController.postLogoutCustomer
+)
 
 export default router
