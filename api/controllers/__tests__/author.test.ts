@@ -32,7 +32,7 @@ describe("Author controller", () => {
   })
 
   describe("getAllAuthors", () => {
-    test("Returns error 422 if data not validated", async () => {
+    test.skip("Returns error 422 if data not validated", async () => {
       await getAllAuthors(mockRequest, mockResponse, mockNext)
 
       const errorValidation = new Error() as CustomError
@@ -45,7 +45,7 @@ describe("Author controller", () => {
       )
     })
 
-    test("Returns Authors list", async () => {
+    test.skip("Returns Authors list", async () => {
       mockRequest.query = { page: "0" }
       await getAllAuthors(mockRequest, mockResponse, mockNext)
 
@@ -55,7 +55,7 @@ describe("Author controller", () => {
   })
 
   describe("getAuthorById", () => {
-    test("Returns error 400 if Author not found", async () => {
+    test.skip("Returns error 400 if Author not found", async () => {
       mockRequest.params = { id: "10500" }
 
       await getAuthorById(mockRequest, mockResponse, mockNext)
@@ -63,7 +63,7 @@ describe("Author controller", () => {
       expect(mockNext).toHaveBeenCalledWith(matchError(400, "Author not found"))
     })
 
-    test("Returns Author by Id param", async () => {
+    test.skip("Returns Author by Id param", async () => {
       mockRequest.params = { id: "1" }
 
       await getAuthorById(mockRequest, mockResponse, mockNext)

@@ -34,6 +34,7 @@ export const postRegisterCustomer = async (
     const newCustomer = await prisma.customer.create({
       data: data,
     })
+    console.log("newCustomer", newCustomer)
     if (!newCustomer) {
       return next(errorHandler(409, "Error creating Customer"))
     }
@@ -141,6 +142,9 @@ export const postLogoutCustomer = async (
   try {
     const { refresh_token, access_token } = req.signedCookies
     const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env
+
+    // Logged Customer can't delete itself
+    // Add logic...
 
     const refreshToken = refresh_token
       ? jwt.verify(refresh_token, JWT_REFRESH_SECRET as Secret)
