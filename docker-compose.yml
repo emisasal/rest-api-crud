@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    container_name: integration-tests-prisma
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: tests
+      DATABASE_URL: postgresql://prisma:prisma@localhost:5433/tests
+    env_file:
+      - path: .env
+        required: false

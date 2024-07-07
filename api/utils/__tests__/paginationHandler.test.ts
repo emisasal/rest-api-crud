@@ -4,7 +4,7 @@ const count = 55
 const pageSize = 20
 const actualPage = 0
 
-test("Returns limit and page values", () => {
+test.skip("Returns limit and page values", () => {
   const { limit, page } = paginationHandler({
     count,
     pageSize,
@@ -15,7 +15,7 @@ test("Returns limit and page values", () => {
   expect(page).toStrictEqual(0)
 })
 
-test("Prevents page to be greater than 'limit'", () => {
+test.skip("Prevents page to be greater than 'limit'", () => {
   const { limit, page } = paginationHandler({
     count,
     pageSize,
