@@ -1,0 +1,6 @@
+node_modules
+dump.rdb
+.env
+.env.development
+.env.production
+.env.test
