@@ -3,6 +3,7 @@ import * as customerValidator from "../validators/customer.validators"
 import * as customerSessionController from "../controllers/customerSession.controller"
 import validationError from "../middleware/validationError.middleware"
 import rateLimiter from "../middleware/rateLimiter.middleware"
+import bruteForceLimiter from "middleware/bruteForceRateLimiter.middleware"
 
 const router = Router()
 
@@ -17,7 +18,8 @@ router.post(
 
 router.post(
   "/customer/login",
-  rateLimiter,
+  // rateLimiter,
+  bruteForceLimiter,
   customerValidator.postLoginCustomerValidator,
   validationError,
   customerSessionController.postLoginCustomer
