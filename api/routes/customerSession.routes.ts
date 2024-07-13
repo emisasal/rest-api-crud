@@ -10,7 +10,7 @@ const router = Router()
 // @route /
 router.post(
   "/customer/register",
-  rateLimiter,
+  // rateLimiter,
   customerValidator.postRegisterCustomerValidator,
   validationError,
   customerSessionController.postRegisterCustomer
@@ -27,7 +27,6 @@ router.post(
 
 router.post(
   "/customer/logout",
-  rateLimiter,
   customerSessionController.postLogoutCustomer
 )
 

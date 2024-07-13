@@ -67,20 +67,12 @@ export const postLoginCustomer = async (
     const email = req.body.email
     const pass = req.body.password
 
-    const ip = req.ip || req.socket.remoteAddress
-
     const loginCustomer = await prisma.customer.findFirst({
       where: { email: email },
     })
     if (!loginCustomer) {
       return next(errorHandler(401, "Invalid credentials"))
     }
-
-    // Why is creating an undefined count at user login?
-    const isCounted = await rateLimiterBrute.get(`${ip}_${email}`)
-    console.log("isCounted", isCounted)
-
-    await rateLimiterBrute.delete(`${ip}_${email}`)
 
     const redisSession = await redis.get(`session:${loginCustomer.customer_id}`)
     if (redisSession) {
