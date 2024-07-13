@@ -18,7 +18,8 @@ const opts = {
 
 export const rateLimiterBrute = new RateLimiterRedis(opts)
 
-const bruteForceLimiter = async (
+// @desc Brute force Rate Limiter using Redis with memory backup
+const bruteForceRateLimiter = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -33,4 +34,4 @@ const bruteForceLimiter = async (
   }
 }
 
-export default bruteForceLimiter
+export default bruteForceRateLimiter
