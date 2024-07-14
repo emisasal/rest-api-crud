@@ -125,7 +125,9 @@ Because the columns for the tables can change over time, the lists will always a
 
 ## Params Validation
 
-The data recieved in the endpoints by query and body is validated using `express-validator`. The dependency works as a middleware before the controllers for the routes. The configuration files are stored in the route `/api/validators`.
+The data recieved in the endpoints by query and body is validated using `express-validator`.
+The dependency works as a middleware before the controllers for the routes.
+The configuration files are stored in `/api/validators` with the same names as the controllers.
 
 ## Filtering
 
@@ -147,21 +149,22 @@ Without an options file as parameter, cors will be enabled for all origins.
 
 ## Logger
 
-The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (shows more details).
+The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (more details).
 
 ## Caching with Redis
 
 Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
 The redis server can be stopped using `ctrl-c` or `redis-cli shutdown`.
-`ioredis` is the dependency used to interact with Redis from Node.
-The redis client `/config/redisClient` informs by console the conection status.
-The endpoints using redis returns a value `cache` (boolean). This value is not necessary, but is useful to differentiate the responses from the db and cache.
-To monitor and manipulate the keys stored in Redis I'm using `Redis Insight`.
-If the controller finds a cache key for the request it returns the cached values.
+The dependency `ioredis` is used to interact with Redis from Node.
+The redis singleton client `/config/redisClient` logs by console the conection status.
+The endpoints using redis returns a value `cache` (boolean). This value is useful to identify the responses from db or cache.
+If the controller finds a cache key for the specific request returns the cached values.
 If no chache is found the controller calls the db, stores in cache the result and then returns them.
 The aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. When the cache expires it removes itself from redis.
 The services to create, modify and delete elements removes all the existing cached keys for the related lists.
+
+The app `Redis Insight` is used to monitor and manipulate the keys stored in Redis.
 
 ## Password hash and salt
 
@@ -173,10 +176,13 @@ Bcrypt verify the passwords at login by encrypting and comparing the recieved an
 
 # Rate Limiter
 
-The middleware `rateLimiter.middleware.ts` prevents from too many requests.
-The middleware stores the user ip un Redis with the number of attemps. The TTL (time to live) for the Redis key is declared in `expire`.
-If the user identified by IP try more than 10 times in less than 60 seconds the middleware returns status 429 (Too many requests).
-This prevents from db overload and brute force attacks.
+The middleware `rateLimiter.middleware.ts` prevents from brute force attacks in the `/customer/login` endpoint storing the user Ip and the user email in Redis with the number of failed attemps and the TTL (time to live) for the Redis key.
+If the user exceeds the amount of failed requests permitted, the middleware returns status 429 (Too many requests) and changes de TTL for the Redis key to the block duration specified in the env variable blocking the user access.
+
+A second rate limiter middleware `rateLimiterFlexible.middleware.ts` using `rate-limiter-flexible` can be found in the project.
+Also stores in Redis with the same results as `rateLimiter.middleware.ts`.
+The only difference is the `insuranceLimiter` configuration allowing to continue processing requests in memory if Redis fails.
+This middleware is not used in the project, but kept as possible backup and as configurations example.
 
 ## JWT Access and Refresh
 
@@ -201,14 +207,15 @@ The routes (E2E) and controllers (unit-testing) are tested using `jest` and `sup
 Aditionally the devDependencies `@types/jest`, `@types/supertest` and `ts-jest` are required to work with TypeScript.
 `ioredis-mock` is used to mock Redis in testing enviroment.
 
-## ToDo
-
 The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
 To initialize jest in the project run the command `npx ts-jest config:init`. This will create a file `jest.config.js`.
 The script `npm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
 
+## ToDo
+
+- install and config ESLint and Prettier plugins and typescript related
 - Swagger (investigate executing endpoints)
 - Update ERD: Customer
-- Testing (complete controllers / full routes)
 - Export db to `.CSV`
-- docker compose for db, redis and api.
+- docker compose for db, redis and api (development and test).
+- Testing (complete controllers / full routes)

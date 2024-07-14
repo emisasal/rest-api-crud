@@ -3,23 +3,28 @@ import { Request, Response, NextFunction } from "express"
 import redis from "config/redisClient"
 import errorHandler from "utils/errorHandler"
 
+const RATE_LIMIT_REQUESTS = Number(process.env.RATE_LIMIT_REQUESTS as string)
+const RATE_LIMIT_PERIOD = Number(process.env.RATE_LIMIT_PERIOD as string)
+const RATE_LIMIT_BLOCKDURATION = Number(
+  process.env.RATE_LIMIT_BLOCKDURATION as string
+)
+
 const opts = {
   storeClient: redis,
-  points: 10, // Number of points
-  duration: 10, // Per second(s)
-  blockDuration: 60 * 60 * 24, // 1 day
+  points: RATE_LIMIT_REQUESTS,
+  duration: RATE_LIMIT_PERIOD,
+  blockDuration: RATE_LIMIT_BLOCKDURATION,
   keyPrefix: "login_", // must be unique for limiters with different purpose
   insuranceLimiter: new RateLimiterMemory({
-    points: 10,
-    duration: 10,
-    blockDuration: 60 * 60 * 24, // 1 day
+    points: RATE_LIMIT_REQUESTS,
+    duration: RATE_LIMIT_PERIOD,
+    blockDuration: RATE_LIMIT_BLOCKDURATION,
   }), // Memory-based insurance limiter
 }
 
-export const rateLimiterBrute = new RateLimiterRedis(opts)
+export const rateLimiterRedis = new RateLimiterRedis(opts)
 
-// @desc Brute force Rate Limiter using Redis with memory backup
-const bruteForceRateLimiter = async (
+const rateLimiterFlexible = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -27,11 +32,11 @@ const bruteForceRateLimiter = async (
   try {
     const ip = req.ip || req.socket.remoteAddress
     const { email } = req.body
-    await rateLimiterBrute.consume(`${ip}_${email}`)
+    await rateLimiterRedis.consume(`${ip}_${email}`)
     return next()
   } catch (error) {
     return next(errorHandler(429, "Too Many Requests"))
   }
 }
 
-export default bruteForceRateLimiter
+export default rateLimiterFlexible

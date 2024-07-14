@@ -3,9 +3,9 @@ import { RedisKey } from "ioredis"
 import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 
-const RATE_LIMIT_PERIOD = parseInt(process.env.RATE_LIMIT_PERIOD as string)
-const RATE_LIMIT_REQUESTS = parseInt(process.env.RATE_LIMIT_REQUESTS as string)
-const RATE_LIMIT_BLOCKDURATION = parseInt(
+const RATE_LIMIT_PERIOD = Number(process.env.RATE_LIMIT_PERIOD as string)
+const RATE_LIMIT_REQUESTS = Number(process.env.RATE_LIMIT_REQUESTS as string)
+const RATE_LIMIT_BLOCKDURATION = Number(
   process.env.RATE_LIMIT_BLOCKDURATION as string
 )
 

@@ -2,7 +2,7 @@ import { Router } from "express"
 import * as customerValidator from "../validators/customer.validators"
 import * as customerSessionController from "../controllers/customerSession.controller"
 import validationError from "../middleware/validationError.middleware"
-import bruteForceLimiter from "middleware/bruteForceRateLimiter.middleware"
+import rateLimiterFlexible from "middleware/rateLimiterFlexible.middleware"
 import rateLimiter from "../middleware/rateLimiter.middleware"
 
 const router = Router()
@@ -18,7 +18,7 @@ router.post(
 router.post(
   "/customer/login",
   rateLimiter,
-  // bruteForceLimiter,
+  // rateLimiterFlexible,
   customerValidator.postLoginCustomerValidator,
   validationError,
   customerSessionController.postLoginCustomer
