@@ -213,6 +213,7 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
+- install and config ESLint and Prettier plugins and typescript related
 - Swagger (investigate executing endpoints)
 - Update ERD: Customer
 - Export db to `.CSV`
