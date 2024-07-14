@@ -2,12 +2,16 @@ import { Redis } from "ioredis"
 import redisMock from "ioredis-mock"
 
 const REDIS_HOST = process.env.REDIS_HOST as string
-const REDIS_PORT = parseInt(process.env.REDIS_PORT as string, 10)
+const REDIS_PORT = parseInt(process.env.REDIS_PORT as string)
 
 const redis =
   process.env.NODE_ENV === "test"
     ? new redisMock()
-    : new Redis(REDIS_PORT, REDIS_HOST)
+    : new Redis({
+        port: REDIS_PORT,
+        host: REDIS_HOST,
+        showFriendlyErrorStack: true,
+      })
 
 process.env.NODE_ENV !== "test" &&
   redis

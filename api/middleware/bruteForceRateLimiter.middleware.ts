@@ -5,20 +5,21 @@ import errorHandler from "utils/errorHandler"
 
 const opts = {
   storeClient: redis,
-  points: 5, // Number of points
-  duration: 60, // Per second(s)
+  points: 10, // Number of points
+  duration: 10, // Per second(s)
   blockDuration: 60 * 60 * 24, // 1 day
   keyPrefix: "login_", // must be unique for limiters with different purpose
   insuranceLimiter: new RateLimiterMemory({
     points: 10,
     duration: 10,
-    //   blockDuration: 60 * 60 * 24, // 1 day
+    blockDuration: 60 * 60 * 24, // 1 day
   }), // Memory-based insurance limiter
 }
 
 export const rateLimiterBrute = new RateLimiterRedis(opts)
 
-const bruteForceLimiter = async (
+// @desc Brute force Rate Limiter using Redis with memory backup
+const bruteForceRateLimiter = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -33,4 +34,4 @@ const bruteForceLimiter = async (
   }
 }
 
-export default bruteForceLimiter
+export default bruteForceRateLimiter
