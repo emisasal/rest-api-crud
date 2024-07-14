@@ -6,7 +6,6 @@ import { signAccessJWT, signRefreshJWT } from "../utils/handleJWT"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
 import redis from "../config/redisClient"
-import { rateLimiterBrute } from "middleware/bruteForceRateLimiter.middleware"
 
 // @desc Create new Customer
 // @route POST /api/customer/register

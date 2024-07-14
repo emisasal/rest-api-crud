@@ -3,7 +3,12 @@ import { RedisKey } from "ioredis"
 import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 
-// @desc Pure Redis Rate Limiter
+const RATE_LIMIT_PERIOD = parseInt(process.env.RATE_LIMIT_PERIOD as string)
+const RATE_LIMIT_REQUESTS = parseInt(process.env.RATE_LIMIT_REQUESTS as string)
+const RATE_LIMIT_BLOCKDURATION = parseInt(
+  process.env.RATE_LIMIT_BLOCKDURATION as string
+)
+
 const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip || req.socket.remoteAddress
   const { email } = req.body
@@ -13,7 +18,7 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const response: any = await redis
     .pipeline()
     .incr(key as RedisKey)
-    .expire(key as RedisKey, 10) // seconds
+    .expire(key as RedisKey, RATE_LIMIT_PERIOD)
     .exec((err) => {
       if (err) console.error(err)
     })
@@ -22,8 +27,8 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
     return next(errorHandler(500, "Internal Server Error"))
   }
 
-  if (response[0][1] > 10) {
-    await redis.expire(key as RedisKey, 60 * 60 * 24)
+  if (response[0][1] > RATE_LIMIT_REQUESTS) {
+    await redis.expire(key as RedisKey, RATE_LIMIT_BLOCKDURATION)
     return next(errorHandler(429, "Too Many Requests"))
   }
 
