@@ -10,6 +10,8 @@ import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
+
+import { openApiJson } from "./docs/openapi.config"
 import swaggerSpec from "../swagger/swaggerSpec"
 
 const { NODE_ENV, COOKIE_SECRET } = process.env
@@ -30,12 +32,20 @@ app.use(
   swaggerUi.setup(swaggerSpec, { explorer: true })
 )
 
+// OpenApi Docs
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(openApiJson)
+)
+
 // Session routes
 app.use("/api", customerSessionRoutes)
 // Access JWT verification
 app.use(verifyJWT as any)
 // Registered routes
 app.use("/api", routes)
+
 
 // Not Found middleware
 app.use(notFoundHandler)

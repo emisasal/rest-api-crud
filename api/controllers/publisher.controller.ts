@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
 import redis from "../config/redisClient"

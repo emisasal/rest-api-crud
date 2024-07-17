@@ -3,6 +3,9 @@ import * as bookValidator from "../validators/book.validators"
 import validationError from "../middleware/validationError.middleware"
 import * as bookController from "../controllers/book.controller"
 
+import { openApi } from "docs/openapi.config"
+import * as bookDocs from "../docs/book.docs"
+
 const router = Router()
 
 // @route /book
