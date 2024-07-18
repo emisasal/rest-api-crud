@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "moduleResolution": "Node",
-    "rootDir": "api",
     "outDir": "dist",
     "strict": true,
     "baseUrl": ".",

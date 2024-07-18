@@ -1,5 +1,4 @@
 import { bookData } from "./data"
-import { openApi } from "./openapi.config"
 import {
   dbErrorSchema,
   globalErrorSchema,
@@ -16,58 +15,152 @@ export const getAllBooksDoc = {
   summary: "Get books list",
   description: "Get books list by page, order and filters",
   operationId: "getAllBooksDoc",
+  parameters: [
+    {
+      in: "query",
+      name: "page",
+      description: "List page number.",
+      required: true,
+      schema: {
+        type: "number",
+      },
+      example: 0,
+    },
+    {
+      in: "query",
+      name: "sort",
+      description: "Value to sort list order.",
+      required: true,
+      schema: {
+        type: "string",
+        enum: ["title", "price", "publish_date"],
+      },
+      example: "title",
+    },
+    {
+      in: "query",
+      name: "order",
+      description: "Defines the order of the list elements.",
+      required: true,
+      schema: {
+        type: "string",
+        enum: ["asc", "desc"],
+      },
+      example: "asc",
+    },
+    {
+      in: "query",
+      name: "title",
+      description: "Filter by book title. Exact or parcial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "author",
+      description: "Filter by author name (first or last). Exact or parcial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "genre",
+      description: "Filter by genre name. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "publisher",
+      description: "Filter by publisher name. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "isbn",
+      description: "Filter by isbn code. Exact or pacial.",
+      schema: {
+        type: "string",
+      },
+    },
+    {
+      in: "query",
+      name: "dateStart",
+      description:
+        "initial date to filter by publishing date. Must also include 'dateEnd'.",
+      schema: {
+        type: "date",
+      },
+      example: "yyyy-MM-dd",
+    },
+    {
+      in: "query",
+      name: "dateEnd",
+      description:
+        "End date to filter by publishing date. Must also include 'dateStart'.",
+      schema: {
+        type: "date",
+      },
+      example: "yyyy-MM-dd",
+    },
+  ],
   responses: {
-    // 200: {
-    //   description: "OK",
-    //   content: {
-    //     "application/json": {
-    //       schema: {
-    //         type: "object",
-    //         properties: {
-    //           success: {
-    //             type: "boolean",
-    //             description: "Response successful",
-    //             example: true,
-    //           },
-    //           statusCode: {
-    //             type: "number",
-    //             description: "Response status code",
-    //             example: 200,
-    //           },
-    //           data: {
-    //             type: "array",
-    //             description: "Array of book objects",
-    //             example: [bookData],
-    //           },
-    //           count: {
-    //             type: "number",
-    //             description: "Total amount of list elements",
-    //             example: 732,
-    //           },
-    //           page: {
-    //             type: "number",
-    //             description: "Actual page number",
-    //             example: 0,
-    //           },
-    //           limit: {
-    //             type: "number",
-    //             description: "Last page number of the list",
-    //             example: 12,
-    //           },
-    //           cache: {
-    //             type: "boolean",
-    //             description: "Indicates if 'data' is returned from cache",
-    //             example: true,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // },
-    // 400: globalErrorSchema("Error getting books"),
-    // 401: unauthorizedSchema(),
-    // 404: notFoundSchema("GET", "/api/book"),
-    500: openApi.declareSchema("Internal Server Error", internalErrorSchema),
+    200: {
+      description: "OK",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                description: "Response successful",
+                example: true,
+              },
+              statusCode: {
+                type: "number",
+                description: "Response status code",
+                example: 200,
+              },
+              data: {
+                type: "array",
+                description: "Array of book objects",
+                example: [bookData],
+              },
+              count: {
+                type: "number",
+                description: "Total amount of list elements",
+                example: 732,
+              },
+              page: {
+                type: "number",
+                description: "Actual page number",
+                example: 0,
+              },
+              limit: {
+                type: "number",
+                description: "Last page number of the list",
+                example: 12,
+              },
+              cache: {
+                type: "boolean",
+                description: "Indicates if 'data' is returned from cache",
+                example: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: globalErrorSchema("Error getting books"),
+    401: unauthorizedSchema(),
+    404: notFoundSchema("GET", "/api/book"),
+    500: internalErrorSchema,
   },
 }
 
@@ -77,6 +170,17 @@ export const getBookByIdDoc = {
   summary: "Get book by Id",
   description: "Get single book by param Id",
   operationId: "getBookByIdDoc",
+  parameters: [
+    {
+      in: "params",
+      name: "id",
+      description: "Book Id",
+      required: true,
+      schema: {
+        type: "number",
+      },
+    },
+  ],
   responses: {
     200: {
       description: "OK",
