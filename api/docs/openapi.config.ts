@@ -1,9 +1,14 @@
-import { Application } from "express"
-import { OpenApi } from "ts-openapi"
-import swaggerUi from "swagger-ui-express"
+import type { Application } from "express"
+import { OpenApi, Types } from "ts-openapi"
 
 import * as bookDocs from "./book.docs"
-import { internalErrorSchema } from "./swaggerErrorSchemas"
+import {
+  globalErrorSchema,
+  internalErrorSchema,
+  notFoundSchema,
+  unauthorizedSchema,
+} from "./swaggerErrorSchemas"
+import { bookData } from "./data"
 
 // create an OpenApi instance to store definitions
 export const openApi = new OpenApi(
@@ -29,64 +34,94 @@ openApi.addPath(
   "/api/book",
   {
     get: {
-        tags: ["Book"],
-        summary: "Get books list",
-        description: "Get books list by page, order and filters",
-        operationId: "getAllBooksDoc",
-        responses: {
-          // 200: {
-          //   description: "OK",
-          //   content: {
-          //     "application/json": {
-          //       schema: {
-          //         type: "object",
-          //         properties: {
-          //           success: {
-          //             type: "boolean",
-          //             description: "Response successful",
-          //             example: true,
-          //           },
-          //           statusCode: {
-          //             type: "number",
-          //             description: "Response status code",
-          //             example: 200,
-          //           },
-          //           data: {
-          //             type: "array",
-          //             description: "Array of book objects",
-          //             example: [bookData],
-          //           },
-          //           count: {
-          //             type: "number",
-          //             description: "Total amount of list elements",
-          //             example: 732,
-          //           },
-          //           page: {
-          //             type: "number",
-          //             description: "Actual page number",
-          //             example: 0,
-          //           },
-          //           limit: {
-          //             type: "number",
-          //             description: "Last page number of the list",
-          //             example: 12,
-          //           },
-          //           cache: {
-          //             type: "boolean",
-          //             description: "Indicates if 'data' is returned from cache",
-          //             example: true,
-          //           },
-          //         },
-          //       },
-          //     },
-          //   },
-          // },
-          // 400: globalErrorSchema("Error getting books"),
-          // 401: unauthorizedSchema(),
-          // 404: notFoundSchema("GET", "/api/book"),
-          500: openApi.declareSchema("Internal Server Error", internalErrorSchema),
-        },
+      tags: ["Book"],
+      summary: "Get books list",
+      description: "Get books list by page, order and filters",
+      operationId: "getAllBooksDoc",
+      responses: {
+        200: openApi.declareSchema(
+          "OK",
+          Types.Object({
+            description: "OK",
+            properties: {
+              success: Types.Boolean({
+                description: "Response successful",
+              }),
+              statusCode: Types.Integer({
+                description: "Response status code",
+              }),
+              data: Types.Array({
+                description: "Array of book objects",
+                arrayType: Types.Object({
+                  properties: {
+                    book_id: Types.Integer(),
+                    title: Types.String(),
+                    description: Types.String(),
+                    author_id: Types.Integer(),
+                    genre_id: Types.Integer(),
+                    publisher_id: Types.Integer(),
+                    price: Types.String(),
+                    publish_date: Types.Date(),
+                    isbn: Types.String(),
+                    author: {
+                      author_id: Types.Integer(),
+                      first_name: Types.String(),
+                      last_name: Types.String(),
+                      bio: Types.String(),
+                    },
+                    genre: {
+                      genre_id: Types.Integer(),
+                      name: Types.String(),
+                      description: Types.String(),
+                    },
+                    publisher: {
+                      publisher_id: Types.Integer(),
+                      publisher_name: Types.String(),
+                      contact_name: Types.String(),
+                      phone_number: Types.String(),
+                    },
+                  },
+                }),
+              }),
+              count: Types.Integer({
+                description: "Total amount of list elements",
+              }),
+              page: Types.Integer({
+                description: "Actual page number",
+              }),
+              limit: Types.Integer({
+                description: "Last page number of the list",
+              }),
+              cache: Types.Boolean({
+                description: "Indicates if 'data' is returned from cache",
+              }),
+            },
+            example: {
+              success: true,
+              statusCode: 200,
+              data: [bookData],
+              count: 732,
+              page: 0,
+              limit: 12,
+              cache: true,
+            },
+          })
+        ),
+        400: openApi.declareSchema(
+          "Error getting data",
+          globalErrorSchema("Error getting books")
+        ),
+        401: openApi.declareSchema("Unauthorized", unauthorizedSchema()),
+        404: openApi.declareSchema(
+          "Route not found",
+          notFoundSchema("GET", "/api/book")
+        ),
+        500: openApi.declareSchema(
+          "Internal Server Error",
+          internalErrorSchema
+        ),
       },
+    },
   },
   true
 )

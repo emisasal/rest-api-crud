@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
     "moduleResolution": "Node",
     "rootDir": "api",
     "outDir": "dist",
@@ -13,12 +12,11 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "ignoreDeprecations": "5.0",
-    "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "noPropertyAccessFromIndexSignature": false
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": ["tsconfig-paths/register"],
   },
   "include": ["api/**/*.ts"],
   "exclude": ["node_modules"]
