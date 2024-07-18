@@ -1,72 +1,94 @@
-import { Types } from "ts-openapi"
-
 //  400
 export const globalErrorSchema = (message: string | null = null) => {
-  return Types.Object({
+  return {
     description: "Error getting data",
-    properties: {
-      success: Types.Boolean({
-        description: "Response not successful",
-      }),
-      statusCode: Types.Integer({
-        description: "Response status code",
-      }),
-      message: Types.String({
-        description: "Error description",
-      }),
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 400,
+            },
+            message: {
+              type: "string",
+              description: "Error description",
+              example: message || "Bad Request",
+            },
+          },
+        },
+      },
     },
-    example: {
-      success: false,
-      statusCode: 400,
-      message: message || "Bad Request",
-    },
-  })
+  }
 }
 
 // 401
 export const unauthorizedSchema = (message: string | null = null) => {
-  return Types.Object({
+  return {
     description: "Unauthorized",
-    properties: {
-      success: Types.Boolean({
-        description: "Response not successful",
-      }),
-      statusCode: Types.Integer({
-        description: "Response status code",
-      }),
-      message: Types.String({
-        description: "Unauthorized",
-      }),
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 401,
+            },
+            message: {
+              type: "string",
+              description: "Unauthorized",
+              example: message || "Unauthorized",
+            },
+          },
+        },
+      },
     },
-    example: {
-      success: false,
-      statusCode: 401,
-      message: message || "Unauthorized",
-    },
-  })
+  }
 }
 
 // 404
 export const notFoundSchema = (method: string, originalUrl: string) => {
-  return Types.Object({
+  return {
     description: "Route not found",
-    properties: {
-      success: Types.Boolean({
-        description: "Response not successful",
-      }),
-      statusCode: Types.Integer({
-        description: "Response status code",
-      }),
-      message: Types.String({
-        description: "Error description",
-      }),
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            success: {
+              type: "boolean",
+              description: "Response not successful",
+              example: false,
+            },
+            statusCode: {
+              type: "number",
+              description: "Response status code",
+              example: 404,
+            },
+            message: {
+              type: "string",
+              description: "Error description",
+              example: `Route ${method} ${originalUrl} Not found`,
+            },
+          },
+        },
+      },
     },
-    example: {
-      success: false,
-      statusCode: 404,
-      message: `Route ${method} ${originalUrl} Not found`,
-    },
-  })
+  }
 }
 
 // 409
@@ -132,22 +154,30 @@ export const unprocessableContent = (message: string) => {
 }
 
 // 500
-export const internalErrorSchema = Types.Object({
+export const internalErrorSchema = {
   description: "Internal Server Error",
-  properties: {
-    success: Types.Boolean({
-      description: "Response not successful",
-    }),
-    statusCode: Types.Integer({
-      description: "Response status code",
-    }),
-    message: Types.String({
-      description: "Error description",
-    }),
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          success: {
+            type: "boolean",
+            description: "Response not successful",
+            example: false,
+          },
+          statusCode: {
+            type: "number",
+            description: "Response status code",
+            example: 500,
+          },
+          message: {
+            type: "string",
+            description: "Error description",
+            example: "Internal Server Error",
+          },
+        },
+      },
+    },
   },
-  example: {
-    success: false,
-    statusCode: 500,
-    message: "Internal Server Error",
-  },
-})
+}

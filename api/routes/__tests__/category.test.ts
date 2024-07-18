@@ -1,6 +1,6 @@
 import request from "supertest"
 import app from "../../app"
-import { customerData } from "../../../swagger/data"
+import { customerData } from "../../docs/data"
 import redis from "../../config/redisClient"
 
 afterAll(async () => {

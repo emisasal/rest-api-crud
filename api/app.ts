@@ -10,9 +10,7 @@ import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
-
-import { openApiJson } from "./docs/openapi.config"
-// import swaggerSpec from "../swagger/swaggerSpec"
+import swaggerSpec from "./docs/swaggerSpec"
 
 const { NODE_ENV, COOKIE_SECRET } = process.env
 
@@ -26,17 +24,10 @@ app.use(cookieParser(COOKIE_SECRET))
 app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
 
 // Swagger
-// app.use(
-//   "/api-docs",
-//   swaggerUi.serve,
-//   swaggerUi.setup(swaggerSpec, { explorer: true })
-// )
-
-// OpenApi Docs
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(openApiJson)
+  swaggerUi.setup(swaggerSpec, { explorer: true })
 )
 
 // Session routes
