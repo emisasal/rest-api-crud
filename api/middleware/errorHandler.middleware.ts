@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { Prisma } from "@prisma/client"
-import CustomError from "../classes/CustomError"
+import type CustomError from "../classes/CustomError"
 
 const globalErrorHandler = (
   err: CustomError,

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { prisma } from "../config/prismaClient"
 import errorHandler from "../utils/errorHandler"
 import capitalizeWords from "../utils/capitalizeWords"
@@ -158,9 +158,6 @@ export const patchCustomerByid = async (
     }
     if (data.last_name) {
       data.last_name = capitalizeWords(data.last_name)
-    }
-    if (data.email) {
-      data.email = data.email
     }
 
     const patchedCustomer = await prisma.customer.update({

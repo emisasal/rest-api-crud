@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import { prisma } from "../config/prismaClient"
 import errorHandler from "../utils/errorHandler"
 import paginationHandler from "../utils/paginationHandler"

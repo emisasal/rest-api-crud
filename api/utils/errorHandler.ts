@@ -1,4 +1,4 @@
-import CustomError from "../classes/CustomError"
+import type CustomError from "../classes/CustomError"
 
 const errorHandler = (statusCode: number, message: string) => {
   const error = new Error() as CustomError

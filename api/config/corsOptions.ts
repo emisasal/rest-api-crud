@@ -1,4 +1,4 @@
-import { CorsOptions } from "cors"
+import type { CorsOptions } from "cors"
 
 const allowedOrigins = ["http://localhost:3000"]
 

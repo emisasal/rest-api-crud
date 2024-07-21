@@ -161,7 +161,7 @@ export const postOrder = async (
       },
     })
 
-    let booksPrice = []
+    const booksPrice = []
     for (let i = 0; i < books.length; i++) {
       const priceBook = booksData.filter(
         (book) => book.book_id === books[i].book_id

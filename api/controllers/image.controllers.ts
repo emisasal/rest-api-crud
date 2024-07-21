@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express"
-import path from "path"
+import type { NextFunction, Request, Response } from "express"
+import path from "node:path"
 
 export const getImageById = async (
   req: Request,
