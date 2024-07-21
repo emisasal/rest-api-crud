@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express"
-import { RedisKey } from "ioredis"
+import type { Request, Response, NextFunction } from "express"
+import type { RedisKey } from "ioredis"
 import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
 

@@ -1,4 +1,4 @@
-import jwt, { Secret } from "jsonwebtoken"
+import jwt, { type Secret } from "jsonwebtoken"
 
 export const signAccessJWT = (id: number | string) => {
   const accessToken = jwt.sign(

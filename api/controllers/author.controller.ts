@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express"
-import { Prisma } from "@prisma/client"
+import type { NextFunction, Request, Response } from "express"
+import type { Prisma } from "@prisma/client"
 import { prisma } from "../config/prismaClient"
 import redis from "../config/redisClient"
 import errorHandler from "../utils/errorHandler"
@@ -189,7 +189,8 @@ export const patchAuthorById = async (
     })
 
     if (!patchedAuthor) {
-      return next(errorHandler(409, "Error updating author"))    }
+      return next(errorHandler(409, "Error updating author"))
+    }
 
     const cacheKeys = await redis.keys("getAllAuthors:*")
     cacheKeys ?? (await redis.del(cacheKeys))

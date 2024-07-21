@@ -33,7 +33,7 @@ app.use(
 // Session routes
 app.use("/api", customerSessionRoutes)
 // Access JWT verification
-app.use(verifyJWT as any)
+app.use(verifyJWT)
 // Registered routes
 app.use("/api", routes)
 
