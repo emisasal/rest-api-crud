@@ -44,9 +44,11 @@
 
 ## Enviroment Variables
 
-I'm using `dotenvx` dependecy to handle the enviroment variables for development `.env.development` and production `.env.production`.
-In order to combine variables using dotenvx I changed the dev script to: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
-And the production script to: `dotenvx run --env-file=.env.development --env-file=.env -- npx tsc`.
+The dependency `dotenvx` is used to handle the enviroment variables. 
+The files are `.env.development` for development and `.env.production` for production.
+An aditional `.env` file contains shared variables to all enviroments.
+To combine the variables in the dev script: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
+And in the production script: `dotenvx run --env-file=.env.development --env-file=.env -- npx tsc`.
 
 ## Database Schema
 
@@ -54,13 +56,14 @@ This is the original ERD schema for an online bookstore database.
 
 ![databaseSchema](images/bookStore_schema.png)
 
-I created a new ERD using `draw.io` with some changes in relations and data types taking advantage of some unique postgres features and good practices.
+A new ERD using `draw.io` with some changes in relations and data types was created taking advantage of some unique postgres features and good practices.
 
 ![newDatabaseSchema](images/rest-api-crud.drawio.png)
 
 For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
 
-To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`. Following the Books example, if a book is deleted all the related reviews will also be deleted.
+To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`. 
+Following the Books example, if a book is deleted all the related reviews will also be deleted.
 
 ## Database creation
 
@@ -74,10 +77,10 @@ If not previously installed, the script will install `prisma-client-js` generato
 
 ## Seeds
 
-I used Mockaroo (https://www.mockaroo.com/) to create fake data .
-The files are located in `/prisma/seedData` named `.seed.ts`.
-I'm using objects (not `json`) to avoid the conversion process.
-Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
+Mockaroo (https://www.mockaroo.com/) is a tool to create fake data for db seeding in different formats (json, object, CSV, etc).
+The mocks used are objects (not json) to avoid the conversion process.
+The files are located in `/prisma/seedData` named `seed.ts`.
+>Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
 
 To aviod conflicts with the relations between models I created a function that execute `Promise.all` applying "upsert" for every object.
 This solves the issue of duplicate data and allows the seeds to be applied multiple times.
@@ -89,11 +92,12 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seed stores false Ids. And if the second model tries to make a relation to a non-existent Id it will return error.
 
-To run the seeds in the db use the script `npm run seed`. It executes "prima db push" (forces db schema) combined with `prisma/seed.ts`.
+The script `npm run seed` populates the db with the seeds executing "prisma db push" (forces db schema) combined with `prisma/seed.ts`.
 
 ## Routes
 
-The routes for the models are located in `/api/routes`. I used an `index.ts` file to simplify the routes imports in the server.
+The routes for the models are located in `/api/routes`. 
+The file `index.ts` combines all the routes import for simpler export to the server.
 
 ## Error handling
 
@@ -108,7 +112,7 @@ The middleware `notFoundHandler` catches all the incorrect routes and returns st
 ## Send Files for book covers
 
 The endpoint `/api/image/:id` returns book cover images in jpg format using the id for the book.
-It aslo includes error handling for the `res.sendFile` method when the Id is incorrect or the book cover does't exist.
+It aslo includes error handling for the `res.sendFile` method when the Id is incorrect or the book cover doesn't exist.
 
 ## Pagination and Sorting
 
@@ -151,28 +155,38 @@ Without an options file as parameter, cors will be enabled for all origins.
 
 The projet uses `morgan` (and `@types/morgan` as devDependency) http logger in "dev" mode (reduced details) for development and "common" for production (more details).
 
-## Caching with Redis
+## Redis
 
-Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
+The project use Redis for memory data storage allowing faster responses.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
 The redis server can be stopped using `ctrl-c` or `redis-cli shutdown`.
-The dependency `ioredis` is used to interact with Redis from Node.
 The redis singleton client `/config/redisClient` logs by console the conection status.
-The endpoints using redis returns a value `cache` (boolean). This value is useful to identify the responses from db or cache.
-If the controller finds a cache key for the specific request returns the cached values.
-If no chache is found the controller calls the db, stores in cache the result and then returns them.
-The aditional params "EX" (for seconds or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. When the cache expires it removes itself from redis.
-The services to create, modify and delete elements removes all the existing cached keys for the related lists.
+For monitor and manipulate the keys stored in Redis use `Redis Insight`.
+The dependency `ioredis` is used to interact with Redis from Node.
+The Redis uses are:
+### Cache
+Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
+The endpoints using redis returns a value `cache` (boolean).
+>This value is not necessary, but useful to identify the responses from db or cache.
 
-The app `Redis Insight` is used to monitor and manipulate the keys stored in Redis.
+If the controller finds a cache key for the specific request will return the cached values.
+If no chache is found the controller calls the db, stores in cache the result and then returns them.
+The aditional params "EX" (for seconds, or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. 
+When the cache expires it removes itself from redis.
+The services to create, modify and delete elements removes all the existing cached keys for the related lists.
+### User session
+See [JWT Access and Refresh](#jwt-access-and-refresh)
+### Rate Limiter
+See [Rate Limiter](#rate-limiter)
 
 ## Password hash and salt
 
 New users passwords are encrypted using `bcrypt` hash and salt.
 Bcrypt hashes the password and adds salt to avoid rainbow table attacks.
-Because the password stored in db is hashed, only the user knows the password.
+The password is stored in db hashed and is only known by the user.
 If the user forgets or needs to change the password a new password must be entered.
-Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the has and salt must be equal). The hashed password never gets decrypted.
+Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the hash and salt must be equal). 
+The hashed password never gets decrypted by Bcrypt.
 
 # Rate Limiter
 
@@ -180,15 +194,15 @@ The middleware `rateLimiter.middleware.ts` prevents from brute force attacks in 
 If the user exceeds the amount of failed requests permitted, the middleware returns status 429 (Too many requests) and changes de TTL for the Redis key to the block duration specified in the env variable blocking the user access.
 
 A second rate limiter middleware `rateLimiterFlexible.middleware.ts` using `rate-limiter-flexible` can be found in the project.
-Also stores in Redis with the same results as `rateLimiter.middleware.ts`.
+It also stores in Redis with the same results as `rateLimiter.middleware.ts`.
 The only difference is the `insuranceLimiter` configuration allowing to continue processing requests in memory if Redis fails.
-This middleware is not used in the project, but kept as possible backup and as configurations example.
+This middleware is not used in the project, but kept as possible backup and for configuration reference.
 
 ## JWT Access and Refresh
 
-When the user successfully login the server returns two jwt (Jason Web Token) in http only cookies: `access_token` and `refresh_token`.
+When the user successfully login, the server returns two JWT (Jason Web Token) in http only cookies: `access_token` and `refresh_token`.
 This allows for stateless user session and permissions (client side).
-The cookies prevent the jwt to be javascript accessible from the client side.
+The cookies prevent the JWT to be javascript accessible from the client side.
 Only the signatures for the jwt and the cookies are encrypted, not the tokens content.
 
 - The `access_token` informs the server if the user have access to the resources. The token and the cookie are short-lived to prevent signature forgery and other types of attacks.
@@ -198,8 +212,9 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 
 ## Swagger documentation
 
-The list of endpoints are documented with Swagger in `http://localhost:8080/api-docs`.
-The endpoints are ordered by types and include params, query params and body. And all the responses with status code and examples.
+The list of endpoints are documented with Swagger in `http://localhost:8080/docs`.
+The endpoints are ordered by types and include params, query params and body. 
+All the responses show status code and examples.
 
 ## Testing
 
@@ -213,9 +228,10 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- Swagger - include auth and executing endpoints
 - install and config ESLint 9 and Prettier plugins and typescript related
+- Swagger - include auth and executing endpoints
 - Update ERD: Customer
-- Export db to `.CSV`
+- DB creation using SQL query
+- Export db to `.CSV` file
 - docker compose for db, redis and api (development and test).
-- Testing (complete controllers / full routes)
+- Testing (complete controllers / full routes) - Investigate Vitest
