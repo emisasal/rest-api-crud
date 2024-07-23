@@ -44,7 +44,7 @@
 
 ## Enviroment Variables
 
-The dependency `dotenvx` is used to handle the enviroment variables. 
+The dependency `dotenvx` is used to handle the enviroment variables.
 The files are `.env.development` for development and `.env.production` for production.
 An aditional `.env` file contains shared variables to all enviroments.
 To combine the variables in the dev script: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
@@ -62,7 +62,7 @@ A new ERD using `draw.io` with some changes in relations and data types was crea
 
 For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
 
-To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`. 
+To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`.
 Following the Books example, if a book is deleted all the related reviews will also be deleted.
 
 ## Database creation
@@ -80,7 +80,8 @@ If not previously installed, the script will install `prisma-client-js` generato
 Mockaroo (https://www.mockaroo.com/) is a tool to create fake data for db seeding in different formats (json, object, CSV, etc).
 The mocks used are objects (not json) to avoid the conversion process.
 The files are located in `/prisma/seedData` named `seed.ts`.
->Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
+
+> Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
 
 To aviod conflicts with the relations between models I created a function that execute `Promise.all` applying "upsert" for every object.
 This solves the issue of duplicate data and allows the seeds to be applied multiple times.
@@ -96,7 +97,7 @@ The script `npm run seed` populates the db with the seeds executing "prisma db p
 
 ## Routes
 
-The routes for the models are located in `/api/routes`. 
+The routes for the models are located in `/api/routes`.
 The file `index.ts` combines all the routes import for simpler export to the server.
 
 ## Error handling
@@ -164,19 +165,26 @@ The redis singleton client `/config/redisClient` logs by console the conection s
 For monitor and manipulate the keys stored in Redis use `Redis Insight`.
 The dependency `ioredis` is used to interact with Redis from Node.
 The Redis uses are:
+
 ### Cache
+
 Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
 The endpoints using redis returns a value `cache` (boolean).
->This value is not necessary, but useful to identify the responses from db or cache.
+
+> This value is not necessary, but useful to identify the responses from db or cache.
 
 If the controller finds a cache key for the specific request will return the cached values.
 If no chache is found the controller calls the db, stores in cache the result and then returns them.
-The aditional params "EX" (for seconds, or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys. 
+The aditional params "EX" (for seconds, or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys.
 When the cache expires it removes itself from redis.
 The services to create, modify and delete elements removes all the existing cached keys for the related lists.
+
 ### User session
+
 See [JWT Access and Refresh](#jwt-access-and-refresh)
+
 ### Rate Limiter
+
 See [Rate Limiter](#rate-limiter)
 
 ## Password hash and salt
@@ -185,7 +193,7 @@ New users passwords are encrypted using `bcrypt` hash and salt.
 Bcrypt hashes the password and adds salt to avoid rainbow table attacks.
 The password is stored in db hashed and is only known by the user.
 If the user forgets or needs to change the password a new password must be entered.
-Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the hash and salt must be equal). 
+Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the hash and salt must be equal).
 The hashed password never gets decrypted by Bcrypt.
 
 # Rate Limiter
@@ -213,7 +221,7 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 ## Swagger documentation
 
 The list of endpoints are documented with Swagger in `http://localhost:8080/docs`.
-The endpoints are ordered by types and include params, query params and body. 
+The endpoints are ordered by types and include params, query params and body.
 All the responses show status code and examples.
 
 ## Testing
@@ -228,7 +236,7 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- install and config ESLint 9 and Prettier plugins and typescript related
+- Github actions (biome and tests)
 - Swagger - include auth and executing endpoints
 - Update ERD: Customer
 - DB creation using SQL query
