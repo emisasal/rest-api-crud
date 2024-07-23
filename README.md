@@ -95,6 +95,10 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 
 The script `npm run seed` populates the db with the seeds executing "prisma db push" (forces db schema) combined with `prisma/seed.ts`.
 
+## Linter and Formatter
+
+Complete...
+
 ## Routes
 
 The routes for the models are located in `/api/routes`.
@@ -110,7 +114,7 @@ The wild card middleware that catches all the non existing routes pass the error
 
 The middleware `notFoundHandler` catches all the incorrect routes and returns status `404` with the recieved route and error message. The error is passed to `globalErrorHandler`.
 
-## Send Files for book covers
+## Send book cover image files
 
 The endpoint `/api/image/:id` returns book cover images in jpg format using the id for the book.
 It aslo includes error handling for the `res.sendFile` method when the Id is incorrect or the book cover doesn't exist.
@@ -237,9 +241,9 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 ## ToDo
 
 - Github actions (biome and tests)
+- DB creation using SQL query
 - Swagger - include auth and executing endpoints
 - Update ERD: Customer
-- DB creation using SQL query
 - Export db to `.CSV` file
 - docker compose for db, redis and api (development and test).
 - Testing (complete controllers / full routes) - Investigate Vitest
