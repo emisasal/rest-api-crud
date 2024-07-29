@@ -243,7 +243,6 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 - Github actions (biome and tests)
 - DB creation using SQL query
 - Swagger - include auth and executing endpoints
-- Update ERD: Customer
 - Export db to `.CSV` file
 - docker compose for db, redis and api (development and test).
 - Testing (complete controllers / full routes) - Investigate Vitest
