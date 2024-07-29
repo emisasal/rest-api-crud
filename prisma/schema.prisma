@@ -95,5 +95,6 @@ model Review {
   customer_id Int
   rating      Int
   comment     String?
-  review_date DateTime @default(now()) @db.Timestamptz(2)
+  created_at  DateTime @default(now()) @db.Timestamptz(2)
+  updated_at  DateTime @updatedAt @db.Timestamptz(2)
 }
