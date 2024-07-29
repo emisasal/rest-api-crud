@@ -28,8 +28,8 @@ const customersIsoDate = customerSeed.map((customer) => {
 })
 
 const customerPassword = customersIsoDate.map((customer) => {
-	const salt = bcrypt.genSaltSync()
-	const hashPassword = bcrypt.hashSync(generateRandomString(10), salt)
+	const saltRounds = 2
+	const hashPassword = bcrypt.hashSync(generateRandomString(10), saltRounds)
 	return (customer = { ...customer, password: hashPassword })
 })
 
@@ -43,7 +43,7 @@ const ordersIsoDate = orderSeed.map((order) => {
 const reviewsIsoDate = reviewSeed.map((review) => {
 	return (review = {
 		...review,
-		review_date: new Date(review.review_date).toISOString(),
+		created_at: new Date(review.created_at).toISOString(),
 	})
 })
 
