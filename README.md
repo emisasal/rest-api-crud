@@ -7,18 +7,17 @@
 ## Start the project
 
 - After clonning this repository run `npm i` from root folder.
-- Create a postgres db named `rest-api-crud`.
-- Push the schema and seeds with `npm run seed`.
+- Create postgres db, push the schema and seeds with `npm run seed`.
 - Start the local server with `npm run dev`.
 
-## Project creation
+## Project initialization
 
 - Install the latest Node LTS version (if you have't already).
 - Create an empty postgres database with the name `rest-api-crud`.
 - Create the folder for the project and initialize npm with `npm init -y`.
 - Add the git remote to the GithHub repository for the project.
 - Install `express` dependency (node framework).
-- Install the devDependencies: `prisma`, `typescript`, `nodemon`, `ts-node`, `@types/node` and `@types/express`.
+- Install devDependencies: `prisma`, `typescript`, `nodemon`, `ts-node`, `@types/node` and `@types/express`.
   - Prisma: the ORM (Object–relational mapping).
   - Nodemon: to monitor for changes in the server and restart automatically.
   - TS-Node: TypeScript execution engine and REPL for Node.js.
@@ -27,11 +26,15 @@
   ```
   {
   "compilerOptions": {
-    "sourceMap": true,
+    "target": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "dist",
     "strict": true,
-    "lib": ["esnext"],
+    "skipLibCheck": true,
     "esModuleInterop": true,
+    "ignoreDeprecations": "5.0",
+    "forceConsistentCasingInFileNames": true,
+    "noPropertyAccessFromIndexSignature": false
     }
   }
   ```
@@ -44,9 +47,9 @@
 
 ## Enviroment Variables
 
-The dependency `dotenvx` is used to handle the enviroment variables.
+The dependency `dotenvx` handle the enviroment variables.
 The files are `.env.development` for development and `.env.production` for production.
-An aditional `.env` file contains shared variables to all enviroments.
+An aditional `.env` file contains shared variables to both enviroments.
 To combine the variables in the dev script: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
 And in the production script: `dotenvx run --env-file=.env.development --env-file=.env -- npx tsc`.
 
@@ -56,21 +59,22 @@ This is the original ERD schema for an online bookstore database.
 
 ![databaseSchema](images/bookStore_schema.png)
 
-A new ERD using `draw.io` with some changes in relations and data types was created taking advantage of some unique postgres features and good practices.
+A new ERD using `draw.io` with some changes in relations and data types was created taking advantage of some unique postgres features.
 
 ![newDatabaseSchema](images/rest-api-crud.drawio.png)
 
-For example, all the string values are `TEXT` fiels (postgres recommends against char or varchar with param because it uses more db space), for money values I'm using the `MONEY` field and for dates `TMESTAMPTZ`.
+For example, all the string values are `TEXT` fields (postgres recommends against char or varchar with param because it uses more db space), for money values `MONEY` field and for dates `TMESTAMPTZ`.
 
-To delete an item with reations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`.
+To delete an item with relations (e.g., Books can have many Reviews) the relation params for the model needs to include `onDelete: Cascade`.
 Following the Books example, if a book is deleted all the related reviews will also be deleted.
 
 ## Database creation
 
-Following prisma's documentation I created an empty postgres db with the name `rest_api_crud`. I'm using **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing.
+Create an empty postgres db with the name `rest_api_crud`.
+In macOS use **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing as alternative to pgcli.
 
-For migration I used `npx prisma migrate dev --name init`.
-This migrates the models to the db and creates a folder in `/prisma/migrations` with a migration file with the given name (in this case "init").
+Migrate the models to the db with the script `npx prisma migrate dev --name init`.
+This creates a new folder `/prisma/migrations` with a migration file with the name used at the end of the script (in this case "init").
 If not previously installed, the script will install `prisma-client-js` generator to connect to the db.
 
 > The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
@@ -83,8 +87,8 @@ The files are located in `/prisma/seedData` named `seed.ts`.
 
 > Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
 
-To aviod conflicts with the relations between models I created a function that execute `Promise.all` applying "upsert" for every object.
-This solves the issue of duplicate data and allows the seeds to be applied multiple times.
+To aviod relation conflicts between models seeds, the function execute `Promise.all` applying "upsert" for every object.
+This solves the issue of duplicate data and allows the seeds to be applied multiple times withot errors.
 
 > The `Promise.all` for seeding the models in the `runSeeders()` function must respect this order:
 >
@@ -93,11 +97,13 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seed stores false Ids. And if the second model tries to make a relation to a non-existent Id it will return error.
 
-The script `npm run seed` populates the db with the seeds executing "prisma db push" (forces db schema) combined with `prisma/seed.ts`.
+The script `npm run seed` finds or create the db and populates the db with the seeds executing "prisma db push" (forces db schema) combined with `prisma/seed.ts`.
 
 ## Linter and Formatter
 
-Complete...
+`Biome` is used for linting and formatter.
+The configurations and use are very similar to ESLint and Prettier all in one dependency. And the execution is much faster.
+The file `biome.json` store all the configurations for linting and formating.
 
 ## Routes
 
@@ -240,9 +246,8 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- Github actions (biome and tests)
-- DB creation using SQL query
-- Swagger - include auth and executing endpoints
 - Export db to `.CSV` file
+- Swagger - include auth and executing endpoints
 - docker compose for db, redis and api (development and test).
 - Testing (complete controllers / full routes) - Investigate Vitest
+- Github actions (biome and tests)
