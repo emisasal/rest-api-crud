@@ -12,7 +12,8 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "test": "dotenvx run -f .env.test -- npm run docker:up && npx prisma migrate deploy && jest -i",
-    "seed": "prisma db push && ts-node prisma/seed.ts"
+    "seed": "prisma db push && ts-node prisma/seed.ts",
+    "export:csv": "ts-node prisma/exportCSV.ts"
   },
   "keywords": [
     "rest",
