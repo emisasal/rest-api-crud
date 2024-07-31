@@ -228,6 +228,10 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 - The `refresh_token` validation is longer and gives the user session in the client side.
   As long the `refresh_token` is valid, new `access_token` are generated allowing the user to access the permitted resources.
 
+## Export to CSV
+
+To export a table to CSV file use the SQL query in `/scripts/exportToCSV.sql` replacing the table name, path and name for the `.csv` file.
+
 ## Swagger documentation
 
 The list of endpoints are documented with Swagger in `http://localhost:8080/docs`.
@@ -246,7 +250,6 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- Export db to `.CSV` file
 - Swagger - include auth and executing endpoints
 - docker compose for db, redis and api (development and test).
 - Testing (complete controllers / full routes) - Investigate Vitest
