@@ -250,6 +250,8 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- docker compose for db, redis and api (development and test).
+- docker compose for db, redis and api (development and test). Create develop and production with env variables and scripts.
 - Testing (complete controllers / full routes) - Investigate Vitest
 - Github actions (biome and tests)
+
+docker compose config
