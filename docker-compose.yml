@@ -2,9 +2,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: postgres
-    # restart: always
     restart: unless-stopped
-    env_file: .env.development
     ports:
       - "5432:5432"
     environment:
@@ -20,12 +18,9 @@ services:
       - "6379:6379"
     
   api:
+    container_name: rest-api-crud
     build: .
     restart: unless-stopped
-    container_name: rest-api-crud
-    depends_on:
-      - postgres
-      - redis
     ports:
       - "8080:8080"
     volumes:
@@ -33,3 +28,7 @@ services:
     env_file: 
       - .env
       - .env.development
+    depends_on:
+      - postgres
+      - redis
+    # command: npm run dev # test
