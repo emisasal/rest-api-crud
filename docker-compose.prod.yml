@@ -25,6 +25,8 @@ services:
       - "8080:8080"
     volumes:
       - .:/api
+    environment:
+      - NODE_ENV=production
     env_file: 
       - .env
       - .env.development
