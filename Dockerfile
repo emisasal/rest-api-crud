@@ -1,8 +1,5 @@
 FROM node:lts-alpine
 
-#sets NODE_ENV to "development"
-# ENV NODE_ENV development
-
 #creates standard working directory
 WORKDIR /usr/src/app
 
@@ -17,11 +14,15 @@ RUN npm install
 #bundles the app source
 COPY . .
 
-# #builds the typescript
-# RUN npm run build
+RUN npx prisma generate
+
+ENV NODE_ENV=${NODE_ENV}
+
+# Builds TypeScript only in production
+RUN if [ "$NODE_ENV" = "production" ] ; then npm run build ; fi
 
 #exposing port 8080
 EXPOSE 8080
 
 # CMD ["npm", "run", "dev"]
-# CMD ["npm", "run", "exp"]
+CMD ["npm", "start"]

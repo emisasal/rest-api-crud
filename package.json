@@ -5,16 +5,17 @@
   "main": "api/server.ts",
   "scripts": {
     "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/server.ts",
-    "exp": "nodemon api/server.ts",
+    "docker:dev": "nodemon api/server.ts",
     "build": "dotenvx run --env-file=.env.production --env-file=.env -- npx tsc",
     "start": "node dist/server.ts",
     "test:old": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll  --detectOpenHandles",
-    "docker:up": "docker compose up --build -d",
-    "docker:down": "docker-compose down",
     "test": "dotenvx run -f .env.test -- npm run docker:up && npx prisma migrate deploy && jest -i",
     "seed": "prisma db push && ts-node prisma/seed.ts",
-    "export:csv": "ts-node prisma/exportCSV.ts"
+    "export:csv": "ts-node prisma/exportCSV.ts",
+    "docker:build-dev": "docker compose -f docker-compose.dev.yml up --build -d",
+    "docker:up-dev": "docker compose -f docker-compose.dev.yml up -d",
+    "docker:down-dev": "docker compose -f docker-compose.dev.yml down"
   },
   "keywords": [
     "rest",

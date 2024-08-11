@@ -1,5 +1,5 @@
 node_modules
-dump.rdb
+npm-debug.log
 .env
 .env.development
 .env.production
