@@ -26,3 +26,6 @@ EXPOSE 8080
 
 # CMD ["npm", "run", "dev"]
 CMD ["npm", "start"]
+
+RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
