@@ -255,3 +255,5 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 - Github actions (biome and tests)
 
 docker compose config
+
+Prisma error - not connecting to db
