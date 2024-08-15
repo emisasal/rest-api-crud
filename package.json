@@ -11,10 +11,10 @@
     "test:old": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll  --detectOpenHandles",
     "test": "dotenvx run -f .env.test -- npm run docker:up && npx prisma migrate deploy && jest -i",
-    "seed": "prisma db push && ts-node prisma/seed.ts",
+    "seed": "prisma db push --accept-data-loss && ts-node prisma/seed.ts",
     "export:csv": "ts-node prisma/exportCSV.ts",
-    "docker:build-dev": "docker compose -f docker-compose.dev.yml up --build -d",
-    "docker:up-dev": "docker compose -f docker-compose.dev.yml up -d",
+    "docker:build-dev": "docker compose -f docker-compose.dev.yml build --build-arg BUILD=1",
+    "docker:up-dev": "docker compose -f docker-compose.dev.yml up",
     "docker:down-dev": "docker compose -f docker-compose.dev.yml down"
   },
   "keywords": [

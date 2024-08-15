@@ -14,7 +14,9 @@ RUN npm install
 #bundles the app source
 COPY . .
 
-RUN npx prisma generate
+ARG BUILD
+
+RUN if [ "${BUILD}" = "1" ] ; then npx prisma generate ; fi
 
 ENV NODE_ENV=${NODE_ENV}
 
@@ -27,5 +29,5 @@ EXPOSE 8080
 # CMD ["npm", "run", "dev"]
 CMD ["npm", "start"]
 
-RUN chmod +x docker-entrypoint.sh
+RUN if [ "$BUILD" = "1" ] ; then chmod +x docker-entrypoint.sh ; fi
 ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
