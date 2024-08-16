@@ -21,14 +21,15 @@ services:
     
   api:
     container_name: rest-api-crud
-    build: .
+    build:
+      context: .
+      target: build
     restart: unless-stopped
     ports:
       - "8080:8080"
     volumes:
       - .:/api
-    environment:
-      - NODE_ENV=development
+      - /app/node_modules
     env_file: 
       - .env
       - .env.development
