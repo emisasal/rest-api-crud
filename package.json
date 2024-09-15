@@ -4,11 +4,11 @@
   "description": "",
   "main": "api/server.ts",
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/server.ts",
-    "build": "dotenvx run --env-file=.env.production --env-file=.env -- npx tsc",
+    "dev": "node --env-file=.env.development --env-file=.env --watch --watch-preserve-output -r ts-node/register api/server.ts",
+    "build": "tsc",
     "docker:dev": "nodemon api/server.ts",
     "docker:build": "npx tsc",
-    "start": "node dist/server.ts",
+    "start": "node dist/server.js",
     "test:old": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll  --detectOpenHandles",
     "test": "dotenvx run -f .env.test -- npm run docker:up && npx prisma migrate deploy && jest -i",
@@ -28,8 +28,10 @@
   ],
   "author": "Emiliano Sasal",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.6.0"
+  },
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.5.0",
     "@prisma/client": "^5.12.1",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",

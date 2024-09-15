@@ -16,7 +16,8 @@
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"],
+    "esm": true
   },
   "include": ["api/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "api/__mocks__", "api/docs", "api/**/*.test.ts"]
 }

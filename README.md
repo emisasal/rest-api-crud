@@ -17,9 +17,8 @@
 - Create the folder for the project and initialize npm with `npm init -y`.
 - Add the git remote to the GithHub repository for the project.
 - Install `express` dependency (node framework).
-- Install devDependencies: `prisma`, `typescript`, `nodemon`, `ts-node`, `@types/node` and `@types/express`.
+- Install devDependencies: `prisma`, `typescript`, `ts-node`, `@types/node` and `@types/express`.
   - Prisma: the ORM (Object–relational mapping).
-  - Nodemon: to monitor for changes in the server and restart automatically.
   - TS-Node: TypeScript execution engine and REPL for Node.js.
   - @Types/Node and @Types-Express: TypeScript types definitions.
 - Create `tsconfig.json` file with default configurations:
@@ -39,19 +38,25 @@
   }
   ```
 - Add scripts for:
-  - Development: `"dev": "nodemon src/index.ts"`.
+  - Development: `"dev": "node --watch src/index.ts"`.
   - Production: `"build": "npx tsc"`. This script creates a transpiled JavaScript build in the folder `/dist`.
   - To execute production build: `"start": "node dist/index.ts"`.
 - Initialize Prisma using `npx prisma init --datasource-provider postgresql`. This creates `/prisma` folder with the schema configured for Postgres and `.env` file for enviroment variables.
 - Add postgres user, password and database name in `DATABASE_URL` inside `.env` file.
 
+## Watch Mode
+
+Watch mode prevents the server to stop running after changes in the code.
+The native Node flag `--watch` replaces the dependency `nodemon`.
+By default watch mode cleans the terminal after changes. To mantain the logs add a second flag `--watch-preserve-output`.
+
 ## Enviroment Variables
 
-The dependency `dotenvx` handle the enviroment variables.
-The files are `.env.development` for development and `.env.production` for production.
+Since v20.6 Node can load enviroment variables natively.
+The env files are `.env.development` for development and `.env.production` for production.
 An aditional `.env` file contains shared variables to both enviroments.
-To combine the variables in the dev script: `dotenvx run --env-file=.env.development --env-file=.env -- nodemon api/app.ts`.
-And in the production script: `dotenvx run --env-file=.env.development --env-file=.env -- npx tsc`.
+To combine the variables in the dev script: `node --env-file=.env.development --env-file=.env (...rest of the script)`.
+And in the production script: `node --env-file=.env.development --env-file=.env (...rest of the script)`.
 
 ## Database Schema
 
@@ -250,6 +255,7 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
+- Fix npm run build (esmodule and env variables)
 - Testing (complete controllers / full routes) - Investigate Vitest
 - Github actions (biome and tests)
 
