@@ -1,7 +1,7 @@
 import { Redis } from "ioredis"
 import redisMock from "ioredis-mock"
 
-const REDIS_HOST = process.env.REDIS_HOST as string
+// const REDIS_HOST = process.env.REDIS_HOST as string
 const REDIS_PORT = Number.parseInt(process.env.REDIS_PORT as string)
 
 const redis =
@@ -9,7 +9,7 @@ const redis =
     ? new redisMock()
     : new Redis({
         port: REDIS_PORT,
-        host: REDIS_HOST,
+        // host: REDIS_HOST,
         showFriendlyErrorStack: true,
       })
 
