@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">=20.6.0"
+  },
   "name": "rest-api-crud",
   "version": "1.0.0",
   "description": "",
@@ -9,8 +12,6 @@
     "start": "node --env-file=.env.production --env-file=.env dist/server.js",
     "seed": "prisma db push --accept-data-loss && ts-node prisma/seed.ts",
     "export:csv": "ts-node prisma/exportCSV.ts",
-    "docker:dev": "nodemon api/server.ts",
-    "docker:build": "npx tsc",
     "test:old": "jest --detectOpenHandles",
     "test:watch": "jest --watchAll  --detectOpenHandles",
     "test": "dotenvx run -f .env.test -- npm run docker:up && npx prisma migrate deploy && jest -i",
@@ -28,9 +29,6 @@
   ],
   "author": "Emiliano Sasal",
   "license": "ISC",
-  "engines": {
-    "node": ">=20.6.0"
-  },
   "dependencies": {
     "@prisma/client": "^5.12.1",
     "bcrypt": "^5.1.1",
@@ -62,7 +60,6 @@
     "ioredis-mock": "^8.9.0",
     "jest": "^29.7.0",
     "jest-mock-extended": "^3.0.7",
-    "nodemon": "^3.1.0",
     "prisma": "^5.17.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.5",

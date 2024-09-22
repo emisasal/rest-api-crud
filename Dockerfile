@@ -4,9 +4,6 @@ FROM node:lts-alpine AS build
 #creates standard working directory
 WORKDIR /usr/src/app
 
-# Install dotenvx
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
-
 #copies package.json and package.lock.json for earlier caching
 COPY package*.json ./
 
@@ -25,8 +22,6 @@ ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
 FROM node:lts-alpine AS production
 
 WORKDIR /usr/src/app
-
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 COPY package*.json ./
 
