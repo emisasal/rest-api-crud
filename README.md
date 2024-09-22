@@ -255,7 +255,6 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- Fix npm run build (esmodule and env variables)
 - Testing (complete controllers / full routes) - Investigate Vitest
 - Github actions (biome and tests)
 

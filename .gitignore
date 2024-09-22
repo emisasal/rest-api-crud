@@ -8,3 +8,6 @@ node_modules
 dump.rdb
 # Jest
 .jest
+# Folders
+dist
+coverage

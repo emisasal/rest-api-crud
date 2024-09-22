@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "dist",
     "strict": true,
     "baseUrl": ".",
@@ -14,10 +15,12 @@
     "forceConsistentCasingInFileNames": true,
     "noPropertyAccessFromIndexSignature": false
   },
-  "ts-node": {
-    "require": ["tsconfig-paths/register"],
-    "esm": true
-  },
   "include": ["api/**/*.ts"],
-  "exclude": ["node_modules", "api/__mocks__", "api/docs", "api/**/*.test.ts"]
+  "exclude": [
+    "node_modules",
+    "./*.ts",
+    "api/__mocks__",
+    "api/docs",
+    "api/**/*.test.ts"
+  ]
 }
