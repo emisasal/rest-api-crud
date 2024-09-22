@@ -36,7 +36,7 @@ services:
     depends_on:
       - postgres
       - redis
-    command: npm run docker:dev
+    command: npm run dev
 
 volumes:
   pgdata:
