@@ -1,16 +1,18 @@
-# REST API Crud
+# REST API CRUD
 
-#### Basic Backend using Express, Prisma ORM, TypeScript and Postgres database.
+#### Backend using Express, Prisma ORM, TypeScript, and PostgreSQL database.
 
 ---
 
-## Start the project
+## Quick Start
 
-- After cloning this repository run `npm i` from the root folder.
-- Create postgres db, push the schema and seeds with `npm run seed`.
-- Start the local server with `npm run dev`.
+1. Clone the repository
+2. Run `npm install` from the root folder
+3. Create a PostgreSQL database with the name `rest-api-crud` and set up environment variables
+4. Run `npm run seed` to push the schema and seed the database
+5. Start the local server with `npm run dev`
 
-## Project initialization
+## Project Setup
 
 - Install the latest Node LTS version (if you haven't already).
 - Create an empty postgres database with the name `rest-api-crud`.
@@ -50,13 +52,28 @@ Watch mode prevents the server from stopping after changes in the code.
 The native Node flag `--watch` replaces the dependency `nodemon`.
 By default, watch mode cleans the terminal after changes. To maintain the logs add a second flag `--watch-preserve-output`.
 
-## Enviroment Variables
+## Key Features
 
-Since v20.6 Node can load environment variables natively.
-The env files are `.env.development` for development and `.env.production` for production.
-An additional `.env` file contains shared variables to both environments.
-To combine the variables in the dev script: `node --env-file=.env.development --env-file=.env (...rest of the script)`.
-And in the production script: `node --env-file=.env.development --env-file=.env (...rest of the script)`.
+- **Watch Mode**: Uses Node's native `--watch` flag for hot reloading
+- **Environment Variables**: Utilizes Node's built-in env file loading (v20.6+)
+- **Database Schema**: Optimized ERD for an online bookstore
+- **Prisma ORM**: For database migrations and seeding
+- **API Routes**: Organized in `/api/routes`
+- **Error Handling**: Global error handler and custom error class
+- **File Serving**: Endpoint for serving book cover images
+- **Pagination and Sorting**: Implemented for list endpoints
+- **Data Validation**: Using `express-validator` middleware
+- **Filtering**: Prisma-based filtering for queries
+- **CORS**: Configured for cross-origin requests
+- **Logging**: HTTP logging with Morgan
+- **Caching**: Redis-based caching for improved performance
+- **Authentication**:
+  - Password hashing with bcrypt
+  - JWT-based authentication with access and refresh tokens
+- **Rate Limiting**: Prevents brute force attacks on login
+- **API Documentation**: Swagger UI available at `/docs`
+- **Testing**: Jest and Supertest for unit and E2E testing
+- **Code Quality**: Biome for linting and formatting
 
 ## Database Schema
 
@@ -256,9 +273,8 @@ The script `npm test` in package.json executes the tests named `*.test.ts` and/o
 
 ## ToDo
 
-- Testing (complete controllers / full routes) - Investigate Vitest
-- Github actions (biome and tests)
-
-docker compose config
+- [ ] Testing (complete controllers / full routes) - Investigate Vitest
+- [ ] Github actions (biome and tests)
+- [ ] Docker configurations
 
 Docker - Conditional RUN executions
