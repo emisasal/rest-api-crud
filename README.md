@@ -270,11 +270,3 @@ Additionally the devDependencies `@types/jest`, `@types/supertest` and `ts-jest`
 The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
 To initialize jest in the project run the command `npx ts-jest config:init`. This will create a file `jest.config.js`.
 The script `npm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
-
-## ToDo
-
-- [ ] Testing (complete controllers / full routes) - Investigate Vitest
-- [ ] Github actions (biome and tests)
-- [ ] Docker configurations
-
-Docker - Conditional RUN executions
