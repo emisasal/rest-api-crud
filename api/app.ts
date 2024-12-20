@@ -5,6 +5,7 @@ import morgan from "morgan"
 import cookieParser from "cookie-parser"
 import swaggerUi from "swagger-ui-express"
 import { corsOptions } from "./config/corsOptions"
+import { staticOptions } from "./config/staticOptions"
 import customerSessionRoutes from "./routes/customerSession.routes"
 import routes from "./routes"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
@@ -21,13 +22,14 @@ app.use(cors(corsOptions))
 app.use(express.json()) // recognize body as json
 app.use(express.urlencoded({ extended: true })) // recognize body as string or array
 app.use(cookieParser(COOKIE_SECRET))
+app.use(express.static("bookCovers", staticOptions))
 app.use(morgan(NODE_ENV === "development" ? "dev" : "common"))
 
 // Swagger
 app.use(
-  "/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, { explorer: true })
+	"/docs",
+	swaggerUi.serve,
+	swaggerUi.setup(swaggerSpec, { explorer: true }),
 )
 
 // Session routes
@@ -36,7 +38,6 @@ app.use("/api", customerSessionRoutes)
 app.use(verifyJWT)
 // Registered routes
 app.use("/api", routes)
-
 
 // Not Found middleware
 app.use(notFoundHandler)
