@@ -40,7 +40,7 @@
     "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "rate-limiter-flexible": "^5.0.4",
+    "rate-limiter-flexible": "^7.1.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
