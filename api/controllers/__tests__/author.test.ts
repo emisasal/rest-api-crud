@@ -1,14 +1,14 @@
-import { clearRedisCache } from "__mocks__/clearRedisCache"
-import { mockNext, mockRequest, mockResponse } from "../../__mocks__"
+import { clearRedisCache } from "../../__mocks__/clearRedisCache"
+import { mockNext, mockRequest, mockResponse } from "../../__mocks__/index"
 import { getAllAuthors, getAuthorById } from "../author.controller"
-import { registeredCustomer } from "__mocks__/customerMocks"
+import { registeredCustomer } from "../../__mocks__/customerMocks"
 import {
   postLoginCustomer,
   postRegisterCustomer,
-} from "controllers/customerSession.controller"
-import { prisma } from "config/prismaClient"
-import CustomError from "classes/CustomError"
-import matchError from "__mocks__/matchError"
+} from "../customerSession.controller"
+import { prisma } from "../../config/prismaClient"
+import CustomError from "../../classes/CustomError"
+import matchError from "../../__mocks__/matchError"
 
 describe("Author controller", () => {
   beforeAll(async () => {

@@ -5,7 +5,7 @@ import {
   notFoundSchema,
   unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { publisherData } from "./data"
+import { publisherData } from "./data/index"
 
 export const getAllPublishersDoc = {
   tags: ["Publisher"],

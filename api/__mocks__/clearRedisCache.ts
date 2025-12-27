@@ -1,4 +1,4 @@
-import redis from "config/redisClient"
+import redis from "../config/redisClient"
 
 // Clear Redis cache for tests
 

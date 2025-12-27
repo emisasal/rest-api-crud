@@ -1,4 +1,4 @@
-import { categoryListDoc, modelsListData } from "./data"
+import { categoryListDoc, modelsListData } from "./data/index"
 import {
   globalErrorSchema,
   internalErrorSchema,

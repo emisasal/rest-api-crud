@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express"
-import { Prisma } from "../../prisma/generated/prisma"
+import { Prisma } from "../../prisma/generated/prisma/index.js"
 import type CustomError from "../classes/CustomError"
 
 const globalErrorHandler = (

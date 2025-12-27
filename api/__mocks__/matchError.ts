@@ -1,4 +1,4 @@
-import CustomError from "classes/CustomError"
+import CustomError from "../classes/CustomError"
 
 const matchError = (status: number, message: string) => {
   const errorValidation = new Error() as CustomError

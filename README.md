@@ -58,18 +58,21 @@ By default, watch mode cleans the terminal after changes. To maintain the logs a
 - **Environment Variables**: Utilizes Node's built-in env file loading (v20.6+)
 - **Database Schema**: Optimized ERD for an online bookstore
 - **Prisma ORM**: For database migrations and seeding
-- **Prisma v7 Ready**: Uses `prisma.config.ts` for datasource configuration and generated client imports
+- **Prisma v7 Ready**: Uses `prisma.config.ts` for datasource configuration, generated client imports, and a Postgres driver adapter
 
 ## Prisma v7 Upgrade
 
 Prisma v7 introduces a new configuration file and some behavioral changes:
 
 - **Datasource configuration moved**: `datasource.url` now lives in [prisma.config.ts](prisma.config.ts), not in [prisma/schema.prisma](prisma/schema.prisma).
-  - See our config in [prisma.config.ts](prisma.config.ts). It sets `datasource.url` from `process.env.DATABASE_URL`.
+  - See our config in [prisma.config.ts](prisma.config.ts). It sets `datasource.url` using `env('DATABASE_URL')` and loads `.env` via `import 'dotenv/config'`.
   - The `datasource` block in [prisma/schema.prisma](prisma/schema.prisma) no longer contains a `url` property.
-- **Generated client import path**: Import `PrismaClient` and `Prisma` types from the generated output at [prisma/generated/prisma](prisma/generated/prisma).
+- **Generated client import path**: Import `PrismaClient` and `Prisma` types from the generated output at [prisma/generated/prisma](prisma/generated/prisma). In ESM, import explicitly from [prisma/generated/prisma/index.js](prisma/generated/prisma/index.js).
   - Example usage: see [api/config/prismaClient.ts](api/config/prismaClient.ts) and [api/config/prismaMock.ts](api/config/prismaMock.ts).
   - Middleware using Prisma types (e.g., `Prisma.PrismaClientKnownRequestError`) should also import from [prisma/generated/prisma](prisma/generated/prisma), as in [api/middleware/errorHandler.middleware.ts](api/middleware/errorHandler.middleware.ts).
+- **Driver adapter (JS engine)**: If your generated client uses the JS engine (`client.js` present), provide a driver adapter or Accelerate URL. This project uses `@prisma/adapter-pg`:
+  - See adapter setup in [api/config/prismaClient.ts](api/config/prismaClient.ts).
+  - Ensure `DATABASE_URL` is available to the app (we load `.env` via `import 'dotenv/config'`).
 - **Generate**: `npx prisma generate` now reads [prisma.config.ts](prisma.config.ts) automatically and generates the client to [prisma/generated/prisma](prisma/generated/prisma).
 - **Migrations**: `npx prisma migrate dev` and `npx prisma migrate deploy` continue to work.
 - **Seeding change**: In v7, seeding only runs when invoked explicitly via `npx prisma db seed`. Our project keeps an app-specific seed script (`npm run seed`) that first pushes the schema and then runs [prisma/seed.ts](prisma/seed.ts).
@@ -132,7 +135,7 @@ In macOS use **Postgress.app** to create and execute postgres db's and **Postico
 
 Migrate the models to the db with the script `npx prisma migrate dev --name init`.
 This creates a new folder `/prisma/migrations` with a migration file with the name used at the end of the script (in this case "init").
-With Prisma v7, the client is generated to [prisma/generated/prisma](prisma/generated/prisma) and the CLI reads the datasource URL from [prisma.config.ts](prisma.config.ts).
+With Prisma v7, the client is generated to [prisma/generated/prisma](prisma/generated/prisma) and the CLI reads the datasource URL from [prisma.config.ts](prisma.config.ts). For Postgres with the JS engine, the app config includes the `@prisma/adapter-pg` setup.
 
 > The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
 

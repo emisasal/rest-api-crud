@@ -1,4 +1,4 @@
-import generateRandomString from "utils/generateRandomString"
+import generateRandomString from "../generateRandomString"
 
 const stringLength = 24
 

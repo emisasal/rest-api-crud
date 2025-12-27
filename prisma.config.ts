@@ -1,10 +1,11 @@
-import { defineConfig } from "prisma/config"
+import "dotenv/config"
+import { defineConfig, env } from "prisma/config"
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: { path: "prisma/migrations" },
   datasource: {
-    // Use process.env to avoid hard failures on commands that don't need DB
-    url: process.env.DATABASE_URL ?? "",
+    // Require DATABASE_URL; Prisma CLI loads .env via dotenv import above
+    url: env("DATABASE_URL"),
   },
 })

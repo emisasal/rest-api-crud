@@ -1,15 +1,15 @@
-import { prisma } from "../api/config/prismaClient"
+import { prisma } from "../api/config/prismaClient.ts"
 import bcrypt from "bcrypt"
-import generateRandomString from "../api/utils/generateRandomString"
+import generateRandomString from "../api/utils/generateRandomString.ts"
 
-import { bookSeed } from "./seedData/book.seed"
-import { authorSeed } from "./seedData/author.seed"
-import { genreSeed } from "./seedData/genre.seed"
-import { publisherSeed } from "./seedData/publisher.seed"
-import { customerSeed } from "./seedData/customer.seed"
-import { orderSeed } from "./seedData/order.seed"
-import { orderDetailSeed } from "./seedData/orderDetail.seed"
-import { reviewSeed } from "./seedData/review.seed"
+import { bookSeed } from "./seedData/book.seed.ts"
+import { authorSeed } from "./seedData/author.seed.ts"
+import { genreSeed } from "./seedData/genre.seed.ts"
+import { publisherSeed } from "./seedData/publisher.seed.ts"
+import { customerSeed } from "./seedData/customer.seed.ts"
+import { orderSeed } from "./seedData/order.seed.ts"
+import { orderDetailSeed } from "./seedData/orderDetail.seed.ts"
+import { reviewSeed } from "./seedData/review.seed.ts"
 
 // Execute seeding with "npm run seed" script.
 

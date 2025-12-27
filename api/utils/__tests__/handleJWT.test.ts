@@ -1,4 +1,4 @@
-import { signAccessJWT, signRefreshJWT } from "utils/handleJWT"
+import { signAccessJWT, signRefreshJWT } from "../handleJWT"
 
 const testId = 1050
 

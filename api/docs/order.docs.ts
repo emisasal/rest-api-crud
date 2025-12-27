@@ -5,7 +5,7 @@ import {
   notFoundSchema,
   unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { orderData } from "./data"
+import { orderData } from "./data/index"
 
 // @route GET /api/order
 export const getAllOrdersDoc = {

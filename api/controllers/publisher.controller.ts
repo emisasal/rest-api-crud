@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import type { Prisma } from "@prisma/client"
+import type { Prisma } from "../../prisma/generated/prisma/index.js"
 import { prisma } from "../config/prismaClient"
 import redis from "../config/redisClient"
 import capitalizeWords from "../utils/capitalizeWords"
