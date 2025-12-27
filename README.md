@@ -58,6 +58,41 @@ By default, watch mode cleans the terminal after changes. To maintain the logs a
 - **Environment Variables**: Utilizes Node's built-in env file loading (v20.6+)
 - **Database Schema**: Optimized ERD for an online bookstore
 - **Prisma ORM**: For database migrations and seeding
+- **Prisma v7 Ready**: Uses `prisma.config.ts` for datasource configuration and generated client imports
+
+## Prisma v7 Upgrade
+
+Prisma v7 introduces a new configuration file and some behavioral changes:
+
+- **Datasource configuration moved**: `datasource.url` now lives in [prisma.config.ts](prisma.config.ts), not in [prisma/schema.prisma](prisma/schema.prisma).
+  - See our config in [prisma.config.ts](prisma.config.ts). It sets `datasource.url` from `process.env.DATABASE_URL`.
+  - The `datasource` block in [prisma/schema.prisma](prisma/schema.prisma) no longer contains a `url` property.
+- **Generated client import path**: Import `PrismaClient` and `Prisma` types from the generated output at [prisma/generated/prisma](prisma/generated/prisma).
+  - Example usage: see [api/config/prismaClient.ts](api/config/prismaClient.ts) and [api/config/prismaMock.ts](api/config/prismaMock.ts).
+  - Middleware using Prisma types (e.g., `Prisma.PrismaClientKnownRequestError`) should also import from [prisma/generated/prisma](prisma/generated/prisma), as in [api/middleware/errorHandler.middleware.ts](api/middleware/errorHandler.middleware.ts).
+- **Generate**: `npx prisma generate` now reads [prisma.config.ts](prisma.config.ts) automatically and generates the client to [prisma/generated/prisma](prisma/generated/prisma).
+- **Migrations**: `npx prisma migrate dev` and `npx prisma migrate deploy` continue to work.
+- **Seeding change**: In v7, seeding only runs when invoked explicitly via `npx prisma db seed`. Our project keeps an app-specific seed script (`npm run seed`) that first pushes the schema and then runs [prisma/seed.ts](prisma/seed.ts).
+
+Common commands:
+
+```bash
+# Generate Prisma Client
+npx prisma generate
+
+# Validate schema and config
+npx prisma validate
+
+# Apply development migrations
+npx prisma migrate dev --name init
+
+# Apply production/testing migrations
+npx prisma migrate deploy
+
+# Seed via Prisma CLI (optional alternative)
+npx prisma db seed
+```
+
 - **API Routes**: Organized in `/api/routes`
 - **Error Handling**: Global error handler and custom error class
 - **File Serving**: Endpoint for serving book cover images
@@ -97,7 +132,7 @@ In macOS use **Postgress.app** to create and execute postgres db's and **Postico
 
 Migrate the models to the db with the script `npx prisma migrate dev --name init`.
 This creates a new folder `/prisma/migrations` with a migration file with the name used at the end of the script (in this case "init").
-If not previously installed, the script will install `prisma-client-js` generator to connect to the db.
+With Prisma v7, the client is generated to [prisma/generated/prisma](prisma/generated/prisma) and the CLI reads the datasource URL from [prisma.config.ts](prisma.config.ts).
 
 > The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
 
@@ -119,7 +154,8 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seed stores false Ids. And if the second model tries to make a relation to a non-existent Id it will return an error.
 
-The script `npm run seed` finds or creates the db and populates the db with the seeds executing "prisma db push" (forces db schema) combined with `prisma/seed.ts`.
+The script `npm run seed` finds or creates the db and populates the db with the seeds executing `prisma db push` (forces db schema) combined with [prisma/seed.ts](prisma/seed.ts).
+Note: Prisma v7 doesn't auto-run seeds during `migrate dev` or `reset`. To seed via the CLI, use `npx prisma db seed`.
 
 ## Linter and Formatter
 

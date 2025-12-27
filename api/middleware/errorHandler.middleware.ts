@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from "express"
-import { Prisma } from "@prisma/client"
+import { Prisma } from "../../prisma/generated/prisma"
 import type CustomError from "../classes/CustomError"
 
 const globalErrorHandler = (
-  err: CustomError,
+  err: CustomError | Prisma.PrismaClientKnownRequestError,
   req: Request,
   res: Response,
   next: NextFunction
