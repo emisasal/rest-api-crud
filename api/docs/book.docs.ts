@@ -1,4 +1,4 @@
-import { bookData } from "./data"
+import { bookData } from "./data/index"
 import {
   dbErrorSchema,
   globalErrorSchema,

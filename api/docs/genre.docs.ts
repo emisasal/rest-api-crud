@@ -1,4 +1,4 @@
-import { genreData } from "./data"
+import { genreData } from "./data/index"
 import {
   dbErrorSchema,
   globalErrorSchema,

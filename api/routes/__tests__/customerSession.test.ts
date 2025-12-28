@@ -1,5 +1,5 @@
 import request from "supertest"
-import app from "app"
+import app from "../../app"
 import redis from "../../config/redisClient"
 
 const testUser = { email: "test@mail.com", password: "testPassw@rd1" }

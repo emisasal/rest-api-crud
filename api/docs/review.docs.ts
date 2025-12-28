@@ -5,7 +5,7 @@ import {
   notFoundSchema,
   unauthorizedSchema,
 } from "./swaggerErrorSchemas"
-import { reviewData } from "./data"
+import { reviewData } from "./data/index"
 
 // @route GET /api/REVIEW
 export const getAllReviewsDoc = {

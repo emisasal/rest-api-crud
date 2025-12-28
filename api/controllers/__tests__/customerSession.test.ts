@@ -1,13 +1,13 @@
-import { mockRequest, mockResponse, mockNext } from "__mocks__"
+import { mockRequest, mockResponse, mockNext } from "../../__mocks__"
 import {
   postLoginCustomer,
   postLogoutCustomer,
   postRegisterCustomer,
-} from "controllers/customerSession.controller"
-import { prisma } from "config/prismaClient"
-import CustomError from "classes/CustomError"
-import { clearRedisCache } from "__mocks__/clearRedisCache"
-import { createCustomer, registeredCustomer } from "__mocks__/customerMocks"
+} from "../customerSession.controller"
+import { prisma } from "../../config/prismaClient"
+import CustomError from "../../classes/CustomError"
+import { clearRedisCache } from "../../__mocks__/clearRedisCache"
+import { createCustomer, registeredCustomer } from "../../__mocks__/customerMocks"
 
 jest.mock("express-validator", () => ({
   validationResult: jest.fn(() => ({

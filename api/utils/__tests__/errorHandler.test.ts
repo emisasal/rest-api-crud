@@ -1,4 +1,4 @@
-import errorHandler from "utils/errorHandler"
+import errorHandler from "../errorHandler"
 
 const statusCode = 400
 const errorMessage = "Error message"

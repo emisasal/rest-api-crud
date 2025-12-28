@@ -1,4 +1,4 @@
-import capitalizeWords from "utils/capitalizeWords"
+import capitalizeWords from "../capitalizeWords"
 
 test.skip("Capitalize the first letter", () => {
   const word = capitalizeWords("michael")

@@ -6,8 +6,7 @@ const config: Config.InitialOptions = {
   setupFilesAfterEnv: ["<rootDir>/api/config/prismaMock.ts"],
   testMatch: ["**/**/*.test.ts"],
   verbose: true,
-  modulePaths: ["api"],
-  setupFiles: ["<rootDir>/.jest/setEnvVars.ts"],
+  moduleDirectories: ["node_modules", "api"],
   // resetMocks: true,
   // restoreMocks: true,
   // moduleNameMapper: pathsToModuleNameMapper({

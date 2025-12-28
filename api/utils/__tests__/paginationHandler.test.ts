@@ -1,4 +1,4 @@
-import paginationHandler from "utils/paginationHandler"
+import paginationHandler from "../paginationHandler"
 
 const count = 55
 const pageSize = 20
