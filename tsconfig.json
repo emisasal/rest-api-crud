@@ -1,4 +1,8 @@
 {
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
   "compilerOptions": {
     "target": "es2023",
     "module": "esnext",
