@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": ">=20.6.0"
+    "node": ">=22.0.0"
   },
   "name": "rest-api-crud",
   "version": "1.1.0",
@@ -8,7 +8,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node --env-file=.env.development --env-file=.env --watch --watch-preserve-output --experimental-specifier-resolution=node --loader ts-node/esm api/server.ts",
+    "dev": "tsx --env-file=.env.development --env-file=.env api/server.ts",
     "build": "tsc",
     "start": "node --env-file=.env.production --env-file=.env dist/server.js",
     "seed": "prisma db push --accept-data-loss && ts-node prisma/seed.ts",
@@ -36,6 +36,7 @@
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "17.4.2",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
     "helmet": "^8.1.0",
@@ -62,11 +63,13 @@
     "ioredis-mock": "^8.13.1",
     "jest": "^30.2.0",
     "jest-mock-extended": "^4.0.0",
+    "pnpm": "^11.1.2",
     "prisma": "^7.2.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "4.22.0",
     "typescript": "^6.0.2"
   }
 }

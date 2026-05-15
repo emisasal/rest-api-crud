@@ -7,16 +7,16 @@
 ## Quick Start
 
 1. Clone the repository
-2. Run `npm install` from the root folder
+2. Run `pnpm install` from the root folder
 3. Create a PostgreSQL database with the name `rest-api-crud` and set up environment variables
-4. Run `npm run seed` to push the schema and seed the database
-5. Start the local server with `npm run dev`
+4. Run `pnpm run seed` to push the schema and seed the database
+5. Start the local server with `pnpm run dev`
 
 ## Project Setup
 
 - Install the latest Node LTS version (if you haven't already).
 - Create an empty postgres database with the name `rest-api-crud`.
-- Create the folder for the project and initialize npm with `npm init -y`.
+- Create the folder for the project and initialize pnpm with `pnpm init -y`.
 - Add the git remote to the GithHub repository for the project.
 - Install `express` dependency (node framework).
 - Install devDependencies: `prisma`, `typescript`, `ts-node`, `@types/node` and `@types/express`.
@@ -41,9 +41,9 @@
   ```
 - Add scripts for:
   - Development: `"dev": "node --watch src/index.ts"`.
-  - Production: `"build": "npx tsc"`. This script creates a transpiled JavaScript build in the folder `/dist`.
+  - Production: `"build": "tsc"`. This script creates a transpiled JavaScript build in the folder `/dist`.
   - To execute production build: `"start": "node dist/index.ts"`.
-- Initialize Prisma using `npx prisma init --datasource-provider postgresql`. This creates `/prisma` folder with the schema configured for Postgres and `.env` file for environment variables.
+- Initialize Prisma using `pnpm prisma init --datasource-provider postgresql`. This creates `/prisma` folder with the schema configured for Postgres and `.env` file for environment variables.
 - Add postgres user, password and database name in `DATABASE_URL` inside `.env` file.
 
 ## Watch Mode
@@ -73,27 +73,29 @@ Prisma v7 introduces a new configuration file and some behavioral changes:
 - **Driver adapter (JS engine)**: If your generated client uses the JS engine (`client.js` present), provide a driver adapter or Accelerate URL. This project uses `@prisma/adapter-pg`:
   - See adapter setup in [api/config/prismaClient.ts](api/config/prismaClient.ts).
   - Ensure `DATABASE_URL` is available to the app (we load `.env` via `import 'dotenv/config'`).
-- **Generate**: `npx prisma generate` now reads [prisma.config.ts](prisma.config.ts) automatically and generates the client to [prisma/generated/prisma](prisma/generated/prisma).
-- **Migrations**: `npx prisma migrate dev` and `npx prisma migrate deploy` continue to work.
-- **Seeding change**: In v7, seeding only runs when invoked explicitly via `npx prisma db seed`. Our project keeps an app-specific seed script (`npm run seed`) that first pushes the schema and then runs [prisma/seed.ts](prisma/seed.ts).
+- **Generate**: `pnpm prisma generate` now reads [prisma.config.ts](prisma.config.ts) automatically and generates the client to [prisma/generated/prisma](prisma/generated/prisma).
+- **Migrations**: `pnpm prisma migrate dev` and `pnpm prisma migrate deploy` continue to work.
+- **Seeding change**: In v7, seeding only runs when invoked explicitly via `pnpm prisma db seed`. Our project keeps an app-specific seed script (`pnpm run seed`) that first pushes the schema and then runs [prisma/seed.ts](prisma/seed.ts).
 
 Common commands:
 
+npx prisma db seed
+
 ```bash
 # Generate Prisma Client
-npx prisma generate
+pnpm prisma generate
 
 # Validate schema and config
-npx prisma validate
+pnpm prisma validate
 
 # Apply development migrations
-npx prisma migrate dev --name init
+pnpm prisma migrate dev --name init
 
 # Apply production/testing migrations
-npx prisma migrate deploy
+pnpm prisma migrate deploy
 
 # Seed via Prisma CLI (optional alternative)
-npx prisma db seed
+pnpm prisma db seed
 ```
 
 - **API Routes**: Organized in `/api/routes`
@@ -133,11 +135,11 @@ Following the Books example, if a book is deleted all the related reviews will a
 Create an empty postgres db with the name `rest_api_crud`.
 In macOS use **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing as an alternative to pgcli.
 
-Migrate the models to the db with the script `npx prisma migrate dev --name init`.
+Migrate the models to the db with the script `pnpm prisma migrate dev --name init`.
 This creates a new folder `/prisma/migrations` with a migration file with the name used at the end of the script (in this case "init").
 With Prisma v7, the client is generated to [prisma/generated/prisma](prisma/generated/prisma) and the CLI reads the datasource URL from [prisma.config.ts](prisma.config.ts). For Postgres with the JS engine, the app config includes the `@prisma/adapter-pg` setup.
 
-> The script for production and testing migrations is `npx prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
+> The script for production and testing migrations is `pnpm prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
 
 ## Seeds
 
@@ -157,8 +159,8 @@ This solves the issue of duplicate data and allows the seeds to be applied multi
 >
 > This happens because the seed stores false Ids. And if the second model tries to make a relation to a non-existent Id it will return an error.
 
-The script `npm run seed` finds or creates the db and populates the db with the seeds executing `prisma db push` (forces db schema) combined with [prisma/seed.ts](prisma/seed.ts).
-Note: Prisma v7 doesn't auto-run seeds during `migrate dev` or `reset`. To seed via the CLI, use `npx prisma db seed`.
+The script `pnpm run seed` finds or creates the db and populates the db with the seeds executing `prisma db push` (forces db schema) combined with [prisma/seed.ts](prisma/seed.ts).
+Note: Prisma v7 doesn't auto-run seeds during `migrate dev` or `reset`. To seed via the CLI, use `pnpm prisma db seed`.
 
 ## Linter and Formatter
 
@@ -307,5 +309,5 @@ Additionally the devDependencies `@types/jest`, `@types/supertest` and `ts-jest`
 `ioredis-mock` is used to mock Redis in testing enviroment.
 
 The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
-To initialize jest in the project run the command `npx ts-jest config:init`. This will create a file `jest.config.js`.
-The script `npm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
+To initialize jest in the project run the command `pnpm ts-jest config:init`. This will create a file `jest.config.js`.
+The script `pnpm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
