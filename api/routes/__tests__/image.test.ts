@@ -8,7 +8,7 @@ import {
 } from "../../__mocks__/testFixtures"
 import app from "../../app"
 
-describe("/api/category", () => {
+describe("/api/image", () => {
 	const createdEmails: string[] = []
 
 	beforeEach(async () => {
@@ -21,22 +21,16 @@ describe("/api/category", () => {
 	})
 
 	test("returns 401 without authentication", async () => {
-		const res = await request(app).get("/api/category")
-
+		const res = await request(app).get("/api/image/1")
 		assert.equal(res.status, 401)
-		assert.equal(res.body.message, "Unauthorized")
 	})
 
-	test("returns models list when authenticated", async () => {
+	test("returns 422 when image file does not exist", async () => {
 		const { agent, customer } = await createAuthenticatedAgent()
 		createdEmails.push(customer.email)
 
-		const res = await agent.get("/api/category")
-
-		assert.equal(res.status, 200)
-		assert.equal(res.body.success, true)
-		assert.ok(Array.isArray(res.body.data))
-		assert.ok(res.body.data.includes("Customer"))
-		assert.ok(res.body.data.includes("Book"))
+		const res = await agent.get("/api/image/999999")
+		assert.equal(res.status, 422)
+		assert.match(res.body.message, /Unable to get image 999999\.jpg/)
 	})
 })

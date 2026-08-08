@@ -39,7 +39,9 @@ export const postRegisterCustomer = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllCustomers:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		const { password, created_at, updated_at, ...newCustomerNoPass } =
 			newCustomer

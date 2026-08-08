@@ -151,7 +151,9 @@ export const postAuthor = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllAuthors:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(201).send({
 			success: true,
@@ -193,7 +195,9 @@ export const patchAuthorById = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllAuthors:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,
@@ -221,7 +225,9 @@ export const deleteAuthor = async (
 		})
 
 		const cacheKeys = await redis.keys("getAllAuthors:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,

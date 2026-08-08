@@ -190,7 +190,9 @@ export const postOrder = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllOrders:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(201).send({
 			success: true,
@@ -223,7 +225,9 @@ export const deleteOrderById = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllOrders:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,

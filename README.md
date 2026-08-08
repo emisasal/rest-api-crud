@@ -310,14 +310,18 @@ All the responses show status code and examples.
 
 ## Testing
 
-The routes (E2E) and controllers (unit-testing) are tested using Node's built-in test runner (`node:test`) and `supertest`.
+The routes (E2E) and middleware are tested using Node's built-in test runner (`node:test`) and `supertest`.
 TypeScript tests are executed with `tsx`.
 `ioredis-mock` is used to mock Redis in the testing environment.
 
 ```bash
 pnpm test          # migrate test DB, then run all *.test.ts files
 pnpm test:watch    # re-run tests on file changes
-pnpm test:run      # run tests without migrating
+pnpm test:run      # run tests without migrating (requires env vars loaded)
 ```
 
 Tests live in `api/**/__tests__/*.test.ts`. Assertions use `node:assert/strict`; spies use `mock.fn()` from `node:test`.
+Use helpers from `api/__mocks__/testFixtures.ts` (`uniqueCustomer`, `uniqueAuthor`, `createAuthenticatedAgent`, `createBookGraph`) for DB-backed E2E tests.
+Route E2E coverage includes auth, category, author, genre, publisher, book, customer, order, review, and image.
+Middleware unit tests cover `verifyJWT`, `validationError`, `notFound`, `globalErrorHandler`, and `rateLimiter`.
+Validator unit tests live in `api/validators/__tests__/`.

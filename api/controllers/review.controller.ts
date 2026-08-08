@@ -15,7 +15,7 @@ export const getAllReviews = async (
 ) => {
 	try {
 		const pageReq = Number(req.query.page)
-		const sort = req.query.sort?.toString() || "review_date"
+		const sort = req.query.sort?.toString() || "created_at"
 		const order = req.query.order?.toString() || "desc"
 		const book_id = Number(req.query.book_id) || 0
 		const customer_id = Number(req.query.customer_id) || 0
@@ -168,7 +168,9 @@ export const postReview = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllReviews:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(201).send({
 			success: true,
@@ -201,7 +203,9 @@ export const deleteReview = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllReviews:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,

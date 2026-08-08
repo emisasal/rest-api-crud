@@ -6,7 +6,12 @@ import * as reviewValidator from "../validators/review.validators"
 const router = Router()
 
 // @route /review
-router.get("/", reviewController.getAllReviews)
+router.get(
+	"/",
+	reviewValidator.getAllReviewsValidator,
+	validationError,
+	reviewController.getAllReviews,
+)
 router.get("/:id", reviewController.getReviewById)
 router.post(
 	"/",

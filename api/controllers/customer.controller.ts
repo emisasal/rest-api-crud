@@ -172,7 +172,9 @@ export const patchCustomerByid = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllCustomers:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		const { password, created_at, updated_at, ...patchedCustomerNoPass } =
 			patchedCustomer
@@ -204,7 +206,9 @@ export const deleteCustomer = async (
 		})
 
 		const cacheKeys = await redis.keys("getAllCustomers:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,

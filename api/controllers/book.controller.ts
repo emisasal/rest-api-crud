@@ -221,7 +221,9 @@ export const postBook = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllBooks:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res
 			.status(201)
@@ -258,7 +260,9 @@ export const patchBookById = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllBooks:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res
 			.status(200)
@@ -284,7 +288,9 @@ export const deleteBook = async (
 		})
 
 		const cacheKeys = await redis.keys("getAllBooks:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		return res.status(200).send({
 			success: true,
