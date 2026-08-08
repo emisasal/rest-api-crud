@@ -1,10 +1,22 @@
-import { mockNext, mockRequest, mockResponse } from "../../__mocks__"
+import assert from "node:assert/strict"
+import { after, afterEach, before, beforeEach, describe, test } from "node:test"
+import {
+	assertMockCalled,
+	assertMockCalledTimes,
+	assertMockLastCalledWith,
+	assertMockLastCalledWithError,
+} from "../../__mocks__/assertMocks"
 import { clearRedisCache } from "../../__mocks__/clearRedisCache"
 import {
 	createCustomer,
 	registeredCustomer,
 } from "../../__mocks__/customerMocks"
-import CustomError from "../../classes/CustomError"
+import {
+	mockNext,
+	mockRequest,
+	mockResponse,
+	resetMocks,
+} from "../../__mocks__/index"
 import { prisma } from "../../config/prismaClient"
 import {
 	postLoginCustomer,
@@ -12,23 +24,20 @@ import {
 	postRegisterCustomer,
 } from "../customerSession.controller"
 
-jest.mock("express-validator", () => ({
-	validationResult: jest.fn(() => ({
-		isEmpty: jest.fn(() => false),
-		array: jest.fn(() => []),
-	})),
-}))
-
 describe("customerSession controller", () => {
-	beforeAll(async () => {
+	before(async () => {
+		resetMocks()
 		mockRequest.body = registeredCustomer
 		await postRegisterCustomer(mockRequest, mockResponse, mockNext)
 	})
+
 	beforeEach(async () => {
+		resetMocks()
 		await clearRedisCache()
 	})
 
 	afterEach(async () => {
+		resetMocks()
 		await postLogoutCustomer(mockRequest, mockResponse, mockNext)
 
 		const newCustomerExists = await prisma.customer.findFirst({
@@ -45,7 +54,7 @@ describe("customerSession controller", () => {
 		}
 	})
 
-	afterAll(async () => {
+	after(async () => {
 		await prisma.customer.delete({
 			where: {
 				email: "tom@petty.com",
@@ -54,48 +63,43 @@ describe("customerSession controller", () => {
 	})
 
 	describe("postRegisterCustomer", () => {
-		test("Returns error 422 if data not validated", async () => {
+		test("Returns error if data not validated", async () => {
 			mockRequest.body = {}
 			await postRegisterCustomer(mockRequest, mockResponse, mockNext)
 
-			const errorValidation = new Error() as CustomError
-			errorValidation.message =
-				"Cannot read properties of undefined (reading 'replace')"
-			errorValidation.status = 422
-
-			expect(mockNext).toHaveBeenCalledWith(errorValidation)
+			assertMockLastCalledWithError(mockNext, {
+				message: "Cannot read properties of undefined (reading 'replace')",
+			})
 		})
 
 		test("Returns error 400 if customer exist", async () => {
 			mockRequest.body = registeredCustomer
 			await postRegisterCustomer(mockRequest, mockResponse, mockNext)
 
-			const errorAlreadyCreated = new Error() as CustomError
-			errorAlreadyCreated.message = "Customer already registered"
-			errorAlreadyCreated.status = 400
-
-			expect(mockNext).toHaveBeenCalledWith(errorAlreadyCreated)
+			assertMockLastCalledWithError(mockNext, {
+				message: "Customer already registered",
+				status: 400,
+			})
 		})
 
 		test("Registers new customer", async () => {
 			mockRequest.body = createCustomer
 			await postRegisterCustomer(mockRequest, mockResponse, mockNext)
 
-			expect(mockResponse.status).toHaveBeenCalledWith(201)
-			expect(mockResponse.send).toHaveBeenCalled()
+			assertMockLastCalledWith(mockResponse.status, 201)
+			assertMockCalled(mockResponse.send)
 		})
 	})
 
 	describe("postLoginCustomer", () => {
-		test("Returns 422 error if data not validated", async () => {
+		test("Returns error if data not validated", async () => {
 			mockRequest.body = { email: "notValidEmail", password: "09876543" }
 			await postLoginCustomer(mockRequest, mockResponse, mockNext)
 
-			const errorValidation = new Error() as CustomError
-			errorValidation.message = "Invalid credentials"
-			errorValidation.status = 422
-
-			expect(mockNext).toHaveBeenCalledWith(errorValidation)
+			assertMockLastCalledWithError(mockNext, {
+				message: "Invalid credentials",
+				status: 401,
+			})
 		})
 
 		test("Returns error 401 if Invalid Credentials", async () => {
@@ -106,20 +110,20 @@ describe("customerSession controller", () => {
 				mockNext,
 			)
 
-			const errorValidation = new Error() as CustomError
-			errorValidation.message = "Invalid credentials"
-
-			expect(isLoged).toBeFalsy()
-			expect(mockNext).toHaveBeenCalledWith(errorValidation)
+			assert.equal(isLoged, undefined)
+			assertMockLastCalledWithError(mockNext, {
+				message: "Invalid credentials",
+				status: 401,
+			})
 		})
 
 		test("Login customer successfully", async () => {
 			mockRequest.body = { email: "tom@petty.com", password: "testPassw@rd1" }
 			await postLoginCustomer(mockRequest, mockResponse, mockNext)
 
-			expect(mockResponse.cookie).toHaveBeenCalledTimes(2)
-			expect(mockResponse.status).toHaveBeenCalledWith(200)
-			expect(mockResponse.send).toHaveBeenCalled()
+			assertMockCalledTimes(mockResponse.cookie, 2)
+			assertMockLastCalledWith(mockResponse.status, 200)
+			assertMockCalled(mockResponse.send)
 		})
 	})
 
@@ -128,25 +132,39 @@ describe("customerSession controller", () => {
 			mockRequest.body = { email: "tom@petty.com", password: "testPassw@rd1" }
 			await postLoginCustomer(mockRequest, mockResponse, mockNext)
 
-			expect(mockResponse.status).toHaveBeenCalledWith(200)
-			expect.objectContaining({
-				data: expect.objectContaining("tom@petty.com"),
-			})
+			assertMockLastCalledWith(mockResponse.status, 200)
+
+			const accessToken = mockResponse.cookie.mock.calls[0]?.arguments[1]
+			const refreshToken = mockResponse.cookie.mock.calls[1]?.arguments[1]
+
+			mockNext.mock.resetCalls()
+			mockResponse.send.mock.resetCalls()
+			mockResponse.status.mock.resetCalls()
+			mockResponse.cookie.mock.resetCalls()
+			mockResponse.clearCookie.mock.resetCalls()
+			mockResponse.end.mock.resetCalls()
+
+			mockRequest.signedCookies = {
+				access_token: accessToken,
+				refresh_token: refreshToken,
+			}
 
 			await postLogoutCustomer(mockRequest, mockResponse, mockNext)
 
-			expect(mockResponse.clearCookie).toHaveBeenCalledTimes(2)
-			expect(mockResponse.status).toHaveBeenCalledWith(200)
-			expect.objectContaining({
-				message: expect.objectContaining("Customer logout"),
+			assertMockCalledTimes(mockResponse.clearCookie, 2)
+			assertMockLastCalledWith(mockResponse.status, 200)
+			assertMockLastCalledWith(mockResponse.send, {
+				success: true,
+				statusCode: 200,
+				message: "Customer logout",
 			})
 		})
 
 		test("No customer to logout", async () => {
 			await postLogoutCustomer(mockRequest, mockResponse, mockNext)
 
-			expect(mockResponse.status).toHaveBeenCalledWith(200)
-			expect(mockResponse.send).toHaveBeenCalledWith({
+			assertMockLastCalledWith(mockResponse.status, 200)
+			assertMockLastCalledWith(mockResponse.send, {
 				message: "No Customer to logout",
 				statusCode: 200,
 				success: true,

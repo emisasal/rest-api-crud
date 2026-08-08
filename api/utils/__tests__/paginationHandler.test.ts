@@ -1,27 +1,29 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import paginationHandler from "../paginationHandler"
 
 const count = 55
 const pageSize = 20
 const actualPage = 0
 
-test.skip("Returns limit and page values", () => {
+test("Returns limit and page values", () => {
 	const { limit, page } = paginationHandler({
 		count,
 		pageSize,
 		page: actualPage,
 	})
 
-	expect(limit).toStrictEqual(2)
-	expect(page).toStrictEqual(0)
+	assert.equal(limit, 2)
+	assert.equal(page, 0)
 })
 
-test.skip("Prevents page to be greater than 'limit'", () => {
+test("Prevents page to be greater than 'limit'", () => {
 	const { limit, page } = paginationHandler({
 		count,
 		pageSize,
 		page: 3,
 	})
 
-	expect(limit).toStrictEqual(2)
-	expect(page).toStrictEqual(2)
+	assert.equal(limit, 2)
+	assert.equal(page, 2)
 })

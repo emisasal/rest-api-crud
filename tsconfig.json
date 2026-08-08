@@ -25,7 +25,6 @@
 		"./*.ts",
 		"api/__mocks__",
 		"api/docs",
-		"api/**/*.test.ts",
-		"api/config/prismaMock.ts"
+		"api/**/*.test.ts"
 	]
 }
