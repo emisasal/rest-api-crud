@@ -113,7 +113,7 @@ pnpm prisma db seed
 - **Rate Limiting**: Prevents brute force attacks on login
 - **API Documentation**: Swagger UI available at `/docs`
 - **Testing**: Jest and Supertest for unit and E2E testing
-- **Code Quality**: Biome for linting and formatting
+- **Code Quality**: ESLint for linting and Prettier for formatting
 
 ## Database Schema
 
@@ -164,9 +164,15 @@ Note: Prisma v7 doesn't auto-run seeds during `migrate dev` or `reset`. To seed 
 
 ## Linter and Formatter
 
-`Biome` is used for linting and formatting.
-The configurations and use are very similar to ESLint and Prettier all in one dependency. And the execution is much faster.
-The file `biome.json` stores all the configurations for linting and formatting.
+`ESLint` is used for linting and `Prettier` for formatting.
+Configuration lives in `eslint.config.js` and `.prettierrc.json`.
+
+```bash
+pnpm lint          # check for lint issues
+pnpm lint:fix     # auto-fix lint issues
+pnpm format        # format all files
+pnpm format:check  # check formatting without writing
+```
 
 ## Routes
 

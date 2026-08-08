@@ -2,18 +2,18 @@ import request from "supertest"
 import app from "../../app"
 import redis from "../../config/redisClient"
 
-const testUser = { email: "test@mail.com", password: "testPassw@rd1" }
+const _testUser = { email: "test@mail.com", password: "testPassw@rd1" }
 
 describe("customerSession routes", () => {
-    afterAll(async () => {
-      await redis.quit()
-    })
+	afterAll(async () => {
+		await redis.quit()
+	})
 
-    describe("/customer/register", () => {
-        test.skip("Register new user", () => {
-            const response = request(app).post("/api/customer/register")
-        })
-    })
+	describe("/customer/register", () => {
+		test.skip("Register new user", () => {
+			const _response = request(app).post("/api/customer/register")
+		})
+	})
 })
 
 // test("/customer/login sign in user", async () => {

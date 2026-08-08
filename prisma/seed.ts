@@ -1,50 +1,50 @@
-import { prisma } from "../api/config/prismaClient.ts"
 import bcrypt from "bcrypt"
+import { prisma } from "../api/config/prismaClient.ts"
 import generateRandomString from "../api/utils/generateRandomString.ts"
 
-import { bookSeed } from "./seedData/book.seed.ts"
 import { authorSeed } from "./seedData/author.seed.ts"
-import { genreSeed } from "./seedData/genre.seed.ts"
-import { publisherSeed } from "./seedData/publisher.seed.ts"
+import { bookSeed } from "./seedData/book.seed.ts"
 import { customerSeed } from "./seedData/customer.seed.ts"
+import { genreSeed } from "./seedData/genre.seed.ts"
 import { orderSeed } from "./seedData/order.seed.ts"
 import { orderDetailSeed } from "./seedData/orderDetail.seed.ts"
+import { publisherSeed } from "./seedData/publisher.seed.ts"
 import { reviewSeed } from "./seedData/review.seed.ts"
 
 // Execute seeding with "npm run seed" script.
 
 const booksIsoDate = bookSeed.map((book) => {
-	return (book = {
+	return {
 		...book,
 		publish_date: new Date(book.publish_date).toISOString(),
-	})
+	}
 })
 
 const customersIsoDate = customerSeed.map((customer) => {
-	return (customer = {
+	return {
 		...customer,
 		created_at: new Date(customer.created_at).toISOString(),
-	})
+	}
 })
 
 const customerPassword = customersIsoDate.map((customer) => {
 	const saltRounds = 2
 	const hashPassword = bcrypt.hashSync(generateRandomString(10), saltRounds)
-	return (customer = { ...customer, password: hashPassword })
+	return { ...customer, password: hashPassword }
 })
 
 const ordersIsoDate = orderSeed.map((order) => {
-	return (order = {
+	return {
 		...order,
 		order_date: new Date(order.order_date).toISOString(),
-	})
+	}
 })
 
 const reviewsIsoDate = reviewSeed.map((review) => {
-	return (review = {
+	return {
 		...review,
 		created_at: new Date(review.created_at).toISOString(),
-	})
+	}
 })
 
 async function runSeeders() {
@@ -157,7 +157,7 @@ async function runSeeders() {
 			})
 
 			const ordersTotal = orderData?.OrderDetail.reduce((acc, obj) => {
-				return (acc = acc + Number(obj.price_per_item) * obj.quantity)
+				return acc + Number(obj.price_per_item) * obj.quantity
 			}, 0)
 
 			return prisma.order.update({

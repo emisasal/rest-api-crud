@@ -1,15 +1,15 @@
 import { Router } from "express"
 
-import book from "./book.routes"
 import author from "./author.routes"
+import book from "./book.routes"
+import category from "./category.routes"
+import customer from "./customer.routes"
 import genre from "./genre.routes"
-import publisher from "./publisher.routes"
+import image from "./image.routes"
 import order from "./order.routes"
 import orderDetail from "./orderDetail.routes"
-import customer from "./customer.routes"
+import publisher from "./publisher.routes"
 import review from "./review.routes"
-import image from "./image.routes"
-import category from "./category.routes"
 
 const router = Router()
 

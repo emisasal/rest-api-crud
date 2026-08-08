@@ -4,8 +4,8 @@ const statusCode = 400
 const errorMessage = "Error message"
 
 test.skip("Returns error with params", () => {
-  const newError = errorHandler(statusCode, errorMessage)
+	const newError = errorHandler(statusCode, errorMessage)
 
-  expect(newError.status).toEqual(statusCode)
-  expect(newError.message).toEqual(errorMessage)
+	expect(newError.status).toEqual(statusCode)
+	expect(newError.message).toEqual(errorMessage)
 })

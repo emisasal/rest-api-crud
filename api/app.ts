@@ -1,17 +1,17 @@
+import cookieParser from "cookie-parser"
+import cors from "cors"
 import express from "express"
 import helmet from "helmet"
-import cors from "cors"
 import morgan from "morgan"
-import cookieParser from "cookie-parser"
 import swaggerUi from "swagger-ui-express"
 import { corsOptions } from "./config/corsOptions"
 import { staticOptions } from "./config/staticOptions"
-import customerSessionRoutes from "./routes/customerSession.routes"
-import routes from "./routes/index"
+import swaggerSpec from "./docs/swaggerSpec"
 import globalErrorHandler from "./middleware/errorHandler.middleware"
 import notFoundHandler from "./middleware/notFound.middleware"
 import verifyJWT from "./middleware/verifyJWT"
-import swaggerSpec from "./docs/swaggerSpec"
+import customerSessionRoutes from "./routes/customerSession.routes"
+import routes from "./routes/index"
 
 const { NODE_ENV, COOKIE_SECRET } = process.env
 

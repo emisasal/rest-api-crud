@@ -8,7 +8,7 @@ export const staticOptions = {
 	index: false,
 	maxAge: "7d",
 	redirect: false,
-	setHeaders: (res: Response, path: string, stat: any) => {
+	setHeaders: (res: Response, _path: string, _stat: any) => {
 		res.set("X-Timestamp", Date.now().toString())
 	},
 }

@@ -1,29 +1,29 @@
 import { Router } from "express"
-import * as genreValidator from "../validators/genre.validators"
-import validationError from "../middleware/validationError.middleware"
 import * as genreController from "../controllers/genre.controller"
+import validationError from "../middleware/validationError.middleware"
+import * as genreValidator from "../validators/genre.validators"
 
 const router = Router()
 
 // @route /genre
 router.get(
-  "/",
-  genreValidator.getAllGenresValidator,
-  validationError,
-  genreController.getAllGenres
+	"/",
+	genreValidator.getAllGenresValidator,
+	validationError,
+	genreController.getAllGenres,
 )
 router.get("/:id", genreController.getGenreById)
 router.post(
-  "/",
-  genreValidator.postGenreValidator,
-  validationError,
-  genreController.postGenre
+	"/",
+	genreValidator.postGenreValidator,
+	validationError,
+	genreController.postGenre,
 )
 router.patch(
-  "/:id",
-  genreValidator.patchGenreValidator,
-  validationError,
-  genreController.patchGenreById
+	"/:id",
+	genreValidator.patchGenreValidator,
+	validationError,
+	genreController.patchGenreById,
 )
 router.delete("/:id", genreController.deleteGenre)
 
