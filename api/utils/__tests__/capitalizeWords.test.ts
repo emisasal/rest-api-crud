@@ -1,14 +1,16 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import capitalizeWords from "../capitalizeWords"
 
-test.skip("Capitalize the first letter", () => {
-  const word = capitalizeWords("michael")
-  expect(word).toStrictEqual("Michael")
-  expect(word).not.toStrictEqual("michael")
+test("Capitalize the first letter", () => {
+	const word = capitalizeWords("michael")
+	assert.equal(word, "Michael")
+	assert.notEqual(word, "michael")
 })
 
-test.skip("Capitalize miltiple words with accents", () => {
-  const words = capitalizeWords("maría eleNa")
+test("Capitalize multiple words with accents", () => {
+	const words = capitalizeWords("maría eleNa")
 
-  expect(words).toStrictEqual("María Elena")
-  expect(words).not.toStrictEqual("maría eleNa")
+	assert.equal(words, "María Elena")
+	assert.notEqual(words, "maría eleNa")
 })

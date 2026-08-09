@@ -1,11 +1,11 @@
-import type { Request, Response, NextFunction } from "express"
-import { prisma } from "../config/prismaClient"
 import bcrypt from "bcrypt"
+import type { NextFunction, Request, Response } from "express"
 import jwt, { type Secret } from "jsonwebtoken"
-import { signAccessJWT, signRefreshJWT } from "../utils/handleJWT"
-import errorHandler from "../utils/errorHandler"
-import capitalizeWords from "../utils/capitalizeWords"
+import { prisma } from "../config/prismaClient"
 import redis from "../config/redisClient"
+import capitalizeWords from "../utils/capitalizeWords"
+import errorHandler from "../utils/errorHandler"
+import { signAccessJWT, signRefreshJWT } from "../utils/handleJWT"
 
 // @desc Create new Customer
 // @route POST /api/customer/register
@@ -39,7 +39,9 @@ export const postRegisterCustomer = async (
 		}
 
 		const cacheKeys = await redis.keys("getAllCustomers:*")
-		cacheKeys ?? (await redis.del(cacheKeys))
+		if (cacheKeys.length > 0) {
+			await redis.del(...cacheKeys)
+		}
 
 		const { password, created_at, updated_at, ...newCustomerNoPass } =
 			newCustomer

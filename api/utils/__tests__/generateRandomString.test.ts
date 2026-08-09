@@ -1,10 +1,12 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import generateRandomString from "../generateRandomString"
 
 const stringLength = 24
 
-test.skip("Returns a random string", () => {
-  const randomString = generateRandomString(stringLength)
+test("Returns a random string", () => {
+	const randomString = generateRandomString(stringLength)
 
-  expect(typeof randomString).toBe("string")
-  expect(randomString).toHaveLength(stringLength)
+	assert.equal(typeof randomString, "string")
+	assert.equal(randomString.length, stringLength)
 })

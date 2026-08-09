@@ -1,11 +1,13 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import errorHandler from "../errorHandler"
 
 const statusCode = 400
 const errorMessage = "Error message"
 
-test.skip("Returns error with params", () => {
-  const newError = errorHandler(statusCode, errorMessage)
+test("Returns error with params", () => {
+	const newError = errorHandler(statusCode, errorMessage)
 
-  expect(newError.status).toEqual(statusCode)
-  expect(newError.message).toEqual(errorMessage)
+	assert.equal(newError.status, statusCode)
+	assert.equal(newError.message, errorMessage)
 })

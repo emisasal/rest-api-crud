@@ -68,7 +68,7 @@ Prisma v7 introduces a new configuration file and some behavioral changes:
   - See our config in [prisma.config.ts](prisma.config.ts). It sets `datasource.url` using `env('DATABASE_URL')` and loads `.env` via `import 'dotenv/config'`.
   - The `datasource` block in [prisma/schema.prisma](prisma/schema.prisma) no longer contains a `url` property.
 - **Generated client import path**: Import `PrismaClient` and `Prisma` types from the generated output at [prisma/generated/prisma](prisma/generated/prisma). In ESM, import explicitly from [prisma/generated/prisma/index.js](prisma/generated/prisma/index.js).
-  - Example usage: see [api/config/prismaClient.ts](api/config/prismaClient.ts) and [api/config/prismaMock.ts](api/config/prismaMock.ts).
+  - Example usage: see [api/config/prismaClient.ts](api/config/prismaClient.ts).
   - Middleware using Prisma types (e.g., `Prisma.PrismaClientKnownRequestError`) should also import from [prisma/generated/prisma](prisma/generated/prisma), as in [api/middleware/errorHandler.middleware.ts](api/middleware/errorHandler.middleware.ts).
 - **Driver adapter (JS engine)**: If your generated client uses the JS engine (`client.js` present), provide a driver adapter or Accelerate URL. This project uses `@prisma/adapter-pg`:
   - See adapter setup in [api/config/prismaClient.ts](api/config/prismaClient.ts).
@@ -112,8 +112,8 @@ pnpm prisma db seed
   - JWT-based authentication with access and refresh tokens
 - **Rate Limiting**: Prevents brute force attacks on login
 - **API Documentation**: Swagger UI available at `/docs`
-- **Testing**: Jest and Supertest for unit and E2E testing
-- **Code Quality**: Biome for linting and formatting
+- **Testing**: Node.js native test runner and Supertest for unit and E2E testing
+- **Code Quality**: ESLint for linting and Prettier for formatting
 
 ## Database Schema
 
@@ -164,9 +164,15 @@ Note: Prisma v7 doesn't auto-run seeds during `migrate dev` or `reset`. To seed 
 
 ## Linter and Formatter
 
-`Biome` is used for linting and formatting.
-The configurations and use are very similar to ESLint and Prettier all in one dependency. And the execution is much faster.
-The file `biome.json` stores all the configurations for linting and formatting.
+`ESLint` is used for linting and `Prettier` for formatting.
+Configuration lives in `eslint.config.js` and `.prettierrc.json`.
+
+```bash
+pnpm lint          # check for lint issues
+pnpm lint:fix     # auto-fix lint issues
+pnpm format        # format all files
+pnpm format:check  # check formatting without writing
+```
 
 ## Routes
 
@@ -304,10 +310,18 @@ All the responses show status code and examples.
 
 ## Testing
 
-The routes (E2E) and controllers (unit-testing) are tested using `jest` and `supertest`.
-Additionally the devDependencies `@types/jest`, `@types/supertest` and `ts-jest` are required to work with TypeScript.
-`ioredis-mock` is used to mock Redis in testing enviroment.
+The routes (E2E) and middleware are tested using Node's built-in test runner (`node:test`) and `supertest`.
+TypeScript tests are executed with `tsx`.
+`ioredis-mock` is used to mock Redis in the testing environment.
 
-The devDependencies for testing are `jest`, `ts-jest`, `@types/jest`, `supertest` and `@types/supertest`.
-To initialize jest in the project run the command `pnpm ts-jest config:init`. This will create a file `jest.config.js`.
-The script `pnpm test` in package.json executes the tests named `*.test.ts` and/or the files located in `/__tests__` folders.
+```bash
+pnpm test          # migrate test DB, then run all *.test.ts files
+pnpm test:watch    # re-run tests on file changes
+pnpm test:run      # run tests without migrating (requires env vars loaded)
+```
+
+Tests live in `api/**/__tests__/*.test.ts`. Assertions use `node:assert/strict`; spies use `mock.fn()` from `node:test`.
+Use helpers from `api/__mocks__/testFixtures.ts` (`uniqueCustomer`, `uniqueAuthor`, `createAuthenticatedAgent`, `createBookGraph`) for DB-backed E2E tests.
+Route E2E coverage includes auth, category, author, genre, publisher, book, customer, order, review, and image.
+Middleware unit tests cover `verifyJWT`, `validationError`, `notFound`, `globalErrorHandler`, and `rateLimiter`.
+Validator unit tests live in `api/validators/__tests__/`.
