@@ -3,7 +3,7 @@
 		"node": ">=22.0.0"
 	},
 	"name": "rest-api-crud",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"description": "",
 	"type": "module",
 	"main": "server.js",

@@ -7,58 +7,66 @@
 ## Quick Start
 
 1. Clone the repository
-2. Run `pnpm install` from the root folder
-3. Create a PostgreSQL database with the name `rest-api-crud` and set up environment variables
-4. Run `pnpm run seed` to push the schema and seed the database
-5. Start the local server with `pnpm run dev`
+2. Use **Node.js 22+** (`engines.node` requires `>=22.0.0`) and run `pnpm install` from the root folder
+3. Copy [`.envexample`](.envexample) into `.env`, `.env.development`, and (optionally) `.env.production` / `.env.test`, then fill in the values
+4. Create a PostgreSQL database and set `DATABASE_URL` in `.env`
+5. Start Redis locally (`redis-server`) or via Docker
+6. Run `pnpm run seed` to push the schema and seed the database
+7. Start the local server with `pnpm run dev`
 
-## Project Setup
+## Requirements
 
-- Install the latest Node LTS version (if you haven't already).
-- Create an empty postgres database with the name `rest-api-crud`.
-- Create the folder for the project and initialize pnpm with `pnpm init -y`.
-- Add the git remote to the GithHub repository for the project.
-- Install `express` dependency (node framework).
-- Install devDependencies: `prisma`, `typescript`, `ts-node`, `@types/node` and `@types/express`.
-  - Prisma: the ORM (Object-relational mapping).
-  - TS-Node: TypeScript execution engine and REPL for Node.js.
-  - @Types/Node and @Types-Express: TypeScript types definitions.
-- Create `tsconfig.json` file with default configurations:
-  ```
-  {
-  "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "outDir": "dist",
-    "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "ignoreDeprecations": "5.0",
-    "forceConsistentCasingInFileNames": true,
-    "noPropertyAccessFromIndexSignature": false
-    }
-  }
-  ```
-- Add scripts for:
-  - Development: `"dev": "node --watch src/index.ts"`.
-  - Production: `"build": "tsc"`. This script creates a transpiled JavaScript build in the folder `/dist`.
-  - To execute production build: `"start": "node dist/index.ts"`.
-- Initialize Prisma using `pnpm prisma init --datasource-provider postgresql`. This creates `/prisma` folder with the schema configured for Postgres and `.env` file for environment variables.
-- Add postgres user, password and database name in `DATABASE_URL` inside `.env` file.
+- **Node.js** `>=22.0.0`
+- **pnpm** (package manager)
+- **PostgreSQL**
+- **Redis** (caching, sessions, and rate limiting)
 
-## Watch Mode
+## Scripts
 
-Watch mode prevents the server from stopping after changes in the code.
-The native Node flag `--watch` replaces the dependency `nodemon`.
-By default, watch mode cleans the terminal after changes. To maintain the logs add a second flag `--watch-preserve-output`.
+| Script | Description |
+| --- | --- |
+| `pnpm run dev` | Run the API with `tsx` and load `.env.development` + `.env` |
+| `pnpm run build` | Compile TypeScript with `tsc` into `/dist` |
+| `pnpm start` | Run the compiled production build with `.env.production` + `.env` |
+| `pnpm run seed` | Push the schema (`prisma db push`) and run [prisma/seed.ts](prisma/seed.ts) via `ts-node` |
+| `pnpm run export:csv` | Run [prisma/exportCSV.ts](prisma/exportCSV.ts) via `ts-node` |
+| `pnpm test` | Apply migrations with test env, then run all `api/**/*.test.ts` tests |
+| `pnpm test:run` | Run tests without migrating (env vars must already be loaded) |
+| `pnpm test:watch` | Re-run tests on file changes |
+| `pnpm lint` / `pnpm lint:fix` | ESLint check / auto-fix |
+| `pnpm format` / `pnpm format:check` | Prettier write / check |
+| `pnpm run docker:up-dev` | Start the development Docker Compose stack |
+| `pnpm run docker:up-prod` | Start the production Docker Compose stack |
+
+TypeScript execution:
+
+- **`tsx`**: development server and tests (`node:test` via `tsx --test`)
+- **`ts-node`**: Prisma seed and CSV export scripts
+- **`tsc` + `node`**: production build and start
 
 ## Key Features
 
-- **Watch Mode**: Uses Node's native `--watch` flag for hot reloading
-- **Environment Variables**: Utilizes Node's built-in env file loading (v20.6+)
+- **Environment Variables**: Uses Node's built-in `--env-file` loading (v20.6+)
 - **Database Schema**: Optimized ERD for an online bookstore
-- **Prisma ORM**: For database migrations and seeding
-- **Prisma v7 Ready**: Uses `prisma.config.ts` for datasource configuration, generated client imports, and a Postgres driver adapter
+- **Prisma ORM**: Migrations, seeding, and Postgres driver adapter (`@prisma/adapter-pg`)
+- **Prisma v7 Ready**: Uses `prisma.config.ts` for datasource configuration and a generated client under [prisma/generated/prisma](prisma/generated/prisma)
+- **API Routes**: Organized in `/api/routes`
+- **Error Handling**: Global error handler and custom error class
+- **File Serving**: Endpoint for serving book cover images
+- **Pagination and Sorting**: Implemented for list endpoints
+- **Data Validation**: Using `express-validator` middleware
+- **Filtering**: Prisma-based filtering for queries
+- **CORS**: Configured for cross-origin requests
+- **Logging**: HTTP logging with Morgan
+- **Caching**: Redis-based caching for improved performance
+- **Authentication**:
+  - Password hashing with bcrypt
+  - JWT-based authentication with access and refresh tokens
+- **Rate Limiting**: Prevents brute force attacks on login
+- **API Documentation**: Swagger UI available at `/docs`
+- **Testing**: Node.js native test runner (`node:test`), `tsx`, and Supertest
+- **Code Quality**: ESLint for linting and Prettier for formatting
+- **Docker**: Development and production Compose stacks
 
 ## Prisma v7 Upgrade
 
@@ -79,8 +87,6 @@ Prisma v7 introduces a new configuration file and some behavioral changes:
 
 Common commands:
 
-npx prisma db seed
-
 ```bash
 # Generate Prisma Client
 pnpm prisma generate
@@ -98,23 +104,6 @@ pnpm prisma migrate deploy
 pnpm prisma db seed
 ```
 
-- **API Routes**: Organized in `/api/routes`
-- **Error Handling**: Global error handler and custom error class
-- **File Serving**: Endpoint for serving book cover images
-- **Pagination and Sorting**: Implemented for list endpoints
-- **Data Validation**: Using `express-validator` middleware
-- **Filtering**: Prisma-based filtering for queries
-- **CORS**: Configured for cross-origin requests
-- **Logging**: HTTP logging with Morgan
-- **Caching**: Redis-based caching for improved performance
-- **Authentication**:
-  - Password hashing with bcrypt
-  - JWT-based authentication with access and refresh tokens
-- **Rate Limiting**: Prevents brute force attacks on login
-- **API Documentation**: Swagger UI available at `/docs`
-- **Testing**: Node.js native test runner and Supertest for unit and E2E testing
-- **Code Quality**: ESLint for linting and Prettier for formatting
-
 ## Database Schema
 
 This is the original ERD schema for an online bookstore database.
@@ -125,27 +114,28 @@ A new ERD using `draw.io` with some changes in relations and data types was crea
 
 ![newDatabaseSchema](images/rest-api-crud.drawio.png)
 
-For example, all the string values are `TEXT` fields (postgres recommends against char or varchar with param because it uses more db space), for money values `MONEY` field and dates `TMESTAMPTZ`.
+For example, all the string values are `TEXT` fields (postgres recommends against char or varchar with param because it uses more db space), for money values `MONEY` field and dates `TIMESTAMPTZ`.
 
 To delete an item with relations (e.g., Books can have many Reviews) the relation params for the model need to include `onDelete: Cascade`.
 Following the Books example, if a book is deleted all the related reviews will also be deleted.
 
 ## Database creation
 
-Create an empty postgres db with the name `rest_api_crud`.
-In macOS use **Postgress.app** to create and execute postgres db's and **Postico** for tables visualization and editing as an alternative to pgcli.
+Create an empty PostgreSQL database and set `DATABASE_URL` in `.env` (see [`.envexample`](.envexample)).
+For tests, [`.env.test`](.env.test) points at a separate database (for example `test_api_crud`).
+In macOS, **Postgres.app** can run Postgres locally and **Postico** is useful for table visualization as an alternative to pgcli.
 
-Migrate the models to the db with the script `pnpm prisma migrate dev --name init`.
+Migrate the models to the db with `pnpm prisma migrate dev --name init`.
 This creates a new folder `/prisma/migrations` with a migration file with the name used at the end of the script (in this case "init").
 With Prisma v7, the client is generated to [prisma/generated/prisma](prisma/generated/prisma) and the CLI reads the datasource URL from [prisma.config.ts](prisma.config.ts). For Postgres with the JS engine, the app config includes the `@prisma/adapter-pg` setup.
 
-> The script for production and testing migrations is `pnpm prisma migrate deploy`. But is only recommended for automated CI/CD pipelines.
+> The script for production and testing migrations is `pnpm prisma migrate deploy`. It is mainly intended for automated CI/CD pipelines (and is also used by `pnpm test`).
 
 ## Seeds
 
 Mockaroo (https://www.mockaroo.com/) is a tool to create fake data for db seeding in different formats (json, object, CSV, etc).
 The mocks used are objects (not json) to avoid the conversion process.
-The files are located in `/prisma/seedData` named `seed.ts`.
+The files are located in `/prisma/seedData`.
 
 > Because the dates have an incorrect format I'm mapping the arrays to replace them to ISO format.
 
@@ -185,9 +175,8 @@ The middleware `globalErrorHandler` prevents repetition and gives consistency in
 The class `CustomError` extends the default Error adding status and message values.
 The middleware uses the class to receive the errors.
 The controllers use the function `errorHandler` passing the params status and message. The function creates a new error extended by `CustomError`.
-The wild card middleware that catches all the non-existing routes pass the errors to `globalErrorHandler` with status 400.
 
-The middleware `notFoundHandler` catches all the incorrect routes and returns status `404` with the received route and error message. The error is passed to `globalErrorHandler`.
+The middleware `notFoundHandler` catches all incorrect routes and returns status `404` with the received route and error message. The error is passed to `globalErrorHandler`.
 
 ## Send book cover image files
 
@@ -197,7 +186,7 @@ It also includes error handling for the `res.sendFile` method when the Id is inc
 ## Pagination and Sorting
 
 The pagination uses Offset pagination that requires two values: `take` (number of items per page) and `skip` (the number of items to offset on the list).
-The skip value is the page number multiplied by the page number. The result must be an integer using `Math.floor`.
+The skip value is the page number multiplied by the page size. The result must be an integer using `Math.floor`.
 OrderBy receives the sort (column name) and type of order (`asc` or `desc`).
 
 ## Categories list
@@ -241,21 +230,21 @@ The project uses Redis for memory data storage allowing faster responses.
 To start the redis server (after installing Redis locally) run `redis-server` on the terminal.
 The app DBngin is an alternative for executing redis locally.
 The redis server can be stopped using `ctrl-c` or `redis-cli shutdown`.
-The redis singleton client `/config/redisClient` logs by console the conection status.
+The redis singleton client [`api/config/redisClient.ts`](api/config/redisClient.ts) logs by console the connection status.
 For monitor and manipulate the keys stored in Redis use `Redis Insight`.
 The dependency `ioredis` is used to interact with Redis from Node.
 The Redis uses are:
 
 ### Cache
 
-Redis is used as cache for lists controllers to improve speed and prevevents overloads in the db.
+Redis is used as cache for lists controllers to improve speed and prevent overloads in the db.
 The endpoints using redis returns a value `cache` (boolean).
 
 > This value is not necessary, but useful to identify the responses from db or cache.
 
 If the controller finds a cache key for the specific request will return the cached values.
-If no chache is found the controller calls the db, stores in cache the result and then returns them.
-The aditional params "EX" (for seconds, or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys.
+If no cache is found the controller calls the db, stores in cache the result and then returns them.
+The additional params "EX" (for seconds, or "PX" for milliseconds) and the number of seconds adds expiration to the cached keys.
 When the cache expires it removes itself from redis.
 The services to create, modify and delete elements removes all the existing cached keys for the related lists.
 
@@ -273,13 +262,13 @@ New users passwords are encrypted using `bcrypt` hash and salt.
 Bcrypt hashes the password and adds salt to avoid rainbow table attacks.
 The password is stored in db hashed and is only known by the user.
 If the user forgets or needs to change the password a new password must be entered.
-Bcrypt verify the passwords at login by encrypting and comparing the recieved and stored password (the hash and salt must be equal).
+Bcrypt verify the passwords at login by encrypting and comparing the received and stored password (the hash and salt must be equal).
 The hashed password never gets decrypted by Bcrypt.
 
-# Rate Limiter
+## Rate Limiter
 
-The middleware `rateLimiter.middleware.ts` prevents from brute force attacks in the `/customer/login` endpoint storing the user Ip and the user email in Redis with the number of failed attemps and the TTL (time to live) for the Redis key.
-If the user exceeds the amount of failed requests permitted, the middleware returns status 429 (Too many requests) and changes de TTL for the Redis key to the block duration specified in the env variable blocking the user access.
+The middleware `rateLimiter.middleware.ts` prevents from brute force attacks in the `/customer/login` endpoint storing the user Ip and the user email in Redis with the number of failed attempts and the TTL (time to live) for the Redis key.
+If the user exceeds the amount of failed requests permitted, the middleware returns status 429 (Too many requests) and changes the TTL for the Redis key to the block duration specified in the env variable blocking the user access.
 
 A second rate limiter middleware `rateLimiterFlexible.middleware.ts` using `rate-limiter-flexible` can be found in the project.
 It also stores in Redis with the same results as `rateLimiter.middleware.ts`.
@@ -288,7 +277,7 @@ This middleware is not used in the project but is kept as a possible backup and 
 
 ## JWT Access and Refresh
 
-When the user successfully login, the server returns two JWT (Jason Web Token) in http only cookies: `access_token` and `refresh_token`.
+When the user successfully login, the server returns two JWT (JSON Web Token) in http only cookies: `access_token` and `refresh_token`.
 This allows for stateless user sessions and permissions (client side).
 The cookies prevent the JWT from being javascript accessible from the client side.
 Only the signatures for the jwt and the cookies are encrypted, not the tokens content.
@@ -301,6 +290,7 @@ Only the signatures for the jwt and the cookies are encrypted, not the tokens co
 ## Export to CSV
 
 To export a table to CSV file use the SQL query in `/scripts/exportToCSV.sql` replacing the table name, path and name for the `.csv` file.
+There is also an app script: `pnpm run export:csv`.
 
 ## Swagger documentation
 
@@ -311,7 +301,7 @@ All the responses show status code and examples.
 ## Testing
 
 The routes (E2E) and middleware are tested using Node's built-in test runner (`node:test`) and `supertest`.
-TypeScript tests are executed with `tsx`.
+TypeScript tests are executed with `tsx` (`tsx --test`).
 `ioredis-mock` is used to mock Redis in the testing environment.
 
 ```bash
@@ -321,7 +311,24 @@ pnpm test:run      # run tests without migrating (requires env vars loaded)
 ```
 
 Tests live in `api/**/__tests__/*.test.ts`. Assertions use `node:assert/strict`; spies use `mock.fn()` from `node:test`.
-Use helpers from `api/__mocks__/testFixtures.ts` (`uniqueCustomer`, `uniqueAuthor`, `createAuthenticatedAgent`, `createBookGraph`) for DB-backed E2E tests.
-Route E2E coverage includes auth, category, author, genre, publisher, book, customer, order, review, and image.
+Use helpers from [`api/__mocks__/testFixtures.ts`](api/__mocks__/testFixtures.ts) (`uniqueCustomer`, `uniqueAuthor`, `createAuthenticatedAgent`, `createBookGraph`) for DB-backed E2E tests.
+Route E2E coverage includes auth (`customerSession`), category, author, genre, publisher, book, customer, order, review, and image.
 Middleware unit tests cover `verifyJWT`, `validationError`, `notFound`, `globalErrorHandler`, and `rateLimiter`.
+Utility tests live in `api/utils/__tests__/`.
 Validator unit tests live in `api/validators/__tests__/`.
+
+## Docker
+
+Development and production Compose files are included:
+
+```bash
+pnpm run docker:build-dev
+pnpm run docker:up-dev
+pnpm run docker:down-dev
+
+pnpm run docker:build-prod
+pnpm run docker:up-prod
+pnpm run docker:down-prod
+```
+
+The Compose stacks start Postgres, Redis, and the API. Configure `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` along with the app env files before starting.
