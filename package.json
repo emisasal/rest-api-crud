@@ -15,7 +15,7 @@
 		"export:csv": "ts-node prisma/exportCSV.ts",
 		"test:run": "tsx --test --test-concurrency=1 'api/**/*.test.ts'",
 		"test:watch": "tsx --test --watch --test-concurrency=1 'api/**/*.test.ts'",
-		"test": "bash -lc 'set -a; [ -f .env ] && source .env; [ -f .env.test ] && source .env.test; set +a; npx prisma migrate deploy && tsx --test --test-concurrency=1 \"api/**/*.test.ts\"'",
+		"test": "bash -lc 'set -a; [ -f .env ] && source .env; [ -f .env.test ] && source .env.test; set +a; npx prisma db push --accept-data-loss && tsx --test --test-concurrency=1 \"api/**/*.test.ts\"'",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
