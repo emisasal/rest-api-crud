@@ -72,12 +72,18 @@ importers:
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
+      '@types/ioredis-mock':
+        specifier: ^8.2.8
+        version: 8.2.8(ioredis@5.11.1)
       '@types/jsonwebtoken':
         specifier: ^9.0.10
         version: 9.0.10
       '@types/morgan':
         specifier: ^1.9.10
         version: 1.9.10
+      '@types/ms':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/node':
         specifier: ^22.20.1
         version: 22.20.1
@@ -101,7 +107,7 @@ importers:
         version: 17.9.0
       ioredis-mock:
         specifier: ^8.13.1
-        version: 8.13.1(@types/ioredis-mock@8.2.7(ioredis@5.11.1))(ioredis@5.11.1)
+        version: 8.13.1(@types/ioredis-mock@8.2.8(ioredis@5.11.1))(ioredis@5.11.1)
       pnpm:
         specifier: ^11.20.0
         version: 11.20.0
@@ -637,10 +643,10 @@ packages:
   '@types/http-errors@2.0.5':
     resolution: {integrity: sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==}
 
-  '@types/ioredis-mock@8.2.7':
-    resolution: {integrity: sha512-YsGiaOIYBKeVvu/7GYziAD8qX3LJem5LK00d5PKykzsQJMLysAqXA61AkNuYWCekYl64tbMTqVOMF4SYoCPbQg==}
+  '@types/ioredis-mock@8.2.8':
+    resolution: {integrity: sha512-Nxr1CXk8NtGVzWQ8WoGCOyo+HARd4CFc/Nt2+ITt3WWLNlj1InW38SzZwOJNqzA38iplrpBFp6Ny4KjPfeI+bA==}
     peerDependencies:
-      ioredis: '>=5'
+      ioredis: ^5
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -2475,7 +2481,7 @@ snapshots:
 
   '@types/http-errors@2.0.5': {}
 
-  '@types/ioredis-mock@8.2.7(ioredis@5.11.1)':
+  '@types/ioredis-mock@8.2.8(ioredis@5.11.1)':
     dependencies:
       ioredis: 5.11.1
 
@@ -3315,11 +3321,11 @@ snapshots:
 
   internmap@2.0.3: {}
 
-  ioredis-mock@8.13.1(@types/ioredis-mock@8.2.7(ioredis@5.11.1))(ioredis@5.11.1):
+  ioredis-mock@8.13.1(@types/ioredis-mock@8.2.8(ioredis@5.11.1))(ioredis@5.11.1):
     dependencies:
       '@ioredis/as-callback': 3.0.0
       '@ioredis/commands': 1.10.0
-      '@types/ioredis-mock': 8.2.7(ioredis@5.11.1)
+      '@types/ioredis-mock': 8.2.8(ioredis@5.11.1)
       fengari: 0.1.5
       fengari-interop: 0.1.4(fengari@0.1.5)
       ioredis: 5.11.1
