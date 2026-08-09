@@ -21,7 +21,7 @@ process.env.NODE_ENV !== "test" &&
 		.on("ready", () => {
 			console.log("Redis Ready")
 		})
-		.on("error", (e) => {
+		.on("error", (e: Error) => {
 			console.error("Redis Error: ", e)
 		})
 		.on("close", () => {

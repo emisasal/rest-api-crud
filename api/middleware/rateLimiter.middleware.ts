@@ -19,7 +19,7 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
 		.pipeline()
 		.incr(key as RedisKey)
 		.expire(key as RedisKey, RATE_LIMIT_PERIOD)
-		.exec((err) => {
+		.exec((err: Error | null | undefined) => {
 			if (err) console.error(err)
 		})
 
