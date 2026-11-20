@@ -1,6 +1,6 @@
 {
 	"engines": {
-		"node": ">=22.0.0"
+		"node": ">=22.23.5"
 	},
 	"name": "rest-api-crud",
 	"version": "1.4.0",
